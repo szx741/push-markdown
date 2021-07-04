@@ -1,9 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:47:44
- * @LastEditTime: 2021-07-04 19:46:25
+ * @LastEditTime: 2021-07-04 21:15:15
  * @Description: electron-sotre存储语言值
- * @FilePath: \push-markdown\src\common\ts\api\lang-config.ts
+ * @FilePath: \push-markdown\src\common\api\lang-config.ts
  */
 
 'use strict';

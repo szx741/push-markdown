@@ -1,9 +1,17 @@
+/*
+ * @Author: szx
+ * @Date: 2021-07-04 14:14:13
+ * @LastEditTime: 2021-07-04 21:22:43
+ * @Description:
+ * @FilePath: \push-markdown\vue.config.js
+ */
 /* eslint-disable */
 const path = require('path');
 
 function resolve(dir) {
   return path.join(__dirname, dir);
 }
+process.env.VUE_APP_BASE_URL = resolve('public');
 
 module.exports = {
   publicPath: './',

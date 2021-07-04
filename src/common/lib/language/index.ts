@@ -1,5 +1,10 @@
-// language文件夹下的index.js
-// zh, en, id 分别为三种语言文件
+/*
+ * @Author: szx
+ * @Date: 2021-07-04 17:24:11
+ * @LastEditTime: 2021-07-04 21:15:44
+ * @Description: language文件夹下的index.js zh, en分别为三种语言文件
+ * @FilePath: \push-markdown\src\common\lib\language\index.ts
+ */
 import { createI18n } from 'vue-i18n';
 import zh from './zh';
 import en from './en';

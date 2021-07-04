@@ -1,15 +1,11 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:00:58
- * @LastEditTime: 2021-07-04 21:02:22
- * @Description: 
- * @FilePath: \push-markdown\src\main\menu-lang.ts
+ * @LastEditTime: 2021-07-04 21:16:07
+ * @Description: 窗口的多语言支持
+ * @FilePath: \push-markdown\src\common\lib\menu-lang.ts
  */
-/**
- * 窗口的多语言支持
- *
- * Created by jzj on 2018/12/24.
- */
+
 'use strict';
 
 export const en = {

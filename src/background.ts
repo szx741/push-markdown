@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-04 20:04:26
+ * @LastEditTime: 2021-07-04 21:21:38
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -33,7 +33,7 @@ async function createWindow() {
       webSecurity: false
     },
     // eslint-disable-next-line
-    icon: `${__static}/app.ico`
+    icon: `${process.env.VUE_APP_BASE_URL}/app.ico`
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

@@ -1,3 +1,10 @@
+<!--
+ * @Author: szx
+ * @Date: 2021-07-04 13:56:18
+ * @LastEditTime: 2021-07-04 21:14:02
+ * @Description: 
+ * @FilePath: \push-markdown\src\components\HelloWorld.vue
+-->
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
@@ -66,7 +73,7 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import i18n from '../common/language/index';
+  import i18n from '../common/lib/language/index';
 
   export default defineComponent({
     name: 'HelloWorld',
