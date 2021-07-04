@@ -1,9 +1,9 @@
 {
   "name": "push-markdown",
   "version": "0.1.0",
+  "private": true,
   "description": "将本地markdown推送到博客，比如WordPress",
   "author": "szx",
-  "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -16,7 +16,10 @@
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.15.2",
+    "electron-log": "^4.3.5",
+    "electron-store": "^8.0.0",
     "vue": "^3.1.3",
+    "vue-i18n": "^9.1.6",
     "vue-router": "^4.0.10",
     "vuex": "^4.0.2"
   },
@@ -42,6 +45,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-vue": "^7.12.1",
     "prettier": "^2.3.2",
+    "typedoc": "^0.21.2",
     "typescript": "^4.3.5",
     "vue-cli-plugin-electron-builder": "^2.1.1"
   }

@@ -17,14 +17,28 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
+      // option: default // description
+      // disableMainProcessTypescript: false, // Manually disable typescript plugin for main process. Enable if you want to use regular js for the main process (src/background.js by default).
+      // mainProcessTypeChecking: false, // Manually enable type checking during webpack bundling for background file.
       builderOptions: {
+        productName: `push-markdown`,
+        copyright: `Copyright © year `,
+        nsis: {
+          oneClick: false,
+          allowToChangeInstallationDirectory: true
+        },
         win: {
-          icon: './public/app.ico'
+          icon: './public/app.ico',
+          target: [
+            {
+              target: 'nsis', //使用nsis打成安装包，"portable"打包成免安装版
+              arch: 'x64' //64位
+            }
+          ]
         },
         mac: {
           icon: './public/app.png'
-        },
-        productName: 'push-markdown'
+        }
       }
     }
   }

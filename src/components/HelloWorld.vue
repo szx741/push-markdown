@@ -59,17 +59,23 @@
       <li>
         <a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a>
       </li>
+      <p class="title">{{ $t('meta.abstract') }}</p>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue';
+  import i18n from '../common/language/index';
 
   export default defineComponent({
     name: 'HelloWorld',
     props: {
       msg: String
+    },
+
+    setup() {
+      console.log(i18n.global.t('meta.abstract'));
     }
   });
 </script>
