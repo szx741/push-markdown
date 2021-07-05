@@ -1,3 +1,10 @@
+/*
+ * @Author: szx
+ * @Date: 2021-07-04 13:56:18
+ * @LastEditTime: 2021-07-05 21:26:04
+ * @Description: 
+ * @FilePath: \push-markdown\.eslintrc.js
+ */
 module.exports = {
   root: true,
   env: {
@@ -11,6 +18,7 @@ module.exports = {
     ecmaVersion: 2020
   },
   rules: {
+    '@typescript-eslint/no-unused-vars': 'off',
     'no-unused-vars': 'warn',
     'vue/no-unused-vars': 'off',
     'space-before-function-paren': 'off',

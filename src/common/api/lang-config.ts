@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:47:44
- * @LastEditTime: 2021-07-04 21:15:15
+ * @LastEditTime: 2021-07-05 21:02:48
  * @Description: electron-sotre存储语言值
  * @FilePath: \push-markdown\src\common\api\lang-config.ts
  */
@@ -14,7 +14,6 @@ import Store from 'electron-store';
 const store = new Store({ name: 'settings' });
 
 export function getLanguage() {
-  console.log(store.get('language'));
   return store.get('language', 'zh');
 }
 

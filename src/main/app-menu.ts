@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:42:15
- * @LastEditTime: 2021-07-04 21:13:35
+ * @LastEditTime: 2021-07-05 19:46:07
  * @Description: 菜单栏设置
  * @FilePath: \push-markdown\src\main\app-menu.ts
  */
@@ -12,7 +12,7 @@
 import { Menu, app, dialog, shell, BrowserWindow } from 'electron';
 
 import * as langConfig from '../common/api/lang-config';
-import * as language from '../common/lib/menu-lang';
+import * as language from '../config/menu-lang';
 
 // 加载菜单栏
 export function init(mainWindow: BrowserWindow) {
@@ -44,9 +44,10 @@ export function init(mainWindow: BrowserWindow) {
           click: function () {
             dialog
               .showOpenDialog(mainWindow, { properties: ['openFile'], filters: [{ name: 'Markdown', extensions: ['md'] }] })
-              .then((filenames: any) => {
-                if (filenames && filenames.length > 0 && filenames[0]) {
-                  webContents.send('menu.open', filenames[0]);
+              .then((result: any) => {
+                if (!result.canceled && result.filePaths.length > 0) {
+                  webContents.send('menu.open', result[0]);
+                  console.log('打开了', result);
                 }
               })
               .catch((err) => {

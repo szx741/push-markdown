@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-04 21:14:02
+ * @LastEditTime: 2021-07-05 15:33:29
  * @Description: 
  * @FilePath: \push-markdown\src\components\HelloWorld.vue
 -->
@@ -82,7 +82,7 @@
     },
 
     setup() {
-      console.log(i18n.global.t('meta.abstract'));
+      // console.log(i18n.global.t('meta.abstract'));
     }
   });
 </script>

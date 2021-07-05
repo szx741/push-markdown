@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:14:13
- * @LastEditTime: 2021-07-04 21:22:43
+ * @LastEditTime: 2021-07-05 22:00:17
  * @Description:
  * @FilePath: \push-markdown\vue.config.js
  */
@@ -16,7 +16,6 @@ process.env.VUE_APP_BASE_URL = resolve('public');
 module.exports = {
   publicPath: './',
   devServer: {
-    // can be overwritten by process.env.HOST
     host: '0.0.0.0',
     port: 8080
   },
@@ -25,6 +24,7 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
+      nodeIntegration: true,
       // option: default // description
       // disableMainProcessTypescript: false, // Manually disable typescript plugin for main process. Enable if you want to use regular js for the main process (src/background.js by default).
       // mainProcessTypeChecking: false, // Manually enable type checking during webpack bundling for background file.

@@ -1,40 +1,29 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-04 21:21:38
+ * @LastEditTime: 2021-07-05 21:54:48
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
 'use strict';
 // 主进程使用 BrowserWindow 实例创建页面，销毁后进程也会被终止
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import log from 'electron-log';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
-import * as AppMenu from './main/app-menu';
+import * as AppMenu from '@/main/app-menu';
+import path from 'path';
+import { browserWindowOption, winURL } from '@/config/browser.options';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
 // APP窗口大小
+let mainWindow: BrowserWindow | null;
 async function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      // preload: './preload.ts',
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION as unknown as boolean as unknown as boolean,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
-      // 取消跨域限制
-      webSecurity: false
-    },
-    // eslint-disable-next-line
-    icon: `${process.env.VUE_APP_BASE_URL}/app.ico`
-  });
+  mainWindow = new BrowserWindow(browserWindowOption);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -43,25 +32,25 @@ async function createWindow() {
   } else {
     createProtocol('app');
     // Load the index.html when not in development
-    mainWindow.loadURL('app://./index.html');
+    // mainWindow.loadURL('app://./index.html');
+    mainWindow.loadURL(winURL);
   }
   log.info('create window', process.env.NODE_ENV);
   //加载应用的菜单栏
   AppMenu.init(mainWindow);
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
 }
 
-// Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
 app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
@@ -76,10 +65,18 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }
+
+  // 同步方法
+  ipcMain.on('exePath', function (event, arg) {
+    event.returnValue = path.dirname(app.getPath('exe'));
+  });
+  ipcMain.on('version', function (event, arg) {
+    event.returnValue = path.dirname(app.getVersion());
+  });
   createWindow();
 });
 
-// Exit cleanly on request from parent process in development mode.
+// 在开发模式下应父进程的要求干净地退出。
 if (isDevelopment) {
   if (process.platform === 'win32') {
     process.on('message', (data) => {

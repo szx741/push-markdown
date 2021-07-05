@@ -1,10 +1,10 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-04 19:56:25
- * @Description: 
+ * @LastEditTime: 2021-07-05 16:45:11
+ * @Description:
  * @FilePath: \push-markdown\src\shims-vue.d.ts
-*/
+ */
 /* eslint-disable */
 declare module '*.vue' {
   import type { DefineComponent } from 'vue';
@@ -13,5 +13,14 @@ declare module '*.vue' {
 }
 
 declare interface Window {
-  log: any
+  log: any;
+  writeFileSync: any;
 }
+
+// declare var global:any;
+
+// declare global {
+//   interface globalData {
+//     fileToOpen: any;
+//   }
+// }
