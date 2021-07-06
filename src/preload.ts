@@ -1,16 +1,35 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-07-05 21:55:00
+ * @LastEditTime: 2021-07-06 17:01:30
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
+/* eslint-disable */
 
-import log from 'electron-log';
-import fs from 'fs-extra';
+import { contextBridge, ipcRenderer } from 'electron';
+import fs, { WriteFileOptions } from 'fs-extra';
 
-window.log = log.functions;
-
-window.writeFileSync = function (errorLogPath: string, errorLog: Object) {
-  fs.writeFileSync(errorLogPath, JSON.stringify(errorLog) + '\n', { flag: 'a' });
-};
+contextBridge.exposeInMainWorld('api', {
+  send: (channel: string, data: any) => {
+    // whitelist channels
+    let validChannels = ['toMain', 'exePath', 'version'];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.send(channel, data);
+    }
+  },
+  receive: (channel: string, func: Function) => {
+    let validChannels = ['fromMain', 'exePath', 'version'];
+    if (validChannels.includes(channel)) {
+      // Deliberately strip event as it includes `sender`
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    }
+  },
+  syncMsg: function (channel: string, data: any) {
+    let validChannels = ['fromMain', 'exePath', 'version'];
+    if (validChannels.includes(channel)) {
+      return ipcRenderer.sendSync(channel, data); // prints "pong"
+    }
+  },
+  fsWriteFileSync: fs.writeFileSync
+});

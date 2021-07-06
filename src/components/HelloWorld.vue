@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-05 15:33:29
+ * @LastEditTime: 2021-07-06 16:21:20
  * @Description: 
  * @FilePath: \push-markdown\src\components\HelloWorld.vue
 -->
@@ -82,7 +82,10 @@
     },
 
     setup() {
-      // console.log(i18n.global.t('meta.abstract'));
+      // window.api.receive('fromMain', (data: any) => {
+      //   console.log(`Received ${data} from main process`);
+      // });
+      // window.api.send('toMain', 'some data');
     }
   });
 </script>

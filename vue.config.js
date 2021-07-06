@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:14:13
- * @LastEditTime: 2021-07-05 22:00:17
+ * @LastEditTime: 2021-07-06 16:44:44
  * @Description:
  * @FilePath: \push-markdown\vue.config.js
  */
@@ -24,7 +24,8 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
-      nodeIntegration: true,
+      preload: 'src/preload.ts',
+      // nodeIntegration: true,
       // option: default // description
       // disableMainProcessTypescript: false, // Manually disable typescript plugin for main process. Enable if you want to use regular js for the main process (src/background.js by default).
       // mainProcessTypeChecking: false, // Manually enable type checking during webpack bundling for background file.

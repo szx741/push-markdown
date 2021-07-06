@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-05 21:54:48
+ * @LastEditTime: 2021-07-06 16:45:50
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -13,17 +13,30 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
 import * as AppMenu from '@/main/app-menu';
 import path from 'path';
-import { browserWindowOption, winURL } from '@/config/browser.options';
+import { ipcMainCollection } from '@/config/ipc-message';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
 // APP窗口大小
-let mainWindow: BrowserWindow | null;
+let mainWindow: BrowserWindow;
 async function createWindow() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow(browserWindowOption);
+  mainWindow = new BrowserWindow({
+    minHeight: 180,
+    minWidth: 320,
+    hasShadow: true,
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      // nodeIntegration: false,  //默认不开启node集成，为了安全😊
+      contextIsolation: true //上下文隔离，开起来吧，为了安全😊
+      // webSecurity: false  // 取消跨域限制，为了安全😊
+    },
+    // eslint-disable-next-line
+    icon: `${process.env.VUE_APP_BASE_URL}/app.ico`
+  });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -33,15 +46,12 @@ async function createWindow() {
     createProtocol('app');
     // Load the index.html when not in development
     // mainWindow.loadURL('app://./index.html');
+    const winURL = isDevelopment ? 'http://localhost:8080' : `file://${__dirname}/index.html`;
     mainWindow.loadURL(winURL);
   }
   log.info('create window', process.env.NODE_ENV);
   //加载应用的菜单栏
   AppMenu.init(mainWindow);
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
 }
 
 app.on('window-all-closed', () => {
@@ -65,14 +75,10 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }
+  // console.log();
+  //进程之间的监听
+  ipcMainCollection;
 
-  // 同步方法
-  ipcMain.on('exePath', function (event, arg) {
-    event.returnValue = path.dirname(app.getPath('exe'));
-  });
-  ipcMain.on('version', function (event, arg) {
-    event.returnValue = path.dirname(app.getVersion());
-  });
   createWindow();
 });
 
