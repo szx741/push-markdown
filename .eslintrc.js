@@ -1,8 +1,10 @@
+const { off } = require('process');
+
 /*
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-05 21:26:04
- * @Description: 
+ * @LastEditTime: 2021-07-06 20:32:31
+ * @Description:
  * @FilePath: \push-markdown\.eslintrc.js
  */
 module.exports = {
@@ -18,6 +20,8 @@ module.exports = {
     ecmaVersion: 2020
   },
   rules: {
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     'no-unused-vars': 'warn',
     'vue/no-unused-vars': 'off',

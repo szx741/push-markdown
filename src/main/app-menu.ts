@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:42:15
- * @LastEditTime: 2021-07-05 19:46:07
+ * @LastEditTime: 2021-07-06 21:18:26
  * @Description: 菜单栏设置
  * @FilePath: \push-markdown\src\main\app-menu.ts
  */
@@ -11,8 +11,8 @@
 //dialog模块提供了api来展示原生的系统对话框，例如打开文件框，alert框
 import { Menu, app, dialog, shell, BrowserWindow } from 'electron';
 
-import * as langConfig from '../common/api/lang-config';
-import * as language from '../config/menu-lang';
+import * as langConfig from '@/common/api/lang-config';
+import * as language from '@/config/menu-lang';
 
 // 加载菜单栏
 export function init(mainWindow: BrowserWindow) {

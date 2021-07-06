@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:14:13
- * @LastEditTime: 2021-07-06 16:44:44
+ * @LastEditTime: 2021-07-06 17:20:35
  * @Description:
  * @FilePath: \push-markdown\vue.config.js
  */
@@ -25,13 +25,9 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       preload: 'src/preload.ts',
-      // nodeIntegration: true,
-      // option: default // description
-      // disableMainProcessTypescript: false, // Manually disable typescript plugin for main process. Enable if you want to use regular js for the main process (src/background.js by default).
-      // mainProcessTypeChecking: false, // Manually enable type checking during webpack bundling for background file.
       builderOptions: {
-        productName: `push-markdown`,
-        copyright: `Copyright © year `,
+        productName: 'push-markdown',
+        copyright: 'Copyright © year ',
         nsis: {
           oneClick: false,
           allowToChangeInstallationDirectory: true
@@ -40,8 +36,8 @@ module.exports = {
           icon: './public/app.ico',
           target: [
             {
-              target: 'nsis', //使用nsis打成安装包，"portable"打包成免安装版
-              arch: 'x64' //64位
+              target: 'nsis',
+              arch: 'x64'
             }
           ]
         },
@@ -49,6 +45,10 @@ module.exports = {
           icon: './public/app.png'
         }
       }
+    },
+    'style-resources-loader': {
+      preProcessor: 'less',
+      patterns: [path.resolve(__dirname, 'src/less/index.less')]
     }
   }
 };

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-06 16:45:50
+ * @LastEditTime: 2021-07-06 21:56:14
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -29,7 +29,7 @@ async function createWindow() {
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.js'), //这里只能用.js结尾，用ts结尾的就不能引入
       // nodeIntegration: false,  //默认不开启node集成，为了安全😊
       contextIsolation: true //上下文隔离，开起来吧，为了安全😊
       // webSecurity: false  // 取消跨域限制，为了安全😊
@@ -75,10 +75,9 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }
-  // console.log();
   //进程之间的监听
   ipcMainCollection;
-
+  // 创建窗口
   createWindow();
 });
 

@@ -1,3 +1,10 @@
+<!--
+ * @Author: szx
+ * @Date: 2021-07-04 13:56:18
+ * @LastEditTime: 2021-07-06 21:55:05
+ * @Description: 
+ * @FilePath: \push-markdown\src\App.vue
+-->
 <template>
   <div id="nav">
     <router-link to="/">Home</router-link> |
@@ -5,6 +12,23 @@
   </div>
   <router-view />
 </template>
+
+<script lang="ts">
+  import { useI18n } from 'vue-i18n';
+  export default {
+    name: 'PublishMarkdown',
+    setup() {
+      const { t, locale } = useI18n();
+      window.api.receive('menu.language', (data: any) => {
+        console.log('修改后的locale', locale.value);
+        locale.value = data; // change!
+      });
+      locale.value = window.api.getLanguage() === 'en' ? 'en' : 'zh';
+      console.log('初始化的locale', locale.value);
+      return { t, locale };
+    }
+  };
+</script>
 
 <style>
   #app {
