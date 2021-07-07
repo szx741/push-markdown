@@ -1,11 +1,12 @@
+/* eslint-disable */
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:14:13
- * @LastEditTime: 2021-07-06 17:20:35
+ * @LastEditTime: 2021-07-07 17:23:05
  * @Description:
  * @FilePath: \push-markdown\vue.config.js
  */
-/* eslint-disable */
+
 const path = require('path');
 
 function resolve(dir) {

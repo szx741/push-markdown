@@ -1,18 +1,18 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-07-06 21:40:17
+ * @LastEditTime: 2021-07-07 20:22:05
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
 /* eslint-disable */
 
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, shell } from 'electron';
 import fs from 'fs-extra';
 import Store from 'electron-store';
-
+import path from 'path';
 // 存储的文件名为settings
-const store = new Store({ name: 'settings' });
+const storeSettings = new Store({ name: 'settings' });
 
 const validChannels = ['fromMain', 'exePath', 'version', 'menu.language'];
 
@@ -38,7 +38,19 @@ contextBridge.exposeInMainWorld('api', {
     }
   },
   getLanguage() {
-    return store.get('language', 'zh');
+    return storeSettings.get('language', 'zh');
   },
+  getStoreSettingsClear() {
+    return storeSettings.clear();
+  },
+  storeSet(key: any, value: any) {
+    return storeSettings.get(key, value);
+  },
+  storeGet(key: any, value: any) {
+    return storeSettings.get(key, value);
+  },
+  shell: shell,
+  pathBasename: path.basename,
+  pathJoin: path.join,
   fsWriteFileSync: fs.writeFileSync
 });
