@@ -1,9 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:42:15
- * @LastEditTime: 2021-07-06 21:18:26
+ * @LastEditTime: 2021-07-08 17:13:52
  * @Description: 菜单栏设置
- * @FilePath: \push-markdown\src\main\app-menu.ts
+ * @FilePath: \push-markdown\src\config\app-menu.ts
  */
 
 'use strict';
@@ -175,12 +175,9 @@ export function init(mainWindow: BrowserWindow) {
         },
         {
           label: l.toggleDevTools,
-          // accelerator: (function () {
-          //   if (process.platform === 'darwin')
-          //     return 'Alt+Command+I'
-          //   else
-          //     return 'Ctrl+Shift+I'
-          // })(),
+          accelerator: (function () {
+            return 'Ctrl+Shift+I';
+          })(),
           click: function (item: any, focusedWindow: any) {
             if (focusedWindow) focusedWindow.toggleDevTools();
           }

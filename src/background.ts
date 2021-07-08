@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-06 21:56:14
+ * @LastEditTime: 2021-07-08 17:01:22
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -11,7 +11,7 @@ import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import log from 'electron-log';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
-import * as AppMenu from '@/main/app-menu';
+import * as AppMenu from '@/config/app-menu';
 import path from 'path';
 import { ipcMainCollection } from '@/config/ipc-message';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -25,11 +25,15 @@ async function createWindow() {
   mainWindow = new BrowserWindow({
     minHeight: 180,
     minWidth: 320,
-    hasShadow: true,
+    // hasShadow: true,
     width: 1200,
     height: 800,
+    // frame: false,
+
+    // titleBarStyle: 'default', // add this line
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), //这里只能用.js结尾，用ts结尾的就不能引入
+      // enableRemoteModule: true,
       // nodeIntegration: false,  //默认不开启node集成，为了安全😊
       contextIsolation: true //上下文隔离，开起来吧，为了安全😊
       // webSecurity: false  // 取消跨域限制，为了安全😊

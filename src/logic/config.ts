@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-07-07 17:15:35
+ * @LastEditTime: 2021-07-08 13:53:34
  * @Description:
  * @FilePath: \push-markdown\src\logic\config.ts
  */
@@ -31,7 +31,7 @@ export function newSite() {
 const defaultSites = [newSite()];
 
 export function getSites() {
-  const sites = window.api.storeGet('sites', defaultSites);
+  const sites = window.api.storeSettingsGet('sites', defaultSites);
   // decode
   return (
     sites &&
@@ -54,15 +54,15 @@ export function saveSites(sites: any) {
         password: site.password && Base64.encode(site.password)
       };
     });
-  return window.api.storeSet('sites', sites);
+  return window.api.storeSettingsSet('sites', sites);
 }
 
 export function getPublishMode(defaultValue = 'manual') {
-  return window.api.storeGet('publish.mode', defaultValue);
+  return window.api.storeSettingsGet('publish.mode', defaultValue);
 }
 
 export function savePublishMode(publishMode: any) {
-  return window.api.storeSet('publish.mode', publishMode);
+  return window.api.storeSettingsSet('publish.mode', publishMode);
 }
 
 export function getRenderConfig() {
@@ -72,7 +72,7 @@ export function getRenderConfig() {
     mathjax: 'preview',
     mermaid: 'preview'
   };
-  let config = window.api.storeGet('render', {});
+  let config = window.api.storeSettingsGet('render', {});
   return {
     ...defaultValue,
     ...config
@@ -80,5 +80,5 @@ export function getRenderConfig() {
 }
 
 export function saveRenderConfig(render: any) {
-  return window.api.storeSet('render', render);
+  return window.api.storeSettingsSet('render', render);
 }

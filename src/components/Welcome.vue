@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-07 17:32:39
- * @LastEditTime: 2021-07-07 20:11:40
+ * @LastEditTime: 2021-07-08 13:04:14
  * @Description: 
  * @FilePath: \push-markdown\src\components\Welcome.vue
 -->
@@ -16,28 +16,42 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, onMounted, onUpdated, ref } from 'vue';
 
   import * as utils from '@/logic/utils';
 
   export default defineComponent({
     name: 'Welcome',
-    data() {
-      return {};
-    },
-    methods: {
-      setLinks() {
-        const ref = this.$refs['introduction'];
-        console.log(ref);
-        utils.setLinks(ref);
-      }
-    },
-    mounted() {
-      this.setLinks();
-    },
-    updated() {
-      this.setLinks();
+    setup() {
+      const introduction = ref(null);
+
+      onMounted(() => {
+        utils.setLinks(introduction.value);
+      });
+      onUpdated(() => {
+        utils.setLinks(introduction.value);
+      });
+      return {
+        introduction
+      };
     }
+    // data() {
+    //   return {};
+    // },
+    // methods: {
+    //   setLinks() {
+    //     const ref = this.$refs['introduction'];
+    //     // console.log(ref);
+    //     utils.setLinks(ref);
+    //   }
+    // },
+
+    // mounted() {
+    //   this.setLinks();
+    // },
+    // updated() {
+    //   this.setLinks();
+    // }
   });
 </script>
 

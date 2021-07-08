@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-07-07 17:04:00
+ * @LastEditTime: 2021-07-08 14:04:06
  * @Description:
  * @FilePath: \push-markdown\src\logic\useRecord.ts
  */
@@ -10,14 +10,9 @@
  */
 'use strict';
 
-const fs = require('fs');
-const Store = require('electron-store');
-
-const store = new Store({ name: 'use-record' });
-
 export function getTabs() {
-  let tabs = store.get('tabs', [{ type: 'welcome' }]).filter((tab: any) => {
-    return tab.type !== 'markdown' || fs.existsSync(tab.file);
+  const tabs = window.api.storeRecordGet('tabs', [{ type: 'welcome' }]).filter((tab: any) => {
+    return tab.type !== 'markdown' || window.api.fsExistsSync(tab.file);
   });
   tabs.forEach((tab: any) => {
     tab.modified = false;
@@ -26,7 +21,7 @@ export function getTabs() {
 }
 
 export function saveTabs(tabs: any) {
-  return store.set(
+  return window.api.storeRecordSet(
     'tabs',
     tabs.map((tab: any) => {
       return { type: tab.type, title: tab.title, file: tab.file };
@@ -35,9 +30,9 @@ export function saveTabs(tabs: any) {
 }
 
 export function getCurrentTab() {
-  return store.get('tab-current', 0);
+  return window.api.storeRecordGet('tab-current', 0);
 }
 
 export function saveCurrentTab(index: any) {
-  return store.set('tab-current', index);
+  return window.api.storeRecordSet('tab-current', index);
 }

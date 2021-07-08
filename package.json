@@ -16,6 +16,7 @@
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.15.2",
+    "custom-electron-titlebar": "^3.2.7",
     "dayjs": "^1.10.5",
     "electron-log": "^4.3.5",
     "electron-store": "8.0.0",
@@ -42,7 +43,7 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "css-loader": "^5.2.6",
-    "electron": "^13.1.5",
+    "electron": "^13.1.6",
     "electron-devtools-installer": "^3.2.0",
     "eslint": "^6.8.0",
     "eslint-plugin-html": "^6.1.2",

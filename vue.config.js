@@ -2,7 +2,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:14:13
- * @LastEditTime: 2021-07-07 17:23:05
+ * @LastEditTime: 2021-07-08 13:36:58
  * @Description:
  * @FilePath: \push-markdown\vue.config.js
  */
@@ -48,8 +48,10 @@ module.exports = {
       }
     },
     'style-resources-loader': {
-      preProcessor: 'less',
-      patterns: [path.resolve(__dirname, 'src/less/index.less')]
+      preProcessor: 'scss',
+      patterns: [path.resolve(__dirname, 'common/assets/style.scss')]
+      // preProcessor: '',
+      // patterns: []
     }
   }
 };

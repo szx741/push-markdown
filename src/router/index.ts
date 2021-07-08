@@ -1,11 +1,18 @@
+/*
+ * @Author: szx
+ * @Date: 2021-07-04 13:56:18
+ * @LastEditTime: 2021-07-08 13:18:26
+ * @Description:
+ * @FilePath: \push-markdown\src\router\index.ts
+ */
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import Home from '../views/Home.vue';
+import Main from '../components/Main.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Main',
+    component: Main
   },
   {
     path: '/about',

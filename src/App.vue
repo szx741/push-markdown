@@ -1,17 +1,21 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-07 17:30:20
+ * @LastEditTime: 2021-07-08 17:24:05
  * @Description: 
  * @FilePath: \push-markdown\src\App.vue
 -->
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div id="app">
+    <router-view></router-view>
+  </div>
+</template>
+<!-- <template>
+  <div id="app">
+    <router-link to="/">Home</router-link>
   </div>
   <router-view />
-</template>
+</template> -->
 
 <script lang="ts">
   import { useI18n } from 'vue-i18n';
@@ -30,7 +34,7 @@
   };
 </script>
 
-<style>
+<!-- <style>
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -50,5 +54,13 @@
 
   #nav a.router-link-exact-active {
     color: #42b983;
+  }
+</style> -->
+<style lang="scss">
+  @import '~github-markdown-css/github-markdown.css';
+
+  /* CSS */
+  #app {
+    height: 100%;
   }
 </style>

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-07-07 20:22:05
+ * @LastEditTime: 2021-07-08 17:13:29
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -13,13 +13,31 @@ import Store from 'electron-store';
 import path from 'path';
 // 存储的文件名为settings
 const storeSettings = new Store({ name: 'settings' });
+const storeRecord = new Store({ name: 'use-record' });
 
-const validChannels = ['fromMain', 'exePath', 'version', 'menu.language'];
+const validChannels = ['fromMain', 'exePath', 'version', 'menu.language','menu.welcome'];
+
+// import { Titlebar, Color } from 'custom-electron-titlebar';
+// import url from 'url';
+// window.addEventListener('DOMContentLoaded', () => {
+//   new Titlebar({
+//     backgroundColor: Color.fromHex('#2f3241'),
+//     icon: url.format(path.join(__dirname, '/images', '/icon.png'))
+//   });
+
+//   const replaceText = (selector: any, text: any) => {
+//     const element = document.getElementById(selector);
+//     if (element) element.innerText = text;
+//   };
+
+//   for (const type of ['chrome', 'node', 'electron']) {
+//     replaceText(`${type}-version`, process.versions[type]);
+//   }
+// });
 
 contextBridge.exposeInMainWorld('api', {
   send: (channel: string, data: any) => {
     // whitelist channels
-    let validChannels = ['toMain', 'exePath', 'version'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
@@ -43,14 +61,21 @@ contextBridge.exposeInMainWorld('api', {
   getStoreSettingsClear() {
     return storeSettings.clear();
   },
-  storeSet(key: any, value: any) {
+  storeSettingsSet(key: any, value: any) {
     return storeSettings.get(key, value);
   },
-  storeGet(key: any, value: any) {
+  storeSettingsGet(key: any, value: any) {
     return storeSettings.get(key, value);
+  },
+  storeRecordSet(key: any, value: any) {
+    return storeRecord.set(key, value);
+  },
+  storeRecordGet(key: any, value: any) {
+    return storeRecord.get(key, value);
   },
   shell: shell,
   pathBasename: path.basename,
   pathJoin: path.join,
-  fsWriteFileSync: fs.writeFileSync
+  fsWriteFileSync: fs.writeFileSync,
+  fsExistsSync: fs.existsSync
 });
