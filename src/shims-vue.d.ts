@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-06 13:58:47
+ * @LastEditTime: 2021-07-10 16:21:53
  * @Description:
  * @FilePath: \push-markdown\src\shims-vue.d.ts
  */
@@ -17,13 +17,20 @@ declare module '*.vue' {
 //   window: Window;
 //   navigator: Navigator;
 // }
-
+declare interface Window {
+  MathJax: any;
+}
 declare interface Window {
   log: any;
   writeFileSync: any;
   test: any;
   api: any;
 }
+
+declare module 'mathjax-electron';
+declare module 'markdown-it-table-of-contents';
+declare module 'markdown-it-underline';
+declare module 'markdown-it-title';
 
 
 // declare global {

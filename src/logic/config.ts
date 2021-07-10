@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-07-08 13:53:34
+ * @LastEditTime: 2021-07-10 21:34:55
  * @Description:
  * @FilePath: \push-markdown\src\logic\config.ts
  */
@@ -12,7 +12,7 @@
  */
 'use strict';
 
-const Base64 = require('js-base64').Base64;
+import * as Base64 from 'js-base64/base64';
 
 export function clear() {
   window.api.getStoreSettingsClear();
@@ -66,13 +66,13 @@ export function savePublishMode(publishMode: any) {
 }
 
 export function getRenderConfig() {
-  let defaultValue = {
+  const defaultValue = {
     abstract: 'empty',
     highlight: 'preview',
     mathjax: 'preview',
     mermaid: 'preview'
   };
-  let config = window.api.storeSettingsGet('render', {});
+  const config = window.api.storeSettingsGet('render', {});
   return {
     ...defaultValue,
     ...config

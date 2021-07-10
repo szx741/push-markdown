@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-08 17:01:22
+ * @LastEditTime: 2021-07-10 21:12:41
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -35,8 +35,8 @@ async function createWindow() {
       preload: path.join(__dirname, 'preload.js'), //这里只能用.js结尾，用ts结尾的就不能引入
       // enableRemoteModule: true,
       // nodeIntegration: false,  //默认不开启node集成，为了安全😊
-      contextIsolation: true //上下文隔离，开起来吧，为了安全😊
-      // webSecurity: false  // 取消跨域限制，为了安全😊
+      contextIsolation: true, //上下文隔离，开起来吧，为了安全😊
+      webSecurity: false // 取消跨域限制，为了安全😊
     },
     // eslint-disable-next-line
     icon: `${process.env.VUE_APP_BASE_URL}/app.ico`

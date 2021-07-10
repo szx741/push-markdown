@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-08 17:24:05
+ * @LastEditTime: 2021-07-10 22:15:29
  * @Description: 
  * @FilePath: \push-markdown\src\App.vue
 -->
@@ -10,12 +10,13 @@
     <router-view></router-view>
   </div>
 </template>
-<!-- <template>
+<!--<template>
   <div id="app">
-    <router-link to="/">Home</router-link>
+    <router-link to="/"></router-link>
+    <router-link to="/about">About</router-link>
   </div>
   <router-view />
-</template> -->
+</template>-->
 
 <script lang="ts">
   import { useI18n } from 'vue-i18n';
@@ -62,5 +63,6 @@
   /* CSS */
   #app {
     height: 100%;
+    overflow: hidden;
   }
 </style>

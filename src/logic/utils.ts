@@ -22,7 +22,7 @@ export function toStrArr(src: any) {
   return null;
 }
 
-const sampleFile = window.api.pathJoin(process.env.VUE_APP_BASE_URL, 'sample.md');
+const sampleFile = window.api.pathJoin(process.env.VUE_APP_BASE_URL, 'static/sample.md');
 
 export function isSampleFile(file: any) {
   return file === sampleFile;
@@ -98,7 +98,7 @@ export function setTextareaTabKey(textarea: any) {
  * @param text script text. var a = 1...
  * @return {undefined|Promise<any>}
  */
-export function loadScript(document: any, src: any, text: any) {
+export function loadScript(document: any, src: any, text: any = null): undefined | Promise<any> {
   return (
     (src || text) &&
     new Promise<void>((resolve, reject) => {
@@ -116,6 +116,7 @@ export function loadScript(document: any, src: any, text: any) {
           console.log('script load success [' + (src || text) + ']');
           resolve();
         });
+        console.log(script);
         document.getElementsByTagName('head')[0].appendChild(script);
       } catch (error) {
         console.error('script load failed [' + (src || text) + ']', error);

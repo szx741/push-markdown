@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-08 17:26:12
+ * @LastEditTime: 2021-07-10 22:11:42
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -18,6 +18,10 @@
         <template v-if="tab.type === 'welcome'">
           <Welcome></Welcome>
         </template>
+
+        <template v-else-if="tab.type === 'markdown'">
+          <Markdown :file="tab.file" :active="current === i" :modified-handler="tab.modified"> </Markdown>
+        </template>
       </div>
     </div>
 
@@ -29,13 +33,16 @@
   import { defineComponent } from 'vue';
   import TabTitle from './TabTitle.vue';
   import Welcome from './Welcome.vue';
+  import Markdown from './Markdown.vue';
+
   import i18n from '@/common/lib/language/index';
   import * as useRecord from '@/logic/useRecord';
   import * as utils from '@/logic/utils';
+  import * as statusBar from '@/logic/statusBar';
 
   export default defineComponent({
     name: 'Main',
-    components: { TabTitle, Welcome },
+    components: { TabTitle, Welcome, Markdown },
     data() {
       return {
         tabs: useRecord.getTabs(),
@@ -44,6 +51,24 @@
       };
     },
     methods: {
+      openFile(file: any) {
+        const index = this.tabs.findIndex((tab: any) => tab.file === file);
+        if (index === -1) {
+          if (window.api.fsExistsSync(file)) {
+            window.api.syncMsg('addRecentDocument', file);
+            this.addTab({
+              type: 'markdown',
+              file: file,
+              title: utils.fileName(file),
+              modified: false
+            });
+          } else {
+            statusBar.show(i18n.global.t('readFileNotExists') + file);
+          }
+        } else {
+          this.selectTab(index);
+        }
+      },
       tabTitle(tab: any) {
         switch (tab.type) {
           case 'settings':
@@ -54,6 +79,9 @@
             return tab.title;
         }
       },
+      // setModified(tab: any, modified: any) {
+      //   this.$set(tab, 'modified', modified);
+      // },
       selectTab(index: any) {
         console.log('select tab:', this.current, '=>', index);
         this.current = index;
@@ -66,7 +94,7 @@
       closeTab(index: any) {
         const tab = this.tabs[index];
         if (tab.type === 'markdown' && tab.modified && !utils.isSampleFile(tab.file)) {
-          if (!window.confirm(this.$t('closeModifiedFile'))) {
+          if (!window.confirm(i18n.global.t('closeModifiedFile'))) {
             return;
           }
         }
@@ -89,13 +117,17 @@
     },
     mounted() {
       window.api.receive('menu.welcome', () => {
-        console.log('menu.welcome');
         const index = this.tabs.findIndex((tab: any) => tab.type === 'welcome');
         if (index === -1) {
           this.addTab({ type: 'welcome' });
         } else {
           this.selectTab(index);
         }
+      });
+
+      window.api.receive('menu.sample', () => {
+        console.log('menu.sample');
+        this.openFile(utils.getSampleFile());
       });
     }
   });

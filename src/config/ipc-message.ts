@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-07-06 21:59:17
+ * @LastEditTime: 2021-07-10 18:44:45
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
@@ -28,6 +28,12 @@ import path from 'path';
 ipcMain.on('exePath', function (event, arg) {
   // event.reply('exePath', path.dirname(app.getPath('exe')));
   event.returnValue = path.dirname(app.getPath('exe'));
+});
+
+ipcMain.on('addRecentDocument', function (event, arg) {
+  // event.reply('exePath', path.dirname(app.getPath('exe')));
+  console.log(arg);
+  event.returnValue = app.addRecentDocument(arg);
 });
 
 // 获得当前版本号
