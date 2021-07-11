@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <!-- <Publish :post="post" :active="active"></Publish> -->
+    <Publish :post="post" :active="active"></Publish>
   </div>
 </template>
 
@@ -70,16 +70,21 @@
   // import { djfj } from '@/logic/test';
   // import { djfj } from '@/logic/renderer';
   import * as renderer from '@/logic/renderer';
-  // import * as Publish from './Publish';
+  import Publish from '@/components/Publish.vue';
   import * as statusBar from '../logic/statusBar';
   import i18n from '@/common/lib/language';
 
+  interface data {
+    modified: any;
+    src: any;
+    post: any;
+  }
   export default defineComponent({
     name: 'Markdown',
-    // components: { Publish },
+    components: { Publish },
     props: ['file', 'active', 'modifiedHandler'],
 
-    data() {
+    data(): data {
       return {
         modified: false,
         src: {},
@@ -94,14 +99,14 @@
       // },
       async debounceUpdate() {
         const _this = this;
-        debounce(
-          async function () {
-            console.log('debounce update');
-            _this.post = (await renderer.render(_this.src, _this.file, true)) || {};
-          },
-          300,
-          { leading: true }
-        );
+        // debounce(
+        //   async function () {
+        //     console.log('debounce update');
+        //     _this.post = (await renderer.render(_this.src, _this.file, true)) || {};
+        //   },
+        //   300,
+        //   { leading: true }
+        // );
         this.post = await renderer.render(_this.src, _this.file, true);
       },
       onSave() {
@@ -157,11 +162,11 @@
         this.readFile();
       },
       async src() {
-        this.debounceUpdate();
+        await this.debounceUpdate();
+      },
+      modified() {
+        // this.modifiedHandler && this.modifiedHandler(this.modified);
       }
-      // modified() {
-      //   this.modifiedHandler && this.modifiedHandler(this.modified);
-      // }
     },
     async updated() {
       // const markdown = this.$refs['markdown'];

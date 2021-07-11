@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-07-10 18:44:45
+ * @LastEditTime: 2021-07-11 20:21:35
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
@@ -40,6 +40,16 @@ ipcMain.on('addRecentDocument', function (event, arg) {
 ipcMain.on('version', function (event, arg) {
   //   event.reply('version', app.getVersion());
   event.returnValue = app.getVersion();
+});
+
+ipcMain.on('platform', function (event, arg) {
+  //   event.reply('version', app.getVersion());
+  event.returnValue = process.platform;
+});
+
+ipcMain.on('argv', function (event, arg) {
+  //   event.reply('version', app.getVersion());
+  event.returnValue = process.argv;
 });
 
 export { ipcMain as ipcMainCollection };

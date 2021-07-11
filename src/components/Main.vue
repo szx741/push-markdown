@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-11 14:04:57
+ * @LastEditTime: 2021-07-11 20:45:59
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -22,6 +22,10 @@
         <template v-else-if="tab.type === 'markdown'">
           <Markdown :file="tab.file" :active="current === i" :modified-handler="tab.modified"> </Markdown>
         </template>
+
+        <template v-else-if="tab.type === 'settings'">
+          <Settings :active="current === i"> </Settings>
+        </template>
       </div>
     </div>
 
@@ -34,6 +38,7 @@
   import TabTitle from './TabTitle.vue';
   import Welcome from './Welcome.vue';
   import Markdown from './Markdown.vue';
+  import Settings from './Settings.vue';
 
   import i18n from '@/common/lib/language/index';
   import * as useRecord from '@/logic/useRecord';
@@ -42,7 +47,7 @@
 
   export default defineComponent({
     name: 'Main',
-    components: { TabTitle, Welcome, Markdown },
+    components: { TabTitle, Welcome, Markdown, Settings },
     data() {
       return {
         tabs: useRecord.getTabs(),
@@ -116,6 +121,26 @@
       console.log(i18n.global.t('meta.abstract'));
     },
     mounted() {
+      statusBar.setCallback((text: any) => {
+        this.statusText = text;
+      });
+
+      window.api.receive('menu.open', (data: any) => {
+        console.log('menu.open', data);
+        this.openFile(data);
+      });
+
+      window.api.receive('menu.settings', () => {
+        console.log('menu.settings');
+
+        const index = this.tabs.findIndex((tab: any) => tab.type === 'settings');
+        if (index === -1) {
+          this.addTab({ type: 'settings' });
+        } else {
+          this.selectTab(index);
+        }
+      });
+
       window.api.receive('menu.welcome', () => {
         const index = this.tabs.findIndex((tab: any) => tab.type === 'welcome');
         if (index === -1) {
@@ -126,9 +151,22 @@
       });
 
       window.api.receive('menu.sample', () => {
-        // console.log('menu.sample');
         this.openFile(utils.getSampleFile());
       });
+
+      // let fileToOpen = window.api.receive('fileToOpen');
+
+      // console.log('fileToOpen', fileToOpen);
+      // const argv = window.api.syncMsg('argv');
+      // if (fileToOpen) {
+      //   this.openFile(fileToOpen);
+      //   fileToOpen = null;
+      // } else if (window.api.syncMsg('platform') && argv.length >= 2) {
+      //   const file = argv[1];
+      //   if (file) {
+      //     this.openFile(file);
+      //   }
+      // }
     }
   });
 </script>

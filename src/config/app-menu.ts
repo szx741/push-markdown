@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:42:15
- * @LastEditTime: 2021-07-08 17:13:52
+ * @LastEditTime: 2021-07-11 22:20:34
  * @Description: 菜单栏设置
  * @FilePath: \push-markdown\src\config\app-menu.ts
  */
@@ -46,8 +46,7 @@ export function init(mainWindow: BrowserWindow) {
               .showOpenDialog(mainWindow, { properties: ['openFile'], filters: [{ name: 'Markdown', extensions: ['md'] }] })
               .then((result: any) => {
                 if (!result.canceled && result.filePaths.length > 0) {
-                  webContents.send('menu.open', result[0]);
-                  console.log('打开了', result);
+                  webContents.send('menu.open', result.filePaths[0]);
                 }
               })
               .catch((err) => {

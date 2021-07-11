@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-07-11 13:14:46
+ * @LastEditTime: 2021-07-11 21:42:57
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -11,30 +11,15 @@ import { contextBridge, ipcRenderer, shell } from 'electron';
 import fs from 'fs-extra';
 import Store from 'electron-store';
 import path from 'path';
+import _filenamify from 'filenamify';
+// const filenamify = (s: any) => _filenamify(s, { replacement: '-' });
+
 import { copyFileSync } from 'fs';
 // 存储的文件名为settings
 const storeSettings = new Store({ name: 'settings' });
 const storeRecord = new Store({ name: 'use-record' });
 
-const validChannels = ['fromMain', 'exePath', 'version', 'menu.language', 'menu.welcome', 'menu.sample', 'addRecentDocument'];
-
-// import { Titlebar, Color } from 'custom-electron-titlebar';
-// import url from 'url';
-// window.addEventListener('DOMContentLoaded', () => {
-//   new Titlebar({
-//     backgroundColor: Color.fromHex('#2f3241'),
-//     icon: url.format(path.join(__dirname, '/images', '/icon.png'))
-//   });
-
-//   const replaceText = (selector: any, text: any) => {
-//     const element = document.getElementById(selector);
-//     if (element) element.innerText = text;
-//   };
-
-//   for (const type of ['chrome', 'node', 'electron']) {
-//     replaceText(`${type}-version`, process.versions[type]);
-//   }
-// });
+const validChannels = ['fromMain', 'exePath', 'version', 'menu.language', 'menu.welcome', 'menu.sample', 'addRecentDocument', 'menu.save', 'menu.settings', 'menu.open', 'menu.publish'];
 
 contextBridge.exposeInMainWorld('api', {
   send: (channel: string, data: any) => {
@@ -63,7 +48,7 @@ contextBridge.exposeInMainWorld('api', {
     return storeSettings.clear();
   },
   storeSettingsSet(key: any, value: any) {
-    return storeSettings.get(key, value);
+    return storeSettings.set(key, value);
   },
   storeSettingsGet(key: any, value: any) {
     return storeSettings.get(key, value);
@@ -80,12 +65,11 @@ contextBridge.exposeInMainWorld('api', {
   pathJoin: path.join,
   pathIsAbsolute: path.isAbsolute,
   pathDirname: path.dirname,
+  pathExtname: path.extname,
   fsWriteFileSync: fs.writeFileSync,
   fsExistsSync: fs.existsSync,
   typesetMath: typesetMath,
-  // mathJaxPath() {
-  //   console.log(mathJaxPath);
-  //   return mathJaxPath;
-  // }
+  Store: Store,
+  // filenamify: filenamify,
   mathJaxPath: mathJaxPath
 });

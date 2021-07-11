@@ -192,11 +192,11 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
   const env = { title: attr.title, hasMath: false };
   // 将markdown格式渲染成HTML格式
   let html = md.render(markdown, env);
-  console.log(html);
+  // console.log(html);
   // 创建一个不可见的div，并把html插入进入
   const div = createInvisibleDiv(document, html);
   // console.log(html);
-  console.log(div);
+  // console.log(div);
   // 替换本地文件URL
   replaceLocalImages(div, window.api.pathDirname(file));
   // 代码高亮
@@ -208,11 +208,11 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
     await mermaidRenderer.render(div);
   }
   // 是否渲染mathjax
-  if (env.hasMath && shouldRenderFeature(isPreview, renderConfig.mathjax)) {
-    // document.body.appendChild(div);
-    await mathJaxRenderer.render(div);
-    // document.body.removeChild(div);
-  }
+  // if (env.hasMath && shouldRenderFeature(isPreview, renderConfig.mathjax)) {
+  //   document.body.appendChild(div);
+  //   await mathJaxRenderer.render(div);
+  //   document.body.removeChild(div);
+  // }
   html = div.innerHTML;
   div.innerHTML = '';
   // post

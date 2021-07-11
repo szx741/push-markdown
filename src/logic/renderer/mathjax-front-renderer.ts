@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-10 15:38:00
- * @LastEditTime: 2021-07-11 14:13:42
+ * @LastEditTime: 2021-07-11 18:02:26
  * @Description:
  * @FilePath: \push-markdown\src\logic\renderer\mathjax-front-renderer.ts
  */
@@ -42,8 +42,10 @@ function typesetMath(container: any, callback: any) {
   }
 }
 export async function render(container: any, timeout = 3000) {
+  console.log('container1:', container);
+
   await loadMathJax();
-  console.log('container:', container);
+  console.log('container2:', container);
   return new Promise<void>((resolve, reject) => {
     const handle = setTimeout(() => {
       console.error('typeset timeout');
@@ -51,10 +53,10 @@ export async function render(container: any, timeout = 3000) {
     }, timeout);
     try {
       console.log(window.api.typesetMath);
-      // window.api.typesetMath(container, () => {
-      //   clearTimeout(handle);
-      //   resolve();
-      // });
+      window.api.typesetMath(container, () => {
+        clearTimeout(handle);
+        resolve();
+      });
       // typesetMath(container, () => {
       // clearTimeout(handle);
       // resolve();

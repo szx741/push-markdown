@@ -1,0 +1,238 @@
+<!-- 设置页面 -->
+
+<template>
+  <div class="container">
+    <div class="settings markdown-body">
+      <h2>{{ $t('settings') }}</h2>
+
+      <h3>{{ $t('setting.siteSettings') }}</h3>
+
+      <blockquote class="small" v-html="$t('setting.siteSettingsNote')"></blockquote>
+
+      <template v-if="sites">
+        <div v-for="(site, i) in sites" :key="site" class="site">
+          <div>
+            <label for="name">{{ $t('setting.name') }}</label>
+            <input id="name" type="text" v-model="site.name" />
+          </div>
+
+          <div>
+            <label for="type">{{ $t('setting.apiType') }}</label>
+            <select id="type" v-model="site.type">
+              <option value="MetaWeblog">MetaWeblog</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="url">{{ $t('setting.url') }}</label>
+            <input id="url" type="url" v-model="site.url" />
+          </div>
+
+          <div>
+            <label for="username">{{ $t('setting.username') }}</label>
+            <input id="username" type="text" v-model="site.username" />
+          </div>
+
+          <div>
+            <label for="password">{{ $t('setting.password') }}</label>
+            <input id="password" type="password" v-model="site.password" />
+          </div>
+
+          <img @click="deleteSite(i)" src="../common/assets/close.png" class="delete" />
+        </div>
+      </template>
+
+      <p class="buttons">
+        <button @click="addSite">{{ $t('setting.addSite') }}</button>
+      </p>
+
+      <h3>{{ $t('setting.renderSettings') }}</h3>
+
+      <p>
+        <label for="abstract">{{ $t('setting.abstract.name') }}</label>
+        <select id="abstract" v-model="render.abstract">
+          <option value="empty">{{ $t('setting.abstract.options.empty') }}</option>
+          <option value="article">{{ $t('setting.abstract.options.article') }}</option>
+          <option value="title">{{ $t('setting.abstract.options.title') }}</option>
+        </select>
+      </p>
+      <blockquote class="small">{{ $t('setting.abstract.notes') }}</blockquote>
+
+      <p>
+        <label for="highlight">{{ $t('setting.renderFeature.highlight') }}</label>
+        <select id="highlight" v-model="render.highlight">
+          <option value="preview">{{ $t('setting.renderFeature.options.previewOnly') }}</option>
+          <option value="publish">{{ $t('setting.renderFeature.options.previewAndPublish') }}</option>
+          <option value="none">{{ $t('setting.renderFeature.options.disable') }}</option>
+        </select>
+      </p>
+
+      <p>
+        <label for="math">{{ $t('setting.renderFeature.mathjax') }}</label>
+        <select id="math" v-model="render.mathjax">
+          <option value="preview">{{ $t('setting.renderFeature.options.previewOnly') }}</option>
+          <option value="publish">{{ $t('setting.renderFeature.options.previewAndPublish') }}</option>
+          <option value="none">{{ $t('setting.renderFeature.options.disable') }}</option>
+        </select>
+      </p>
+
+      <blockquote class="small" v-html="$t('setting.renderFeature.notes')"></blockquote>
+
+      <h3>{{ $t('setting.otherSettings') }}</h3>
+
+      <p class="buttons">
+        <button @click="resetSettings">{{ $t('setting.reset') }}</button>
+      </p>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+  import { defineComponent } from 'vue';
+  import * as config from '../logic/config';
+  import * as renderer from '../logic/renderer';
+  // WordPress
+  // http://82.157.179.143/xmlrpc.php
+  // xaotuman
+  // ZkWZafsZJZqMFa8Kt7
+  export default defineComponent({
+    name: 'Settings',
+    props: ['active'],
+    data() {
+      return {
+        sites: config.getSites(),
+        render: config.getRenderConfig()
+      };
+    },
+    async mounted() {
+      window.api.receive('menu.save', () => {
+        if (this.active) {
+          console.log('active');
+          // this.save();
+        }
+      });
+    },
+    watch: {
+      sites: {
+        handler() {
+          // console.log('sites')
+          this.debounceSaveSites();
+        },
+        deep: true
+      },
+      render: {
+        handler() {
+          console.log('11111111111');
+          config.saveRenderConfig(this.render);
+          console.log('2222222222');
+          renderer.notifyConfigChanged();
+          console.log('13333333311');
+          console.log('render settings saved');
+        },
+        deep: true
+      }
+    },
+    methods: {
+      debounceSaveSites() {
+        console.log(this.sites);
+        config.saveSites(this.sites);
+        console.log('sites settings saved');
+      },
+      addSite() {
+        this.sites.push(config.newSite());
+        console.log('add site', config.newSite());
+      },
+      deleteSite(index: any) {
+        if (window.confirm('确认删除？')) {
+          this.sites.splice(index, 1);
+          // console.log('delete site', this.sites)
+        }
+      },
+      resetSettings() {
+        if (window.confirm(this.$t('setting.resetConfirm'))) {
+          config.clear();
+          this.sites = config.getSites();
+          this.render = config.getRenderConfig();
+        }
+      }
+    }
+  });
+</script>
+
+<style lang="scss" scoped>
+  .container {
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+    box-sizing: border-box;
+  }
+
+  .settings {
+    padding: 60px 20px;
+    width: 600px;
+    margin: auto;
+    max-width: 100%;
+  }
+
+  .site {
+    position: relative;
+    padding: 15px 40px 15px 20px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    font-size: 85%;
+    background-color: #f8f8f8;
+
+    > div + div {
+      margin-top: 8px;
+    }
+
+    div {
+      display: flex;
+      flex-direction: row;
+    }
+
+    label {
+      display: inline-block;
+      width: 80px;
+      padding: 3px 0;
+    }
+
+    input {
+      flex-grow: 1;
+      width: 0;
+      outline: none;
+      border: 1px solid #e0e0e0;
+      padding: 2px 5px;
+    }
+  }
+
+  select {
+    outline: none;
+  }
+
+  .render {
+    > *:not(:first-child) {
+      margin-top: 15px;
+    }
+  }
+
+  .delete {
+    background-color: transparent;
+    padding: 5px;
+    height: 20px;
+    width: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+  }
+
+  small,
+  .small {
+    font-size: 85%;
+  }
+
+  .buttons {
+    text-align: center;
+  }
+</style>

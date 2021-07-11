@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-11 13:38:52
+ * @LastEditTime: 2021-07-11 22:38:43
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -26,7 +26,7 @@ async function createWindow() {
     minHeight: 180,
     minWidth: 320,
     // hasShadow: true,
-    width: 1200,
+    width: 1600,
     height: 800,
     // frame: false,
 
@@ -34,8 +34,8 @@ async function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), //这里只能用.js结尾，用ts结尾的就不能引入
       // enableRemoteModule: true,
-      // nodeIntegration: false,  //默认不开启node集成，为了安全😊
-      contextIsolation: true //上下文隔离，开起来吧，为了安全😊
+      // nodeIntegration: true,  //默认不开启node集成，为了安全😊
+      contextIsolation: true, //上下文隔离，开起来吧，为了安全😊
       // webSecurity: false // 关闭跨域限制，为了安全😊
     },
     // eslint-disable-next-line

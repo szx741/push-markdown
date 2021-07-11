@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-07-10 21:34:55
+ * @LastEditTime: 2021-07-11 21:40:33
  * @Description:
  * @FilePath: \push-markdown\src\logic\config.ts
  */
@@ -32,6 +32,7 @@ const defaultSites = [newSite()];
 
 export function getSites() {
   const sites = window.api.storeSettingsGet('sites', defaultSites);
+  console.log('sites:', sites);
   // decode
   return (
     sites &&
@@ -67,7 +68,7 @@ export function savePublishMode(publishMode: any) {
 
 export function getRenderConfig() {
   const defaultValue = {
-    abstract: 'empty',
+    abstract: 'article',
     highlight: 'preview',
     mathjax: 'preview',
     mermaid: 'preview'
@@ -80,5 +81,5 @@ export function getRenderConfig() {
 }
 
 export function saveRenderConfig(render: any) {
-  return window.api.storeSettingsSet('render', render);
+  return window.api.storeSettingsSet('render', JSON.parse(JSON.stringify(render)));
 }
