@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-10 22:11:42
+ * @LastEditTime: 2021-07-11 14:04:57
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -126,7 +126,7 @@
       });
 
       window.api.receive('menu.sample', () => {
-        console.log('menu.sample');
+        // console.log('menu.sample');
         this.openFile(utils.getSampleFile());
       });
     }
@@ -134,13 +134,11 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/common/assets/style.scss';
-
   .root {
     height: 100%;
     box-sizing: border-box;
 
-    display: flex;
+    // display: flex;
     flex-direction: column;
   }
 

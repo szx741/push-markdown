@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-07-10 20:57:17
+ * @LastEditTime: 2021-07-11 13:14:46
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -78,6 +78,8 @@ contextBridge.exposeInMainWorld('api', {
   shell: shell,
   pathBasename: path.basename,
   pathJoin: path.join,
+  pathIsAbsolute: path.isAbsolute,
+  pathDirname: path.dirname,
   fsWriteFileSync: fs.writeFileSync,
   fsExistsSync: fs.existsSync,
   typesetMath: typesetMath,
@@ -85,5 +87,5 @@ contextBridge.exposeInMainWorld('api', {
   //   console.log(mathJaxPath);
   //   return mathJaxPath;
   // }
-  mathJaxPath:mathJaxPath
+  mathJaxPath: mathJaxPath
 });

@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-10 22:15:29
+ * @LastEditTime: 2021-07-11 12:38:37
  * @Description: 
  * @FilePath: \push-markdown\src\App.vue
 -->
@@ -60,9 +60,7 @@
 <style lang="scss">
   @import '~github-markdown-css/github-markdown.css';
 
-  /* CSS */
   #app {
     height: 100%;
-    overflow: hidden;
   }
 </style>

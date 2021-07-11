@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-10 15:38:00
- * @LastEditTime: 2021-07-10 21:31:31
+ * @LastEditTime: 2021-07-11 14:13:42
  * @Description:
  * @FilePath: \push-markdown\src\logic\renderer\mathjax-front-renderer.ts
  */
@@ -12,7 +12,7 @@
  */
 'use strict';
 
-// import { typesetMath, mathJaxPath } from 'mathjax-electron';
+// import { typesetMath, mathJaxPath } from 'c-electron';
 import { loadScript } from '../utils';
 let MathJax: any;
 async function loadMathJax() {
@@ -25,7 +25,8 @@ async function loadMathJax() {
       }
     };
     console.log(window.api.pathJoin(process.env.VUE_APP_BASE_URL, '/lib/MathJax.js'));
-    await loadScript(document, 'file://' + window.api.pathJoin(process.env.VUE_APP_BASE_URL, '/lib/MathJax.js'));
+    await loadScript(document, 'atom://' + window.api.pathJoin(process.env.VUE_APP_BASE_URL, '/lib/MathJax.js'));
+    // await loadScript(document, '../../../public/lib/MathJax.js');
   }
 }
 
@@ -42,7 +43,7 @@ function typesetMath(container: any, callback: any) {
 }
 export async function render(container: any, timeout = 3000) {
   await loadMathJax();
-
+  console.log('container:', container);
   return new Promise<void>((resolve, reject) => {
     const handle = setTimeout(() => {
       console.error('typeset timeout');
@@ -55,8 +56,8 @@ export async function render(container: any, timeout = 3000) {
       //   resolve();
       // });
       // typesetMath(container, () => {
-        // clearTimeout(handle);
-        // resolve();
+      // clearTimeout(handle);
+      // resolve();
       // });
     } catch (e) {
       clearTimeout(handle);

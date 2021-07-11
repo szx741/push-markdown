@@ -103,6 +103,7 @@ export function loadScript(document: any, src: any, text: any = null): undefined
     (src || text) &&
     new Promise<void>((resolve, reject) => {
       try {
+        console.log('document:', document);
         const script = document.createElement('script');
         script.type = 'text/javascript';
         if (src != undefined) {
@@ -116,7 +117,7 @@ export function loadScript(document: any, src: any, text: any = null): undefined
           console.log('script load success [' + (src || text) + ']');
           resolve();
         });
-        console.log(script);
+        console.log('script:', script);
         document.getElementsByTagName('head')[0].appendChild(script);
       } catch (error) {
         console.error('script load failed [' + (src || text) + ']', error);

@@ -93,7 +93,6 @@
       //   }, 1000);
       // },
       async debounceUpdate() {
-        console.log('sssssssss');
         const _this = this;
         debounce(
           async function () {
@@ -148,7 +147,7 @@
       }
     },
     async mounted() {
-      console.log('markdown,this.file:', this.file);
+      // console.log('markdown,this.file:', this.file);
       utils.setTextareaTabKey(this.$refs['textarea']);
       this.readFile();
       window.api.receive('menu.save', this.onSave);
@@ -180,17 +179,19 @@
     height: 100%;
     position: relative;
 
-    > * {
-      // position: absolute;
-      // left: 0;
-      // top: 0;
+    // > * {
+    // position: absolute;
+    // left: 0;
+    // top: 0;
 
-      // width: 100%;
-      // height: 100%;
-    }
+    // width: 100%;
+    // height: 100%;
+    // }
   }
 
   .container {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: row;
     align-items: stretch;

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-10 21:12:41
+ * @LastEditTime: 2021-07-11 13:38:52
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -35,8 +35,8 @@ async function createWindow() {
       preload: path.join(__dirname, 'preload.js'), //这里只能用.js结尾，用ts结尾的就不能引入
       // enableRemoteModule: true,
       // nodeIntegration: false,  //默认不开启node集成，为了安全😊
-      contextIsolation: true, //上下文隔离，开起来吧，为了安全😊
-      webSecurity: false // 取消跨域限制，为了安全😊
+      contextIsolation: true //上下文隔离，开起来吧，为了安全😊
+      // webSecurity: false // 关闭跨域限制，为了安全😊
     },
     // eslint-disable-next-line
     icon: `${process.env.VUE_APP_BASE_URL}/app.ico`
@@ -83,6 +83,14 @@ app.on('ready', async () => {
   ipcMainCollection;
   // 创建窗口
   createWindow();
+});
+
+// 注册拦截器，使用atom://来代替file://，这样子也不需要关闭webSecurity https://www.electronjs.org/docs/api/protocol
+app.whenReady().then(() => {
+  protocol.registerFileProtocol('atom', (request, callback) => {
+    const url = request.url.substr(7);
+    callback({ path: url });
+  });
 });
 
 // 在开发模式下应父进程的要求干净地退出。

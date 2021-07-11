@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-10 16:21:53
+ * @LastEditTime: 2021-07-11 13:46:50
  * @Description:
  * @FilePath: \push-markdown\src\shims-vue.d.ts
  */
@@ -31,8 +31,7 @@ declare module 'mathjax-electron';
 declare module 'markdown-it-table-of-contents';
 declare module 'markdown-it-underline';
 declare module 'markdown-it-title';
-
-
+declare module 'markdown-it-mathjax';
 // declare global {
 //   namespace NodeJS {
 //     declare interface Window {

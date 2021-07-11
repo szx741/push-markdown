@@ -1284,7 +1284,7 @@
   resolved "https://registry.nlark.com/@types/lodash/download/@types/lodash-4.14.171.tgz#f01b3a5fe3499e34b622c362a46a609fdb23573b"
   integrity sha1-8Bs6X+NJnjS2IsNipGpgn9sjVzs=
 
-"@types/markdown-it-anchor@^5.0.0":
+"@types/markdown-it-anchor@^4.0.4":
   version "4.0.4"
   resolved "https://registry.npm.taobao.org/@types/markdown-it-anchor/download/@types/markdown-it-anchor-4.0.4.tgz#f36b67608d238d15024fb6508efd7ad3990209f6"
   integrity sha1-82tnYI0jjRUCT7ZQjv1605kCCfY=
@@ -7437,6 +7437,11 @@ markdown-it-anchor@5.0.2:
   resolved "https://registry.nlark.com/markdown-it-anchor/download/markdown-it-anchor-5.0.2.tgz#cdd917a05b7bf92fb736a6dae3385c6d0d0fa552"
   integrity sha1-zdkXoFt7+S+3Nqba4zhcbQ0PpVI=
 
+markdown-it-mathjax@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.nlark.com/markdown-it-mathjax/download/markdown-it-mathjax-2.0.0.tgz#ae2b4f4c5c719a03f9e475c664f7b2685231d9e9"
+  integrity sha1-ritPTFxxmgP55HXGZPeyaFIx2ek=
+
 markdown-it-table-of-contents@^0.5.2:
   version "0.5.2"
   resolved "https://registry.nlark.com/markdown-it-table-of-contents/download/markdown-it-table-of-contents-0.5.2.tgz#2f941d386c277887910f2c7a8a16f5a17acb829c"
@@ -7474,6 +7479,11 @@ mathjax-electron@^3.0.0:
   version "3.0.0"
   resolved "https://registry.nlark.com/mathjax-electron/download/mathjax-electron-3.0.0.tgz#875b136397e6ca5338d8aab2204080820d567824"
   integrity sha1-h1sTY5fmylM42KqyIECAgg1WeCQ=
+
+mathjax@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.nlark.com/mathjax/download/mathjax-3.2.0.tgz#ea7c317f8c81776ecfc83b294fc313046bf7f726"
+  integrity sha1-6nwxf4yBd27PyDspT8MTBGv39yY=
 
 md5.js@^1.3.4:
   version "1.3.5"

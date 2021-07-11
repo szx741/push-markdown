@@ -5,7 +5,7 @@
  */
 'use strict';
 
-import path from 'path';
+// import path from 'path';
 import fm from 'front-matter';
 import highlight from 'highlight.js';
 import uslug from 'uslug';
@@ -22,6 +22,7 @@ import slugify from '@sindresorhus/slugify';
 import * as markdownItAnchor from 'markdown-it-anchor';
 import * as markdownItTableOfContents from 'markdown-it-table-of-contents';
 import { markdownItMermaid } from './markdown-it-mermaid';
+import { copyFileSync } from 'fs';
 // import * as markdownItUnderline from 'markdown-it-underline';
 // import * as markdownItUnderline from 'markdown-it-underline';
 
@@ -41,26 +42,22 @@ function init() {
   });
 
   // extract title from markdown
-  // md.use(import('markdown-it-title'));
+  //提取标题
   md.use(markdownItTitle);
 
-  // // underline syntax support
+  // 下划线支持
   md.use(markdownItUnderline);
-  // console.log(markdownItUnderline);
 
   // generate anchor for heading
   md.use(markdownItAnchor, {
     slugify: (s: any) => slugify(s)
   });
 
-  // generate toc
+  // 目录插件
   md.use(markdownItTableOfContents, {
     markerPattern: /^\[toc]/im,
     includeLevel: [1, 2, 3, 4, 5, 6]
   });
-
-  // code preprocess ( already done by markdown-it, no plugin needed )
-  // ```js ... ```  ==>  <pre><code class="language-js"> ... </code></pre>
 
   // mathjax preprocess
   // $\frac{a}{b}$  ==>  \( \frac{a}{b} \)
@@ -80,6 +77,7 @@ export function notifyConfigChanged() {
   init();
 }
 
+//找到markdown原来的图片路径，替换成atom路径
 function replaceLocalImages(div: any, dir: any) {
   const elements = div.getElementsByTagName('img');
 
@@ -89,10 +87,11 @@ function replaceLocalImages(div: any, dir: any) {
     if (!src || src.match(/^((https?|file):\/\/|data:)/)) {
       continue;
     }
-    if (path.isAbsolute(src)) {
-      img.setAttribute('src', 'file://' + src);
+
+    if (window.api.pathIsAbsolute(src)) {
+      img.setAttribute('src', 'atom://' + src);
     } else {
-      img.setAttribute('src', 'file://' + path.join(dir, src));
+      img.setAttribute('src', 'atom://' + window.api.pathJoin(dir, src));
     }
   }
 }
@@ -106,6 +105,8 @@ function createInvisibleDiv(document: any, src: any) {
   div.style.left = '0';
   div.style.top = '0';
   div.innerHTML = src;
+  // console.log(div.innerHTML);
+  // console.log(div);
   return div;
 }
 
@@ -146,18 +147,7 @@ function extractAbstract(html: string) {
     uppercaseHeadings: false,
     singleNewLineParagraphs: true
   });
-  // const ssss = '<h1>Hello World</h1>';
-  // const text = convert(ssss, {
-  //   wordwrap: 130
-  // });
-  // const string = htmlToText.fromString(html, {
-  //   wordwrap: false,
-  //   ignoreHref: true,
-  //   ignoreImage: true,
-  //   preserveNewlines: true,
-  //   uppercaseHeadings: false,
-  //   singleNewLineParagraphs: true
-  // });
+
   if (string.length > 100) {
     string = string.substr(0, 100) + '...';
   }
@@ -177,17 +167,19 @@ function shouldRenderFeature(isPreview: any, config: any) {
 }
 
 /**
- * @param src file content
- * @param file file path
+ * @param src markdown的文本内容
+ * @param file 文件路径
  * @param isPreview true: preview, false: publish
  * @return {Promise<*>}
  */
 export async function render(src: any, file: any, isPreview = true): Promise<any> {
   const startTime = getTime();
   src = (src && src.trim()) || '';
-  // meta
+  // 解析文件内容，body为markdown正文内容
   const content = fm(src);
+
   const markdown = content.body;
+  // 文件前面yaml的文件内容
   const attr: any = content.attributes || {};
   attr.title = utils.toStr(attr.title);
   attr.abstract = utils.toStr(attr.abstract);
@@ -198,23 +190,28 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
   attr.date = attr.date && toSystemTimezone(attr.date);
   // markdown: html, title
   const env = { title: attr.title, hasMath: false };
+  // 将markdown格式渲染成HTML格式
   let html = md.render(markdown, env);
+  console.log(html);
+  // 创建一个不可见的div，并把html插入进入
   const div = createInvisibleDiv(document, html);
-  // local image files
-  replaceLocalImages(div, path.dirname(file));
-  // highlight
+  // console.log(html);
+  console.log(div);
+  // 替换本地文件URL
+  replaceLocalImages(div, window.api.pathDirname(file));
+  // 代码高亮
   if (shouldRenderFeature(isPreview, renderConfig.highlight)) {
-    await highlightCode(div);
+    highlightCode(div);
   }
-  // mermaid
+  // 是否渲染mermaid
   if (shouldRenderFeature(isPreview, renderConfig.mermaid)) {
     await mermaidRenderer.render(div);
   }
-  // mathjax
+  // 是否渲染mathjax
   if (env.hasMath && shouldRenderFeature(isPreview, renderConfig.mathjax)) {
-    document.body.appendChild(div);
+    // document.body.appendChild(div);
     await mathJaxRenderer.render(div);
-    document.body.removeChild(div);
+    // document.body.removeChild(div);
   }
   html = div.innerHTML;
   div.innerHTML = '';
