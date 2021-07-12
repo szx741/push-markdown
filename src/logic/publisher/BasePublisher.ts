@@ -1,3 +1,10 @@
+/*
+ * @Author: szx
+ * @Date: 2021-07-11 19:46:07
+ * @LastEditTime: 2021-07-12 22:10:28
+ * @Description:
+ * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
+ */
 /**
  * 博客发布基类，可以有多种实现
  *
@@ -39,7 +46,7 @@ export function getMimeType(file: any) {
 
 export function readFileBits(file: any) {
   return new Promise((resolve, reject) => {
-    require('fs').readFile(file, { encoding: null }, (err: any, data: any) => {
+    window.api.fsReadFile(file, { encoding: null }, (err: any, data: any) => {
       if (err) {
         reject(err);
       } else {
@@ -81,7 +88,6 @@ export class BasePublisher {
   async publish(post: any, stateHandler: any, publishMode: any, mediaMode: any, editHandler: any) {
     const _stateHandler = stateHandler;
     stateHandler = (state: any) => {
-      console.log(state);
       _stateHandler && _stateHandler(state);
     };
 
@@ -89,7 +95,6 @@ export class BasePublisher {
 
     // render post in publish mode
     post = await renderer.render(post.src, post.file, false);
-    console.log('post = ', post);
 
     stateHandler(publisher.STATE_READ_POST);
 
@@ -111,7 +116,6 @@ export class BasePublisher {
       case 'create':
         break;
     }
-    console.log('old post = ', oldPost);
 
     stateHandler(publisher.STATE_UPLOAD_MEDIA);
 
@@ -123,17 +127,20 @@ export class BasePublisher {
       Array.from(div.getElementsByTagName('img')),
       async (img) => {
         const src = img.getAttribute('src');
-        if (src && src.startsWith('file://')) {
-          const file = decodeURI(src.substr('file://'.length));
+        console.log(src);
+
+        if (src && src.startsWith('atom://')) {
+          const file = decodeURI(src.substr('atom://'.length));
           if (window.api.fsExistsSync(file)) {
+            console.log('存在')
             const url: any = await this.uploadMedia(file, mediaMode);
             if (url) {
               img.setAttribute('src', url);
             } else {
-              console.error(`media process failure`, file);
+              console.error('media process failure', file);
             }
           } else {
-            console.error(`media not exists`, file);
+            console.error('media not exists', file);
           }
         }
       },
@@ -157,20 +164,20 @@ export class BasePublisher {
    * get old post by url
    * @param post post to publish
    */
-  getOldPost(post: any) {}
+  getOldPost(post: any): any {}
 
   /**
    * create new post & cache post info if necessary
    * @param post
    */
-  newPost(post: any) {}
+  newPost(post: any): any {}
 
   /**
    * edit post
    * @param oldPost
    * @param post
    */
-  editPost(oldPost: any, post: any) {}
+  editPost(oldPost: any, post: any): any {}
 
   /**
    * upload media or reuse from cache
@@ -178,5 +185,5 @@ export class BasePublisher {
    * @param mediaMode
    * @return Promise<string> url
    */
-  uploadMedia(file: any, mediaMode: any) {}
+  uploadMedia(file: any, mediaMode: any): any {}
 }

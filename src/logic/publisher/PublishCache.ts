@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2021-07-11 19:49:46
+ * @LastEditTime: 2021-07-12 20:34:51
  * @Description:
  * @FilePath: \push-markdown\src\logic\publisher\PublishCache.ts
  */
@@ -12,7 +12,6 @@
  */
 'use strict';
 
-import md5File from 'md5-file';
 // import _filenamify from 'filenamify';
 // const filenamify = (s: any) => window.api.filenamify(s, { replacement: '-' });
 // const filenamify = window.api.filenamify;
@@ -23,17 +22,21 @@ const filenamify = (str: any) => {
  * 缓存基类
  */
 class Cache {
-  store!: any;
+  store: any;
   constructor(type: any, url: any, user: any) {
-    this.store = new window.api.Store({ name: ['cache', type, filenamify(url), filenamify(user)].join('-') });
-    console.log('cache path = ', this.store.path);
+    console.log(['cache', type, url, user].join('-'));
+    // this.store = window.api.newStore(['cache', type, url, user].join('-'));
+    // this.store = new window.api.Store({ name: ['cache', type, filenamify(url), filenamify(user)].join('-') });
+    console.log('cache path = ', window.api.storeCachePath);
   }
 
   async put(object: any, data: any) {
     if (object && data) {
       const key = await this.key(object);
       if (key) {
-        this.store.set(key, data);
+        // this.store.set(key, data);
+        console.log('put:', key);
+        window.api.storeCacheSet(key, data);
         return true;
       }
     }
@@ -43,8 +46,9 @@ class Cache {
   async get(object: any) {
     if (object) {
       const key = await this.key(object);
+      console.log(key);
       if (key) {
-        return this.store.get(key, null);
+        return window.api.storeCacheGet(key, null);
       }
     }
     return null;
@@ -93,6 +97,7 @@ export class FileCache extends Cache {
   }
 
   async key(file: any): Promise<any> {
-    return md5File(file);
+    console.log(window.api.md5(file));
+    return window.api.md5(file);
   }
 }

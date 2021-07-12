@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 19:44:30
- * @LastEditTime: 2021-07-08 17:11:17
+ * @LastEditTime: 2021-07-12 12:50:20
  * @Description: errorLog.ts的封装，对Error类型的封装
  * @FilePath: \push-markdown\src\util\errorLog.ts
  */
@@ -39,7 +39,7 @@ export const errorLogPath = window.api.syncMsg('exePath'); // prints "pong"
 
 export default function (error: unknown, vm: ComponentPublicInstance | null, info: string): void {
   const { message, stack } = error as Error;
-  const { electron, chrome, node, v8 } = process.versions;
+  const { electron, chrome, node, v8 } = window.api.syncMsg('process.versions');
   const { outerWidth, outerHeight, innerWidth, innerHeight } = window;
   const { width, height } = window.screen;
 

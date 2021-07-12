@@ -2,7 +2,7 @@
  * @Author: szx
  * @Date: 2021-07-11 16:34:18
  * @LastEditTime: 2021-07-11 17:12:18
- * @Description: 
+ * @Description:
  * @FilePath: \push-markdown\prettier.config.js
  */
 module.exports = {

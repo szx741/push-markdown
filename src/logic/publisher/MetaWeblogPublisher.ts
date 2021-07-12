@@ -106,11 +106,15 @@ export class MetaWeblogPublisher extends BasePublisher {
   async uploadMedia(file: any, mediaMode: any) {
     if (mediaMode === 'cache') {
       const url = await this.mediaCache.get(file);
+      console.log('url:', url);
       if (await checkUrlValid(url)) {
         console.log(`use cached media: ${file} ==> ${url}`);
         return url;
       }
     }
+    // console.log('file:', file);
+    // console.log(window.api.pathBasename(file));
+    // console.log(getMimeType(file));
     const bits = await readFileBits(file);
     const mediaObject = {
       name: window.api.pathBasename(file),
@@ -118,7 +122,9 @@ export class MetaWeblogPublisher extends BasePublisher {
       bits: bits,
       overwrite: false
     };
+    console.log('mediaObject:', mediaObject);
     const result = await this.metaWeblog.newMediaObject(this.blogId, this.username, this.password, mediaObject);
+    console.log('result:', result);
     const { id, url, type } = result;
     await this.mediaCache.put(file, url);
     console.log(`media uploaded: ${file} ==> ${url}`);

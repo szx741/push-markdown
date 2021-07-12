@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-07-11 21:42:57
+ * @LastEditTime: 2021-07-12 14:42:41
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -12,14 +12,31 @@ import fs from 'fs-extra';
 import Store from 'electron-store';
 import path from 'path';
 import _filenamify from 'filenamify';
+import md5File from 'md5-file';
+
 // const filenamify = (s: any) => _filenamify(s, { replacement: '-' });
 
 import { copyFileSync } from 'fs';
 // 存储的文件名为settings
 const storeSettings = new Store({ name: 'settings' });
 const storeRecord = new Store({ name: 'use-record' });
+const storeCache = new Store({ name: 'cache-post-xaotuman' });
+// const storeCache = new Store({ name: 'cache-post-http://82.157.179.143/xmlrpc.php-xaotuman' });
 
-const validChannels = ['fromMain', 'exePath', 'version', 'menu.language', 'menu.welcome', 'menu.sample', 'addRecentDocument', 'menu.save', 'menu.settings', 'menu.open', 'menu.publish'];
+const validChannels = [
+  'fromMain',
+  'exePath',
+  'version',
+  'menu.language',
+  'menu.welcome',
+  'menu.sample',
+  'addRecentDocument',
+  'menu.save',
+  'menu.settings',
+  'menu.open',
+  'menu.publish',
+  'process.versions'
+];
 
 contextBridge.exposeInMainWorld('api', {
   send: (channel: string, data: any) => {
@@ -69,7 +86,18 @@ contextBridge.exposeInMainWorld('api', {
   fsWriteFileSync: fs.writeFileSync,
   fsExistsSync: fs.existsSync,
   typesetMath: typesetMath,
-  Store: Store,
+  storeCachePath(key: any, value: any) {
+    return storeCache.path;
+  },
+  storeCacheSet(key: any, value: any) {
+    return storeCache.set(key, value);
+  },
+  storeCacheGet(key: any, value: any) {
+    return storeCache.get(key, value);
+  },
   // filenamify: filenamify,
-  mathJaxPath: mathJaxPath
+  mathJaxPath: mathJaxPath,
+  md5(file: any) {
+    return md5File(file);
+  }
 });

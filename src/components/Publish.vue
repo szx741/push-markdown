@@ -143,12 +143,14 @@
       }
     },
     mounted() {
+      // 收到发布信息，然后读取之前的设置
       window.api.receive('menu.publish', () => {
-        console.log(this.active, this.post);
         if (this.active && this.post) {
           this.sites = config.getSites();
           this.publishMode = config.getPublishMode('manual');
+          // 展现Publish的面板
           this.showPublish = true;
+          // 如果没有设置URL，就会弹出窗口提醒
           if (!this.post.url) {
             this.confirm = {
               title: i18n.global.t('publish.confirmUrlTitle'),
@@ -200,45 +202,46 @@
         await Promise.map(
           selectedSites,
           (site: any) => {
-            // return new Publisher(site.url, site.username, site.password, site.type);
-            //   .publish(
-            //     this.post,
-            //     this.publishMode,
-            //     'cache',
-            //     (post: any) => this.editHandler(site, post),
-            //     (state: any) => {
-            //       switch (state) {
-            //         case publisher.STATE_RENDER:
-            //           statusBar.show(i18n.global.t('publish.status.render'));
-            //           break;
-            //         case publisher.STATE_READ_POST:
-            //           statusBar.show(i18n.global.t('publish.status.read'));
-            //           break;
-            //         case publisher.STATE_UPLOAD_MEDIA:
-            //           statusBar.show(i18n.global.t('publish.status.upload'));
-            //           break;
-            //         case publisher.STATE_PUBLISH_POST:
-            //           statusBar.show(i18n.global.t('publish.status.publish'));
-            //           break;
-            //         case publisher.STATE_EDIT_POST:
-            //           statusBar.show(i18n.global.t('publish.status.edit'));
-            //           break;
-            //         case publisher.STATE_COMPLETE:
-            //           statusBar.show(i18n.global.t('publish.status.complete'));
-            //           break;
-            //       }
-            //     }
-            //   )
-            //   .then((published) => {
-            //     if (published) {
-            //       success++;
-            //       new Notification(i18n.global.t('publishSuccess'), { body: siteToString(site) });
-            //     }
-            //   })
-            //   .catch((e) => {
-            //     new Notification(i18n.global.t('publishError'), { body: siteToString(site) + '\n' + e.message });
-            //     console.error(e);
-            //   });
+            console.log('site.url:', site.url);
+            return new Publisher(site.url, site.username, site.password, site.type)
+              .publish(
+                this.post,
+                (state: any) => {
+                  switch (state) {
+                    case publisher.STATE_RENDER:
+                      statusBar.show(i18n.global.t('publish.status.render'));
+                      break;
+                    case publisher.STATE_READ_POST:
+                      statusBar.show(i18n.global.t('publish.status.read'));
+                      break;
+                    case publisher.STATE_UPLOAD_MEDIA:
+                      statusBar.show(i18n.global.t('publish.status.upload'));
+                      break;
+                    case publisher.STATE_PUBLISH_POST:
+                      statusBar.show(i18n.global.t('publish.status.publish'));
+                      break;
+                    case publisher.STATE_EDIT_POST:
+                      statusBar.show(i18n.global.t('publish.status.edit'));
+                      break;
+                    case publisher.STATE_COMPLETE:
+                      statusBar.show(i18n.global.t('publish.status.complete'));
+                      break;
+                  }
+                },
+                this.publishMode,
+                'cache',
+                (post: any) => this.editHandler(site, post)
+              )
+              .then((published) => {
+                if (published) {
+                  success++;
+                  new Notification(i18n.global.t('publishSuccess'), { body: siteToString(site) });
+                }
+              })
+              .catch((e) => {
+                new Notification(i18n.global.t('publishError'), { body: siteToString(site) + '\n' + e.message });
+                console.error(e);
+              });
           },
           { concurrency: 3 }
         );
@@ -300,7 +303,6 @@
   }
 
   .publish-wrapper {
-    // position: relative;
     width: 100%;
     height: 100%;
   }

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-07-11 21:40:33
+ * @LastEditTime: 2021-07-12 13:11:42
  * @Description:
  * @FilePath: \push-markdown\src\logic\config.ts
  */
@@ -32,7 +32,7 @@ const defaultSites = [newSite()];
 
 export function getSites() {
   const sites = window.api.storeSettingsGet('sites', defaultSites);
-  console.log('sites:', sites);
+  // console.log('sites:', sites);
   // decode
   return (
     sites &&

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-11 22:38:43
+ * @LastEditTime: 2021-07-12 13:49:38
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -36,7 +36,7 @@ async function createWindow() {
       // enableRemoteModule: true,
       // nodeIntegration: true,  //默认不开启node集成，为了安全😊
       contextIsolation: true, //上下文隔离，开起来吧，为了安全😊
-      // webSecurity: false // 关闭跨域限制，为了安全😊
+      webSecurity: false // 关闭跨域限制，为了安全😊
     },
     // eslint-disable-next-line
     icon: `${process.env.VUE_APP_BASE_URL}/app.ico`

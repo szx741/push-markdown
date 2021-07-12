@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-07-11 20:21:35
+ * @LastEditTime: 2021-07-12 12:49:02
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
@@ -50,6 +50,11 @@ ipcMain.on('platform', function (event, arg) {
 ipcMain.on('argv', function (event, arg) {
   //   event.reply('version', app.getVersion());
   event.returnValue = process.argv;
+});
+
+ipcMain.on('process.versions', function (event, arg) {
+  //   event.reply('version', app.getVersion());
+  event.returnValue = process.versions;
 });
 
 export { ipcMain as ipcMainCollection };
