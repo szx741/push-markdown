@@ -13,7 +13,7 @@
 import MetaWeblog from 'metaweblog-api';
 
 import { FileCache, PostCache } from './PublishCache';
-import { checkUrlValid, getMimeType, BasePublisher, readFileBits } from './BasePublisher';
+import { checkUrlValid, getMimeType, BasePublisher, readFileBase64 } from './BasePublisher';
 
 /**
  * 基于MetaWeblog接口的博客发布器
@@ -112,17 +112,14 @@ export class MetaWeblogPublisher extends BasePublisher {
         return url;
       }
     }
-    // console.log('file:', file);
-    // console.log(window.api.pathBasename(file));
-    // console.log(getMimeType(file));
-    const bits = await readFileBits(file);
+    const bits = readFileBase64(file);
     const mediaObject = {
       name: window.api.pathBasename(file),
       type: getMimeType(file),
       bits: bits,
       overwrite: false
     };
-    console.log('mediaObject:', mediaObject);
+
     const result = await this.metaWeblog.newMediaObject(this.blogId, this.username, this.password, mediaObject);
     console.log('result:', result);
     const { id, url, type } = result;

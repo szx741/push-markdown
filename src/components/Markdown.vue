@@ -92,11 +92,6 @@
       };
     },
     methods: {
-      // async djfj() {
-      //   setTimeout(() => {
-      //     console.log('aaaa');
-      //   }, 1000);
-      // },
       async debounceUpdate() {
         const _this = this;
         // debounce(
@@ -110,7 +105,6 @@
         this.post = await renderer.render(_this.src, _this.file, true);
       },
       onSave() {
-        console.log('menu.save');
         if (this.active && this.modified) {
           this.writeFile();
         }
@@ -152,7 +146,6 @@
       }
     },
     async mounted() {
-      // console.log('markdown,this.file:', this.file);
       utils.setTextareaTabKey(this.$refs['textarea']);
       this.readFile();
       window.api.receive('menu.save', this.onSave);
@@ -169,8 +162,8 @@
       }
     },
     async updated() {
-      // const markdown = this.$refs['markdown'];
-      // utils.setLinks(markdown);
+      const markdown = this.$refs['markdown'];
+      utils.setLinks(markdown);
     }
   });
 </script>

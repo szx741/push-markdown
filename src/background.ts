@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-12 13:49:38
+ * @LastEditTime: 2021-07-14 15:19:16
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -49,9 +49,9 @@ async function createWindow() {
   } else {
     createProtocol('app');
     // Load the index.html when not in development
-    // mainWindow.loadURL('app://./index.html');
-    const winURL = isDevelopment ? 'http://localhost:8080' : `file://${__dirname}/index.html`;
-    mainWindow.loadURL(winURL);
+    mainWindow.loadURL('app://./index.html');
+    // const winURL = isDevelopment ? 'http://localhost:8080' : `file://${__dirname}/index.html`;
+    // mainWindow.loadURL(winURL);
   }
   log.info('create window', process.env.NODE_ENV);
   //加载应用的菜单栏

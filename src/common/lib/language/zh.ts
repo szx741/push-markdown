@@ -13,7 +13,8 @@ const zh = {
   publishError: '发布失败',
 
   setting: {
-    siteSettings: '博客站点设置',
+    saveSettings: '设置已自动保存',
+    siteSettings: '博客站点设置（自动保存）',
     siteSettingsNote: '目前兼容MetaWeblog接口的博客。以WordPress为例，URL一般是这种形式 "http://www.example.com/xmlrpc.php"',
 
     apiType: 'API类型',

@@ -5493,6 +5493,23 @@ filename-reserved-regex@^2.0.0:
   resolved "https://registry.npm.taobao.org/filename-reserved-regex/download/filename-reserved-regex-2.0.0.tgz"
   integrity sha1-q/c9+rc10EVECr/qLZHzieu/oik=
 
+filenamify-url@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.nlark.com/filenamify-url/download/filenamify-url-2.1.2.tgz#844607d5e86919617340ba0fad4b458dae247100"
+  integrity sha1-hEYH1ehpGWFzQLoPrUtFja4kcQA=
+  dependencies:
+    filenamify "^4.3.0"
+    humanize-url "^2.1.1"
+
+filenamify@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.nlark.com/filenamify/download/filenamify-4.3.0.tgz?cache=0&sync_timestamp=1625471436175&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ffilenamify%2Fdownload%2Ffilenamify-4.3.0.tgz#62391cb58f02b09971c9d4f9d63b3cf9aba03106"
+  integrity sha1-YjkctY8CsJlxydT51js8+augMQY=
+  dependencies:
+    filename-reserved-regex "^2.0.0"
+    strip-outer "^1.0.1"
+    trim-repeated "^1.0.0"
+
 filenamify@^5.0.0:
   version "5.0.0"
   resolved "https://registry.nlark.com/filenamify/download/filenamify-5.0.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ffilenamify%2Fdownload%2Ffilenamify-5.0.0.tgz#59a20e8291b181266fd3ef31931a710987527330"
@@ -6439,6 +6456,13 @@ human-signals@^2.1.0:
   version "2.1.0"
   resolved "https://registry.nlark.com/human-signals/download/human-signals-2.1.0.tgz"
   integrity sha1-3JH8ukLk0G5Kuu0zs+ejwC9RTqA=
+
+humanize-url@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.nlark.com/humanize-url/download/humanize-url-2.1.1.tgz#1be3dc2b8a23ee28fdf9db95b22962b3eb5e4683"
+  integrity sha1-G+PcK4oj7ij9+duVsilis+teRoM=
+  dependencies:
+    normalize-url "^4.5.1"
 
 iconv-corefoundation@^1.1.6:
   version "1.1.6"
@@ -8226,7 +8250,7 @@ normalize-url@^3.0.0:
   resolved "https://registry.nlark.com/normalize-url/download/normalize-url-3.3.0.tgz"
   integrity sha1-suHE3E98bVd0PfczpPWXjRhlBVk=
 
-normalize-url@^4.1.0:
+normalize-url@^4.1.0, normalize-url@^4.5.1:
   version "4.5.1"
   resolved "https://registry.nlark.com/normalize-url/download/normalize-url-4.5.1.tgz"
   integrity sha1-DdkM8SiO4dExO4cIHJpZMu5IUYo=

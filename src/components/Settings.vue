@@ -88,6 +88,9 @@
 </template>
 
 <script lang="ts">
+  import * as statusBar from '../logic/statusBar';
+  import i18n from '@/common/lib/language';
+
   import { defineComponent } from 'vue';
   import * as config from '../logic/config';
   import * as renderer from '../logic/renderer';
@@ -108,7 +111,7 @@
       window.api.receive('menu.save', () => {
         if (this.active) {
           console.log('active');
-          // this.save();
+          statusBar.show(i18n.global.t('setting.saveSettings'));
         }
       });
     },

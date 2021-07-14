@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 16:34:18
- * @LastEditTime: 2021-07-11 17:12:18
+ * @LastEditTime: 2021-07-13 20:59:51
  * @Description:
  * @FilePath: \push-markdown\prettier.config.js
  */
@@ -22,5 +22,5 @@ module.exports = {
   requirePragma: false,
   proseWrap: 'never',
   htmlWhitespaceSensitivity: 'strict',
-  endOfLine: 'lf'
+  endOfLine: 'crlf'
 };

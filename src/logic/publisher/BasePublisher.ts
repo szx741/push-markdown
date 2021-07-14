@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-07-12 22:10:28
+ * @LastEditTime: 2021-07-13 21:37:49
  * @Description:
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -12,7 +12,7 @@
  */
 'use strict';
 
-import Promise, { any } from 'bluebird';
+import { Promise as _Promise } from 'bluebird';
 import request from 'request';
 import { JSDOM } from 'jsdom';
 
@@ -44,16 +44,12 @@ export function getMimeType(file: any) {
   return type;
 }
 
-export function readFileBits(file: any) {
-  return new Promise((resolve, reject) => {
-    window.api.fsReadFile(file, { encoding: null }, (err: any, data: any) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
+export function readFileBase64(file: string) {
+  try {
+    return window.api.fsReadFileSync(file, { encoding: 'base64' });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 export function checkUrlValid(url: any) {
@@ -123,7 +119,7 @@ export class BasePublisher {
     const div = jsdom.window.document.createElement('div');
     div.innerHTML = post.html;
 
-    await Promise.map(
+    await _Promise.map(
       Array.from(div.getElementsByTagName('img')),
       async (img) => {
         const src = img.getAttribute('src');
@@ -132,7 +128,7 @@ export class BasePublisher {
         if (src && src.startsWith('atom://')) {
           const file = decodeURI(src.substr('atom://'.length));
           if (window.api.fsExistsSync(file)) {
-            console.log('存在')
+            console.log('存在');
             const url: any = await this.uploadMedia(file, mediaMode);
             if (url) {
               img.setAttribute('src', url);

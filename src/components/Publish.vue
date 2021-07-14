@@ -272,8 +272,8 @@
         }
       },
       showSettings() {
-        // console.log('show settings')
-        window.api.send('menu.settings');
+        console.log('show settings');
+        window.api.send('menu.settings', '');
       },
       closePublish() {
         this.showPublish = false;

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-07-12 14:42:41
+ * @LastEditTime: 2021-07-14 14:24:15
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -11,7 +11,8 @@ import { contextBridge, ipcRenderer, shell } from 'electron';
 import fs from 'fs-extra';
 import Store from 'electron-store';
 import path from 'path';
-import _filenamify from 'filenamify';
+// import { filenamifyPath } from 'filenamify';
+
 import md5File from 'md5-file';
 
 // const filenamify = (s: any) => _filenamify(s, { replacement: '-' });
@@ -20,8 +21,6 @@ import { copyFileSync } from 'fs';
 // 存储的文件名为settings
 const storeSettings = new Store({ name: 'settings' });
 const storeRecord = new Store({ name: 'use-record' });
-const storeCache = new Store({ name: 'cache-post-xaotuman' });
-// const storeCache = new Store({ name: 'cache-post-http://82.157.179.143/xmlrpc.php-xaotuman' });
 
 const validChannels = [
   'fromMain',
@@ -77,27 +76,30 @@ contextBridge.exposeInMainWorld('api', {
     return storeRecord.get(key, value);
   },
   fsReadFile: fs.readFile,
+  fsReadFileSync: fs.readFileSync,
   shell: shell,
   pathBasename: path.basename,
   pathJoin: path.join,
   pathIsAbsolute: path.isAbsolute,
   pathDirname: path.dirname,
   pathExtname: path.extname,
+  fsWriteFile: fs.writeFile,
   fsWriteFileSync: fs.writeFileSync,
   fsExistsSync: fs.existsSync,
   typesetMath: typesetMath,
-  storeCachePath(key: any, value: any) {
-    return storeCache.path;
+  newStore(name: string) {
+    return new Store({ name }).path;
   },
-  storeCacheSet(key: any, value: any) {
-    return storeCache.set(key, value);
+  storeSet(name: string, key: any, value: any) {
+    const store = new Store({ name });
+    return store.set(key, value);
   },
-  storeCacheGet(key: any, value: any) {
-    return storeCache.get(key, value);
+  storeGet(name: string, key: any, value: any) {
+    const store = new Store({ name });
+    return store.get(key);
   },
-  // filenamify: filenamify,
   mathJaxPath: mathJaxPath,
   md5(file: any) {
-    return md5File(file);
+    return md5File.sync(file);
   }
 });

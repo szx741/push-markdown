@@ -1,6 +1,6 @@
 {
   "name": "push-markdown",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "将本地markdown推送到博客，比如WordPress",
   "author": "szx",
@@ -23,6 +23,7 @@
     "electron-log": "^4.3.5",
     "electron-store": "8.0.0",
     "filenamify": "^5.0.0",
+    "filenamify-url": "^2.1.2",
     "front-matter": "^4.0.2",
     "github-markdown-css": "^4.0.0",
     "he": "^1.2.0",

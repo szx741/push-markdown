@@ -13,8 +13,8 @@ const en = {
   publishError: 'Publish Failed',
 
   setting: {
-    siteSettings: 'Blog Settings',
-
+    saveSettings: 'Settings are automatically saved',
+    siteSettings: 'Blog Settings (auto save)',
     siteSettingsNote: 'Currently compatible with MetaWeblog interface blogs. Take WordPress as an example, URL is generally this form: "http://www.example.com/xmlrpc.php"',
 
     apiType: 'API Type',

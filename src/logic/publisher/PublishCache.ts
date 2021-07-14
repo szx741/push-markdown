@@ -1,42 +1,32 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2021-07-12 20:34:51
- * @Description:
+ * @LastEditTime: 2021-07-13 21:27:34
+ * @Description: 文章、图片发布缓存，避免文章、图片重复发布
  * @FilePath: \push-markdown\src\logic\publisher\PublishCache.ts
  */
-/**
- * 文章、图片发布缓存，避免文章、图片重复发布
- *
- * Created by jzj on 2018/12/24.
- */
+
 'use strict';
 
-// import _filenamify from 'filenamify';
-// const filenamify = (s: any) => window.api.filenamify(s, { replacement: '-' });
-// const filenamify = window.api.filenamify;
-const filenamify = (str: any) => {
-  return str;
-};
+import filenamifyUrl from 'filenamify-url';
+
 /**
  * 缓存基类
  */
 class Cache {
-  store: any;
+  storeName!: string;
   constructor(type: any, url: any, user: any) {
-    console.log(['cache', type, url, user].join('-'));
-    // this.store = window.api.newStore(['cache', type, url, user].join('-'));
-    // this.store = new window.api.Store({ name: ['cache', type, filenamify(url), filenamify(user)].join('-') });
-    console.log('cache path = ', window.api.storeCachePath);
+    this.storeName = ['cache', type, filenamifyUrl(url), filenamifyUrl(user)].join('-').toString();
+
+    console.log('this.store.path:', window.api.newStore({ name: this.storeName }));
   }
 
   async put(object: any, data: any) {
     if (object && data) {
-      const key = await this.key(object);
+      const key = this.key(object);
       if (key) {
-        // this.store.set(key, data);
         console.log('put:', key);
-        window.api.storeCacheSet(key, data);
+        window.api.storeSet(this.storeName, key, data);
         return true;
       }
     }
@@ -45,16 +35,16 @@ class Cache {
 
   async get(object: any) {
     if (object) {
-      const key = await this.key(object);
+      const key = this.key(object);
       console.log(key);
       if (key) {
-        return window.api.storeCacheGet(key, null);
+        return window.api.storeGet(this.storeName, key);
       }
     }
     return null;
   }
 
-  async key(object: any) {
+  key(object: any) {
     return null;
   }
 }
@@ -75,7 +65,7 @@ export class PostCache extends Cache {
     return super.get(post);
   }
 
-  async key(post: any): Promise<any> {
+  key(post: any) {
     return (post && post.url) || null;
   }
 }
@@ -96,8 +86,7 @@ export class FileCache extends Cache {
     return super.get(file);
   }
 
-  async key(file: any): Promise<any> {
-    console.log(window.api.md5(file));
+  key(file: any) {
     return window.api.md5(file);
   }
 }

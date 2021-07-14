@@ -1,11 +1,11 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-10 17:19:12
+ * @LastEditTime: 2021-07-14 16:04:21
  * @Description:
  * @FilePath: \push-markdown\src\router\index.ts
  */
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import Main from '../components/Main.vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -25,8 +25,9 @@ const routes: Array<RouteRecordRaw> = [
   }
 ];
 
+// 不能用history模式，只能用hash模式，否则build就会空白
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(),
   routes
 });
 
