@@ -102,6 +102,7 @@
         //   300,
         //   { leading: true }
         // );
+        console.log('this.src', this.src);
         this.post = await renderer.render(_this.src, _this.file, true);
       },
       onSave() {
@@ -110,13 +111,14 @@
         }
       },
       readFile() {
-        window.api.fsReadFile(this.file, { encoding: 'utf-8' }, (err: any, result: any) => {
+        window.api.fsReadFile(this.file, { encoding: 'utf-8' }, (err: any, data: string) => {
           if (err) {
             console.error(err);
             const text = i18n.global.t('readFileError') + err.message;
             statusBar.show(text);
             this.src = text;
           } else {
+            const result = data.replace(/\t/g, '&emsp;');
             this.src = result;
           }
         });
