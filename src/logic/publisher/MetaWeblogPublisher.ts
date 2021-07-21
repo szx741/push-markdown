@@ -112,6 +112,7 @@ export class MetaWeblogPublisher extends BasePublisher {
         return url;
       }
     }
+    
     const bits = readFileBase64(file);
     const mediaObject = {
       name: window.api.pathBasename(file),

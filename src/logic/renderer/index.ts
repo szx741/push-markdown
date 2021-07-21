@@ -15,7 +15,7 @@ import * as mermaidRenderer from './mermaid-front-renderer';
 import * as mathJaxRenderer from './mathjax-front-renderer';
 import * as config from '../config';
 import { get } from './markdown-it-mathjax';
-import { convert } from 'html-to-text';
+import { htmlToText } from 'html-to-text';
 import * as markdownItTitle from 'markdown-it-title';
 import * as markdownItUnderline from 'markdown-it-underline';
 import slugify from '@sindresorhus/slugify';
@@ -87,11 +87,12 @@ function replaceLocalImages(div: any, dir: any) {
     if (!src || src.match(/^((https?|file):\/\/|data:)/)) {
       continue;
     }
-
+    console.log(src);
     if (window.api.pathIsAbsolute(src)) {
       img.setAttribute('src', 'atom://' + src);
     } else {
       img.setAttribute('src', 'atom://' + window.api.pathJoin(dir, src));
+      console.log(window.api.pathJoin(dir, src));
     }
   }
 }
@@ -139,13 +140,13 @@ function toSystemTimezone(date: any) {
 
 function extractAbstract(html: string) {
   // https://www.npmjs.com/package/html-to-text
-  let string = convert(html, {
-    wordwrap: false,
-    ignoreHref: true,
-    ignoreImage: true,
-    preserveNewlines: true,
-    uppercaseHeadings: false,
-    singleNewLineParagraphs: true
+  let string = htmlToText(html, {
+  wordwrap: false,
+  ignoreHref: true,
+  ignoreImage: true,
+  preserveNewlines: true,
+  uppercaseHeadings: false,
+  singleNewLineParagraphs: true
   });
 
   if (string.length > 100) {
@@ -228,7 +229,7 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
   post.authors = attr.authors;
   post.date = attr.date;
   post.abstract = attr.abstract;
-  if (!post.abstract) {
+  if (post.abstract == null) {
     switch (renderConfig.abstract) {
       case 'title':
         post.abstract = post.title;

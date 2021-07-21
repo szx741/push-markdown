@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-14 15:19:16
+ * @LastEditTime: 2021-07-21 19:43:12
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -14,6 +14,7 @@ import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
 import * as AppMenu from '@/config/app-menu';
 import path from 'path';
 import { ipcMainCollection } from '@/config/ipc-message';
+
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
@@ -49,9 +50,9 @@ async function createWindow() {
   } else {
     createProtocol('app');
     // Load the index.html when not in development
-    mainWindow.loadURL('app://./index.html');
-    // const winURL = isDevelopment ? 'http://localhost:8080' : `file://${__dirname}/index.html`;
-    // mainWindow.loadURL(winURL);
+    // mainWindow.loadURL('app://./index.html');
+    const winURL = isDevelopment ? 'http://localhost:8080' : `file://${__dirname}/index.html`;
+    mainWindow.loadURL(winURL);
   }
   log.info('create window', process.env.NODE_ENV);
   //加载应用的菜单栏
@@ -88,8 +89,8 @@ app.on('ready', async () => {
 // 注册拦截器，使用atom://来代替file://，这样子也不需要关闭webSecurity https://www.electronjs.org/docs/api/protocol
 app.whenReady().then(() => {
   protocol.registerFileProtocol('atom', (request, callback) => {
-    const url = request.url.substr(7);
-    callback({ path: url });
+    const url = decodeURI(request.url).substr(7);
+    callback({ path: path.normalize(url) });
   });
 });
 

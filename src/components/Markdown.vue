@@ -102,7 +102,7 @@
         //   300,
         //   { leading: true }
         // );
-        console.log('this.src', this.src);
+        // console.log('this.src', this.src);
         this.post = await renderer.render(_this.src, _this.file, true);
       },
       onSave() {
@@ -132,7 +132,7 @@
           // do nothing
           if (!err) {
             this.modified = false;
-            console.log('write file success', this.file);
+            // console.log('write file success', this.file);
             statusBar.show(i18n.global.t('saveFileSuccess'));
           } else {
             console.error(err);
