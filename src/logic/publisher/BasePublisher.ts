@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-07-13 21:37:49
+ * @LastEditTime: 2021-07-27 14:45:42
  * @Description:
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -81,7 +81,7 @@ export class BasePublisher {
    *                    return Promise<false>: create new post.
    * @return {Promise<boolean>} true: published, false: cancelled
    */
-  async publish(post: any, stateHandler: any, publishMode: any, mediaMode: any, editHandler: any) {
+  async publish(post: any, blogID: number, stateHandler: any, publishMode: any, mediaMode: any, editHandler: any) {
     const _stateHandler = stateHandler;
     stateHandler = (state: any) => {
       _stateHandler && _stateHandler(state);
@@ -97,13 +97,15 @@ export class BasePublisher {
     let oldPost = null;
     switch (publishMode) {
       case 'auto':
-        oldPost = await this.getOldPost(post);
+        oldPost = await this.getOldPost(post, 0);
         break;
 
       case 'manual':
         if (editHandler) {
-          const _oldPost = await this.getOldPost(post);
+          console.log('editHandler', editHandler);
+          const _oldPost = await this.getOldPost(post, blogID);
           if (await editHandler(_oldPost)) {
+            console.log('await editHandler(_oldPost)');
             oldPost = _oldPost;
           }
         }
@@ -160,7 +162,7 @@ export class BasePublisher {
    * get old post by url
    * @param post post to publish
    */
-  getOldPost(post: any): any {}
+  getOldPost(post: any, blogID: number): any {}
 
   /**
    * create new post & cache post info if necessary

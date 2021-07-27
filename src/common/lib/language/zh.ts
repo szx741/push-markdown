@@ -70,7 +70,14 @@ const zh = {
     publishModeManual: '手动确认',
     publishModeCreate: '创建新文章',
     publishModeAuto: '自动判断',
-    publishModeHint: '检测到已发布过的URL相同的文章时，创建新文章还是编辑已有文章',
+    publishModeManualHint: '手动确认：先模式一；若ID为0，则模式二；若模式二失败，则模式三；若模式三失败，则模式四；',
+    publishModeAutoHint: '自动判断：先模式二；若模式二失败，则模式三；若模式三失败，则为模式四；',
+    publishModeCreateHint: '创建新文章：直接模式四',
+    publishModeHint: `
+    模式一：更新指定文章ID <br/>
+    模式二：更新本地缓存获取的文章ID（相同的URL） <br/>
+    模式三：更新远程获得的文章ID（相同的标题，因为获取所有的文章，包括内容，比较费流量）<br/>
+    模式四：创建新的文章`,
     publishModeConfirm: '发布模式确认',
     publishModeOldPost: '检测到URL相同的文章如下：',
     publishModeEditPost: '编辑此文章',

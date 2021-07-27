@@ -72,7 +72,14 @@ const en = {
     publishModeManual: 'Manual Confirm',
     publishModeCreate: 'Create New Article',
     publishModeAuto: 'Auto',
-    publishModeHint: 'Create a new article or edit an existing article when a published article with the same URL detected.',
+    publishModeManualHint: 'Manual confirmation: mode one first; if ID is 0, then mode two; if mode two fails, then mode three; if mode three fails, then mode four;',
+    publishModeAutoHint: 'Auto-judge: mode two first; if mode two fails, then mode three; if mode three fails, then mode four;',
+    publishModeCreateHint: 'Create new article: direct mode four',
+    publishModeHint: `
+    Mode I: Update the specified article ID <br/>
+    Mode 2: Update locally cached fetched article ID (same URL) <br/>
+    Mode III: Update the article ID obtained remotely (same title, because getting all articles, including content, is more traffic-intensive)<br/>
+    Mode 4: Create a new article `,
     publishModeConfirm: 'Confirm Publish Mode',
     publishModeOldPost: 'The article with the same URL is detected as follows:',
     publishModeEditPost: 'Edit this article',

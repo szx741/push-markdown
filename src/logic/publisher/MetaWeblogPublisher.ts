@@ -23,7 +23,7 @@ export class MetaWeblogPublisher extends BasePublisher {
   blogId: string;
   username: string;
   password: string;
-  postCache: any;
+  postCache: PostCache;
   mediaCache: any;
   constructor(url: any, username: any, password: any) {
     super();
@@ -36,8 +36,20 @@ export class MetaWeblogPublisher extends BasePublisher {
     // console.log(url, username)
   }
 
-  async getOldPost(post: any) {
+  async getOldPost(post: any, blogID: number) {
+    // console.log('oist', post);
+    // console.log('fffffffffff', await this.metaWeblog.getRecentPosts('', this.username, this.password, ''));
+    // 1、手动更新指定文章的ID，必须大于0
+    if (blogID > 0) {
+      console.log('手动更新指定文章ID');
+      const oldPost = await this.metaWeblog.getPost(blogID, this.username, this.password).catch(() => null);
+      if (oldPost && oldPost.postid == blogID) {
+        return this.toPost(oldPost);
+      }
+    }
+    // 2、否则，从本地缓存查找之前的ID
     const oldPostId = await this.postCache.get(post);
+    console.log('getOldPost', oldPostId);
     if (oldPostId) {
       console.log('metaweblog old post id', oldPostId);
       const oldPost = await this.metaWeblog.getPost(oldPostId, this.username, this.password).catch(() => null);
@@ -47,12 +59,25 @@ export class MetaWeblogPublisher extends BasePublisher {
         return this.toPost(oldPost);
       }
     }
+    // 3、如果在本地缓存也找不到的话，说明第一次用这个软件，那么就从博客获取所有的文章匹配相同的标题
+    if (blogID == 0) {
+      const arr = await this.metaWeblog.getRecentPosts('', this.username, this.password, '');
+      for (const a of arr) {
+        if (a.title == post.title) {
+          console.log('本地可能没有缓存，因此去查找wordpress上的所有博客，匹配到相同的标题即为同一篇');
+          const oldPost = await this.metaWeblog.getPost(a.postid, this.username, this.password).catch(() => null);
+          return this.toPost(oldPost);
+        }
+      }
+    }
     return null;
   }
 
   async newPost(post: any) {
     const _post = await this.toMetaWeblogPost(post);
     const id = await this.metaWeblog.newPost(this.blogId, this.username, this.password, _post, true);
+    console.log('newpost this.blogId:', id);
+
     await this.postCache.put(post, id);
     return id;
   }
@@ -112,7 +137,7 @@ export class MetaWeblogPublisher extends BasePublisher {
         return url;
       }
     }
-    
+
     const bits = readFileBase64(file);
     const mediaObject = {
       name: window.api.pathBasename(file),

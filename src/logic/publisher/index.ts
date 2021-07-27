@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2021-07-13 21:01:46
+ * @LastEditTime: 2021-07-27 14:44:39
  * @Description:
  * @FilePath: \push-markdown\src\logic\publisher\index.ts
  */
@@ -32,7 +32,7 @@ export class Publisher {
     }
   }
 
-  async publish(post: any, stateHandler: any, publishMode: any, mediaMode: any, editHandler: any) {
-    return this.publisher.publish(post, stateHandler, publishMode, mediaMode, editHandler);
+  async publish(post: any, blogID: number, stateHandler: any, publishMode: any, mediaMode: any, editHandler: any) {
+    return this.publisher.publish(post, blogID, stateHandler, publishMode, mediaMode, editHandler);
   }
 }

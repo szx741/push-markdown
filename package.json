@@ -1,6 +1,6 @@
 {
   "name": "push-markdown",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "将本地markdown推送到博客，比如WordPress",
   "author": "szx",

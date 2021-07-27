@@ -20,16 +20,16 @@
             <div v-for="site in sites" :key="site" class="site" @click="() => select(site)">
               <input title="select" type="checkbox" v-model="site.selected" />
               <div class="site-info">
-                <div class="site-name"
-                  ><h4>{{ site.name }}</h4></div
-                >
+                <div class="site-name">
+                  <h4>{{ site.name }}</h4>
+                </div>
                 <div class="site-detail">
-                  <span
-                    ><small>{{ site.username }}</small></span
-                  >
-                  <span
-                    ><small>{{ site.url }}</small></span
-                  >
+                  <span>
+                    <small>{{ site.username }} </small>
+                  </span>
+                  <span>
+                    <small>{{ site.url }}</small>
+                  </span>
                 </div>
               </div>
             </div>
@@ -43,7 +43,11 @@
             <option value="create">{{ $t('publish.publishModeCreate') }}</option>
             <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
           </select>
-          <div class="publish-mode-hint">{{ $t('publish.publishModeHint') }}</div>
+          <input class="publish-article-id" v-if="publishMode == 'manual'" type="number" placeholder="输入文章ID" v-model="blogID" />
+          <div class="publish-modeXXX-hint" v-if="publishMode == 'manual'">{{ $t('publish.publishModeManualHint') }} </div>
+          <div class="publish-modeXXX-hint" v-if="publishMode == 'auto'">{{ $t('publish.publishModeAutoHint') }} </div>
+          <div class="publish-modeXXX-hint" v-if="publishMode == 'create'">{{ $t('publish.publishModeCreateHint') }} </div>
+          <div class="publish-mode-hint" v-html="$t('publish.publishModeHint')"> </div>
         </div>
 
         <div class="buttons">
@@ -114,6 +118,7 @@
     editList: any;
     publishing: any;
     confirm: any;
+    blogID: number;
   }
   function siteToString(site: any) {
     return `${site.name} [${site.username}] [${site.url}]`;
@@ -134,7 +139,8 @@
           yes: {},
           no: {},
           neutral: {}
-        }
+        },
+        blogID: 0
       };
     },
     watch: {
@@ -143,6 +149,8 @@
       }
     },
     mounted() {
+      console.log(i18n.global.t('publish.publishModeHint'));
+
       // 收到发布信息，然后读取之前的设置
       window.api.receive('menu.publish', () => {
         if (this.active && this.post) {
@@ -206,6 +214,7 @@
             return new Publisher(site.url, site.username, site.password, site.type)
               .publish(
                 this.post,
+                this.blogID,
                 (state: any) => {
                   switch (state) {
                     case publisher.STATE_RENDER:
@@ -261,6 +270,8 @@
                 // edit: boolean
                 // remove item from editList and then resolve
                 const index: any = this.editList.indexOf(item);
+                console.log('index,', index);
+                console.log('edit;', edit);
                 this.editList.splice(index, 1);
                 resolve(edit);
               }
@@ -338,10 +349,19 @@
   .publish-container {
   }
 
+  .publish-article-id {
+    margin-left: 10px;
+  }
+
+  .publish-modeXXX-hint {
+    font-size: 0.9em;
+    margin-top: 5px;
+  }
+
   .publish-mode-hint {
     color: #666;
     font-size: 0.9em;
-    margin-top: 5px;
+    // margin-top: 5px;
   }
 
   .dialog-title {
