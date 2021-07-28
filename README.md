@@ -46,15 +46,17 @@ XML-RPC网址：https://codex.wordpress.org/zh-cn:XML-RPC_Support（需要翻墙
 
 ## 简介
 
-​	由于原来的代码并没有进行更新维护，框架可能有点老，而且有时候有bug，因此萌生了用基于electron13、vue3和TypeScript重构代码的想法。
+由于原来的代码并没有进行更新维护，框架可能有点老，而且有时候有bug，因此萌生了用基于electron13、vue3和TypeScript重构代码的想法。
 
-​	由于我本人并不会electron开发和vue开发，算是半个开发小白，所以也想借助最近搭建博客的热情来顺便重构一下这款软件的代码。毕竟兴趣是最好的老师，而且在别人的基础上前行，也是能够进步非常快的，希望我能够真正的完成这款软件的重构，一步一步个脚印，无限进步吧！
+由于我本人并不会electron开发和vue开发，算是半个开发小白，所以也想借助最近搭建博客的热情来顺便重构一下这款软件的代码。毕竟兴趣是最好的老师，而且在别人的基础上前行，也是能够进步非常快的，希望我能够真正的完成这款软件的重构，一步一步个脚印，无限进步吧！
 
 ## wordpress设置
 
+### base64编码
+
 参考网址：https://www.znian.cn/823.html
 
-图片上传默认编码发现不行，不知道为什么，原来的工具是可以支持的，明明代码都是一样的，所以需要改一下。xmlrpc将媒体文件的解码方式改为base64
+图片上传默认编码发现不行，不知道为什么，原来的工具是可以支持的，明明代码都是一样的，所以需要改一下。xmlrpc将媒体文件的解码方式改为base64。
 
 文件路径在wp-includes/class-wp-xmlrpc-server.php，因此需要
 
@@ -70,7 +72,43 @@ $bits = $data['bits'];
 $bits = base64_decode($data['bits']);
 ```
 
+### 上传媒体覆盖
+
+并在后面加入这一条语句，作用是为了xmlrpc上传媒体文件时覆盖文件，而不是创建新的文件（别不改变原来前台界面上传媒体文件的逻辑，仅为xmlrpc方式）。
+
+可以参考[网址](https://gist.github.com/koke/5720862#file-xmlrpc-test-upload-php)，或者参考我拷贝的[本地文件](docs/class-wp-xmlrpc-server.php)，在版本5.8的基础上进行的修改。
+
+```php
+if ( !empty($data['overwrite']) && ($data['overwrite'] == true) ) {
+    // Get postmeta info on the object.
+    $old_file = $wpdb->get_row("
+		SELECT ID
+    	FROM {$wpdb->posts}
+		WHERE post_title = '{$name}'
+		AND post_type = 'attachment'
+		");
+
+    // Delete previous file.
+    wp_delete_attachment($old_file->ID);
+
+    // Make sure the new name is different by pre-pending the
+    // previous post id.
+    //$filename = preg_replace('/^wpid\d+-/', '', $name);
+    //$name = "wpid{$old_file->ID}-{$filename}";
+}
+```
+
 ## 重要版本
+
+### 1.0.4
+
+​	对图片上传的逻辑进行了优化，也是因为多台设备和远程可能删除篡改图片的问题。
+
+​	现在的逻辑是如果在手动模式下，选择了强制更新图片，那么就会强制覆盖原来有的图片，而且不会生成新的图片。自动覆盖的代码也需要修改wordpress的部分代码，因为wordpress的xmlrpc原本的逻辑是会生成-1,-2这样后缀的图片，而不会覆盖原来的图片，所以需要加一小段。
+
+​	如果在手动模式下的不强制更新图片或者自动模式，那么就会检查本地缓存和远程URL有没有图片记录，如果都有，那么就不会更新图片，即便图片已经经过了修改（只看文件名称）。如果没有，那么也会进行覆盖更新。
+
+​	因此我的建议是，在远程删除了图片，或者本地修改了图片，那么就强制更新图片，自动模式不一定有效，因为有时候还有CDN的效果，即使删除了图片，CDN还有缓存，会有影响。
 
 ### 1.0.3
 
@@ -109,6 +147,7 @@ $bits = base64_decode($data['bits']);
 
 - [ ] v-html改为组件模版，为了安全。
 - [ ] 标题栏和菜单栏实现。
-- [ ] 文章图片cache基类这个逻辑可能还需要再重新写一遍，目前觉得用md5进行重写会不会合适一点？本地记录一下图片的名称和md5，然后比对
-- [x] 一个tab键转换的时候会变成一个空格键，希望能够变成一个全角空格（已经修复，直接将`\t`替换`&emsp;`就行了 ）。
+- [x] ~~文章图片cache基类这个逻辑可能还需要再重新写一遍，目前觉得用md5进行重写会不会合适一点？本地记录一下图片的名称和md5，然后比对。~~（不用md5，因为麻烦，还耗费资源，目前没看到必要性，详细看1.0.4）
+- [x] ~~一个tab键转换的时候会变成一个空格键，希望能够变成一个全角空格~~（已经修复，直接将`\t`替换`&emsp;`就行了 ）。
+- [ ] mathjax实现，不一定做，因为现在没用到，而且很麻烦。
 

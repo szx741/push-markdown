@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-07-27 14:45:42
+ * @LastEditTime: 2021-07-28 12:31:49
  * @Description:
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -89,7 +89,7 @@ export class BasePublisher {
 
     stateHandler(publisher.STATE_RENDER);
 
-    // render post in publish mode
+    // render post in publish mode 渲染
     post = await renderer.render(post.src, post.file, false);
 
     stateHandler(publisher.STATE_READ_POST);
@@ -100,6 +100,7 @@ export class BasePublisher {
         oldPost = await this.getOldPost(post, 0);
         break;
 
+      // 手动模式
       case 'manual':
         if (editHandler) {
           console.log('editHandler', editHandler);
@@ -121,6 +122,7 @@ export class BasePublisher {
     const div = jsdom.window.document.createElement('div');
     div.innerHTML = post.html;
 
+    // 上传图片的逻辑代码
     await _Promise.map(
       Array.from(div.getElementsByTagName('img')),
       async (img) => {
@@ -130,7 +132,7 @@ export class BasePublisher {
         if (src && src.startsWith('atom://')) {
           const file = decodeURI(src.substr('atom://'.length));
           if (window.api.fsExistsSync(file)) {
-            console.log('存在');
+            console.log('存在图片');
             const url: any = await this.uploadMedia(file, mediaMode);
             if (url) {
               img.setAttribute('src', url);

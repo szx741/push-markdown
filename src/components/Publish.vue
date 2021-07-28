@@ -37,13 +37,21 @@
         </div>
 
         <div class="publish-mode">
-          <label for="publish-mode-select">{{ $t('publish.publishMode') }}</label>
-          <select id="publish-mode-select" v-model="publishMode">
-            <option value="manual">{{ $t('publish.publishModeManual') }}</option>
-            <option value="create">{{ $t('publish.publishModeCreate') }}</option>
-            <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
-          </select>
-          <input class="publish-article-id" v-if="publishMode == 'manual'" type="number" placeholder="输入文章ID" v-model="blogID" />
+          <div class="publish-mode-select">
+            <label style="margin-right: 10px" for="publish-mode-select">{{ $t('publish.publishMode') }} </label>
+            <select id="publish-mode-select" v-model="publishMode">
+              <option value="manual">{{ $t('publish.publishModeManual') }}</option>
+              <option value="create">{{ $t('publish.publishModeCreate') }}</option>
+              <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
+            </select>
+            <div v-if="publishMode == 'manual'">
+              <label class="publish-mode-label">输入文章ID</label>
+              <input class="publish-article-id" type="number" placeholder="输入文章ID" v-model="blogID" />
+              <label class="publish-mode-label">强制更新图片</label>
+              <input type="checkbox" v-model="forcedUpdate" />
+            </div>
+          </div>
+
           <div class="publish-modeXXX-hint" v-if="publishMode == 'manual'">{{ $t('publish.publishModeManualHint') }} </div>
           <div class="publish-modeXXX-hint" v-if="publishMode == 'auto'">{{ $t('publish.publishModeAutoHint') }} </div>
           <div class="publish-modeXXX-hint" v-if="publishMode == 'create'">{{ $t('publish.publishModeCreateHint') }} </div>
@@ -119,6 +127,7 @@
     publishing: any;
     confirm: any;
     blogID: number;
+    forcedUpdate: boolean;
   }
   function siteToString(site: any) {
     return `${site.name} [${site.username}] [${site.url}]`;
@@ -140,7 +149,8 @@
           no: {},
           neutral: {}
         },
-        blogID: 0
+        blogID: 0,
+        forcedUpdate: false
       };
     },
     watch: {
@@ -238,7 +248,7 @@
                   }
                 },
                 this.publishMode,
-                'cache',
+                this.forcedUpdate ? 'force' : 'cache',
                 (post: any) => this.editHandler(site, post)
               )
               .then((published) => {
@@ -349,8 +359,17 @@
   .publish-container {
   }
 
+  .publish-mode-select {
+    display: flex;
+    align-items: center;
+  }
+  .publish-mode-label {
+    margin-left: 50px;
+  }
+
   .publish-article-id {
     margin-left: 10px;
+    width: 60px;
   }
 
   .publish-modeXXX-hint {

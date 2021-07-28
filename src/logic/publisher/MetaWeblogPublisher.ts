@@ -19,7 +19,7 @@ import { checkUrlValid, getMimeType, BasePublisher, readFileBase64 } from './Bas
  * 基于MetaWeblog接口的博客发布器
  */
 export class MetaWeblogPublisher extends BasePublisher {
-  metaWeblog: any;
+  metaWeblog: MetaWeblog;
   blogId: string;
   username: string;
   password: string;
@@ -42,8 +42,8 @@ export class MetaWeblogPublisher extends BasePublisher {
     // 1、手动更新指定文章的ID，必须大于0
     if (blogID > 0) {
       console.log('手动更新指定文章ID');
-      const oldPost = await this.metaWeblog.getPost(blogID, this.username, this.password).catch(() => null);
-      if (oldPost && oldPost.postid == blogID) {
+      const oldPost = await this.metaWeblog.getPost(blogID.toString(), this.username, this.password).catch(() => null);
+      if (oldPost && oldPost.postid == blogID.toString()) {
         return this.toPost(oldPost);
       }
     }
@@ -61,9 +61,9 @@ export class MetaWeblogPublisher extends BasePublisher {
     }
     // 3、如果在本地缓存也找不到的话，说明第一次用这个软件，那么就从博客获取所有的文章匹配相同的标题
     if (blogID == 0) {
-      const arr = await this.metaWeblog.getRecentPosts('', this.username, this.password, '');
+      const arr = await this.metaWeblog.getRecentPosts('', this.username, this.password, 1000);
       for (const a of arr) {
-        if (a.title == post.title) {
+        if (a.title == post.title && a.postid) {
           console.log('本地可能没有缓存，因此去查找wordpress上的所有博客，匹配到相同的标题即为同一篇');
           const oldPost = await this.metaWeblog.getPost(a.postid, this.username, this.password).catch(() => null);
           return this.toPost(oldPost);
@@ -128,11 +128,13 @@ export class MetaWeblogPublisher extends BasePublisher {
     return true;
   }
 
+  // 上传媒体文件
   async uploadMedia(file: any, mediaMode: any) {
+    console.log('mediaMode:',mediaMode);
+    // 上传模式为从cache中获取
     if (mediaMode === 'cache') {
       const url = await this.mediaCache.get(file);
-      console.log('url:', url);
-      if (await checkUrlValid(url)) {
+      if (url && (await checkUrlValid(url))) {
         console.log(`use cached media: ${file} ==> ${url}`);
         return url;
       }
@@ -143,10 +145,10 @@ export class MetaWeblogPublisher extends BasePublisher {
       name: window.api.pathBasename(file),
       type: getMimeType(file),
       bits: bits,
-      overwrite: false
+      overwrite: true
     };
 
-    const result = await this.metaWeblog.newMediaObject(this.blogId, this.username, this.password, mediaObject);
+    const result: any = await this.metaWeblog.newMediaObject(this.blogId, this.username, this.password, mediaObject);
     console.log('result:', result);
     const { id, url, type } = result;
     await this.mediaCache.put(file, url);
