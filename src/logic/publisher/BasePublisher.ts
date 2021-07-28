@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-07-28 12:31:49
+ * @LastEditTime: 2021-07-28 22:32:11
  * @Description:
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -31,7 +31,8 @@ export const MEDIA_MIME_TYPES: any = {
   bmp: 'image/bmp',
   tif: 'image/tiff',
   tiff: 'image/tiff',
-  ico: 'image/x-icon'
+  ico: 'image/x-icon',
+  webp: 'image/webp'
 };
 
 export function getMimeType(file: any) {
