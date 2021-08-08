@@ -85,8 +85,20 @@ function replaceLocalImages(div: HTMLElement, dir: any) {
   for (let i = 0; i < elements.length; i++) {
     const img = elements[i];
     const pImg = img.parentElement;
-    if (pImg && !pImg.innerText) {
-      pImg.setAttribute('align', 'center');
+    console.log('tagName:', pImg?.tagName);
+    if (pImg) {
+      if (pImg.tagName == 'P') {
+        // 如果有个父标签p，并且没有内置文本，那么就是一张单独的大图，就可以居中显示
+        if (!pImg.innerText) {
+          pImg.setAttribute('align', 'center');
+        }
+      } else {
+        // 这种情况对应markdown使用img标签，由于markdown-it渲染的时候不考虑img这种标签，不会套一个p标签，因此需要手动套一个
+        const ele = document.createElement('p');
+        ele.setAttribute('align', 'center');
+        pImg.replaceChild(ele, img);
+        ele.appendChild(img);
+      }
     }
     const src = img.getAttribute('src');
     if (!src || src.match(/^((https?|file):\/\/|data:)/)) {
