@@ -78,11 +78,16 @@ export function notifyConfigChanged() {
 }
 
 //找到markdown原来的图片路径，替换成atom路径
-function replaceLocalImages(div: any, dir: any) {
+function replaceLocalImages(div: HTMLElement, dir: any) {
+  // HTMLElement
   const elements = div.getElementsByTagName('img');
 
   for (let i = 0; i < elements.length; i++) {
     const img = elements[i];
+    const pImg = img.parentElement;
+    if (pImg && !pImg.innerText) {
+      pImg.setAttribute('align', 'center');
+    }
     const src = img.getAttribute('src');
     if (!src || src.match(/^((https?|file):\/\/|data:)/)) {
       continue;
@@ -141,12 +146,12 @@ function toSystemTimezone(date: any) {
 function extractAbstract(html: string) {
   // https://www.npmjs.com/package/html-to-text
   let string = htmlToText(html, {
-  wordwrap: false,
-  ignoreHref: true,
-  ignoreImage: true,
-  preserveNewlines: true,
-  uppercaseHeadings: false,
-  singleNewLineParagraphs: true
+    wordwrap: false,
+    ignoreHref: true,
+    ignoreImage: true,
+    preserveNewlines: true,
+    uppercaseHeadings: false,
+    singleNewLineParagraphs: true
   });
 
   if (string.length > 100) {
