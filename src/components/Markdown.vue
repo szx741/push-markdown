@@ -118,8 +118,8 @@
             statusBar.show(text);
             this.src = text;
           } else {
-            const result = data.replace(/\t/g, '&emsp;');
-            this.src = result;
+            //   const result = data.replace(/\t/g, '&emsp;');
+            this.src = data;
           }
         });
       },

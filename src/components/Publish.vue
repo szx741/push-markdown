@@ -155,11 +155,11 @@
     },
     watch: {
       publishMode() {
-        console.log('publishMode', this.publishMode);
+        // console.log('publishMode', this.publishMode);
       }
     },
     mounted() {
-      console.log(i18n.global.t('publish.publishModeHint'));
+      // console.log(i18n.global.t('publish.publishModeHint'));
 
       // 收到发布信息，然后读取之前的设置
       window.api.receive('menu.publish', () => {

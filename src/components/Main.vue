@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-27 15:46:44
+ * @LastEditTime: 2021-08-11 00:07:57
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -54,6 +54,16 @@
         current: useRecord.getCurrentTab(),
         statusText: null
       };
+    },
+    watch: {
+      tabs: function () {
+        console.log('ssssssssssss')
+        useRecord.saveTabs(this.tabs);
+        console.log('save tab info');
+      },
+      current() {
+        useRecord.saveCurrentTab(this.current);
+      }
     },
     methods: {
       openFile(file: any) {

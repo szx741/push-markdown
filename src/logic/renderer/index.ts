@@ -77,15 +77,21 @@ export function notifyConfigChanged() {
   init();
 }
 
+function tab2Emsp(div: HTMLElement) {
+  const pElements = div.getElementsByTagName('p');
+  for (const pe of pElements) {
+    pe.innerHTML = pe.innerHTML.replace(/\t/g, '&emsp;');
+  }
+}
+
 //找到markdown原来的图片路径，替换成atom路径
 function replaceLocalImages(div: HTMLElement, dir: any) {
   // HTMLElement
   const elements = div.getElementsByTagName('img');
 
-  for (let i = 0; i < elements.length; i++) {
-    const img = elements[i];
+  for (const img of elements) {
     const pImg = img.parentElement;
-    console.log('tagName:', pImg?.tagName);
+    // console.log('tagName:', pImg?.tagName);
     if (pImg) {
       if (pImg.tagName == 'P') {
         // 如果有个父标签p，并且没有内置文本，那么就是一张单独的大图，就可以居中显示
@@ -104,12 +110,10 @@ function replaceLocalImages(div: HTMLElement, dir: any) {
     if (!src || src.match(/^((https?|file):\/\/|data:)/)) {
       continue;
     }
-    console.log(src);
     if (window.api.pathIsAbsolute(src)) {
       img.setAttribute('src', 'atom://' + src);
     } else {
       img.setAttribute('src', 'atom://' + window.api.pathJoin(dir, src));
-      console.log(window.api.pathJoin(dir, src));
     }
   }
 }
@@ -215,6 +219,7 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
   const div = createInvisibleDiv(document, html);
   // console.log(html);
   // console.log(div);
+  tab2Emsp(div);
   // 替换本地文件URL
   replaceLocalImages(div, window.api.pathDirname(file));
   // 代码高亮
