@@ -82,7 +82,7 @@
   export default defineComponent({
     name: 'Markdown',
     components: { Publish },
-    props: ['file', 'active', 'modifiedHandler'],
+    props: ['file', 'active', 'num', 'modifiedHandler'],
 
     data(): data {
       return {
@@ -160,6 +160,9 @@
         await this.debounceUpdate();
       },
       modified() {
+        console.log('this.num', this.num);
+        this.$emit('setModified', this.num, this.modified);
+        // this.$emit('方法名', 'dd');
         // this.modifiedHandler && this.modifiedHandler(this.modified);
       }
     },

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-08-11 00:09:56
+ * @LastEditTime: 2021-08-12 15:26:44
  * @Description:
  * @FilePath: \push-markdown\src\logic\useRecord.ts
  */
@@ -10,10 +10,13 @@
  */
 'use strict';
 
+interface Tabs {
+  type: string;
+  modified?: boolean;
+  file?: string;
+}
 export function getTabs() {
-  const tabs = window.api.storeRecordGet('tabs', [{ type: 'welcome' }]).filter((tab: any) => {
-    console.log('tab.file:', tab.file);
-    console.log(window.api.fsExistsSync(tab.file));
+  const tabs: Array<Tabs> = window.api.storeRecordGet('tabs', [{ type: 'welcome' }]).filter((tab: any) => {
     return tab.type !== 'markdown' || window.api.fsExistsSync(tab.file);
   });
   tabs.forEach((tab: any) => {
@@ -23,8 +26,6 @@ export function getTabs() {
 }
 
 export function saveTabs(tabs: any) {
-  tabs = JSON.parse(JSON.stringify(tabs));
-  console.log('saveTabs:', tabs);
   return window.api.storeRecordSet(
     'tabs',
     tabs.map((tab: any) => {
@@ -34,7 +35,6 @@ export function saveTabs(tabs: any) {
 }
 
 export function getCurrentTab() {
-  console.log('getCurrentTab:', window.api.storeRecordGet('tab-current', 0));
   return window.api.storeRecordGet('tab-current', 0);
 }
 

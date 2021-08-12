@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-08-11 00:07:57
+ * @LastEditTime: 2021-08-12 15:23:43
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -20,7 +20,7 @@
         </template>
 
         <template v-else-if="tab.type === 'markdown'">
-          <Markdown :file="tab.file" :active="current === i" :modified-handler="tab.modified"> </Markdown>
+          <Markdown :file="tab.file" :active="current === i" :num="i" @setModified="setModified"> </Markdown>
         </template>
 
         <template v-else-if="tab.type === 'settings'">
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, reactive } from 'vue';
   import TabTitle from './TabTitle.vue';
   import Welcome from './Welcome.vue';
   import Markdown from './Markdown.vue';
@@ -48,18 +48,24 @@
   export default defineComponent({
     name: 'Main',
     components: { TabTitle, Welcome, Markdown, Settings },
+    setup() {
+      const tabs = reactive(useRecord.getTabs());
+      return { tabs };
+    },
     data() {
       return {
-        tabs: useRecord.getTabs(),
+        // tabs: useRecord.getTabs(),
         current: useRecord.getCurrentTab(),
         statusText: null
       };
     },
     watch: {
-      tabs: function () {
-        console.log('ssssssssssss')
-        useRecord.saveTabs(this.tabs);
-        console.log('save tab info');
+      tabs: {
+        handler(val, oldVal) {
+          useRecord.saveTabs(val);
+          console.log('save tab info');
+        },
+        deep: true
       },
       current() {
         useRecord.saveCurrentTab(this.current);
@@ -94,9 +100,9 @@
             return tab.title;
         }
       },
-      // setModified(tab: any, modified: any) {
-      //   this.$set(tab, 'modified', modified);
-      // },
+      setModified(i: number, modified: boolean) {
+        this.tabs[i].modified = modified;
+      },
       selectTab(index: any) {
         console.log('select tab:', this.current, '=>', index);
         this.current = index;
@@ -127,22 +133,16 @@
       }
     },
 
-    setup() {
-      console.log(i18n.global.t('meta.abstract'));
-    },
     mounted() {
       statusBar.setCallback((text: any) => {
         this.statusText = text;
       });
 
       window.api.receive('menu.open', (data: any) => {
-        console.log('menu.open', data);
         this.openFile(data);
       });
 
       window.api.receive('menu.settings', () => {
-        console.log('menu.settings');
-
         const index = this.tabs.findIndex((tab: any) => tab.type === 'settings');
         if (index === -1) {
           this.addTab({ type: 'settings' });
@@ -164,19 +164,6 @@
         this.openFile(utils.getSampleFile());
       });
 
-      // let fileToOpen = window.api.receive('fileToOpen');
-
-      // console.log('fileToOpen', fileToOpen);
-      // const argv = window.api.syncMsg('argv');
-      // if (fileToOpen) {
-      //   this.openFile(fileToOpen);
-      //   fileToOpen = null;
-      // } else if (window.api.syncMsg('platform') && argv.length >= 2) {
-      //   const file = argv[1];
-      //   if (file) {
-      //     this.openFile(file);
-      //   }
-      // }
     }
   });
 </script>

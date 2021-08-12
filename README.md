@@ -110,7 +110,9 @@ if ( !empty($data['overwrite']) && ($data['overwrite'] == true) ) {
 
 - 图片居中
 - 修复tab转换为emsp的问题，之前为全局替换，会把代码的tab也给替换，现在只替换普通文本的tab
-- 新增脚本替换
+- 新增脚本替换Wordpress
+- 修复保存标签栏的历史状态bug
+- 修复没有修改状态的保存
 
 ### v1.0.4
 
