@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-10 15:38:00
- * @LastEditTime: 2021-07-11 18:02:26
+ * @LastEditTime: 2021-08-30 17:11:18
  * @Description:
  * @FilePath: \push-markdown\src\logic\renderer\mathjax-front-renderer.ts
  */
@@ -24,8 +24,8 @@ async function loadMathJax() {
         inlineMath: [['\\(', '\\)']]
       }
     };
-    console.log(window.api.pathJoin(process.env.VUE_APP_BASE_URL, '/lib/MathJax.js'));
-    await loadScript(document, 'atom://' + window.api.pathJoin(process.env.VUE_APP_BASE_URL, '/lib/MathJax.js'));
+    console.log(window.api.pathJoin(window.api.syncMsg('__static'), '/lib/MathJax.js'));
+    await loadScript(document, 'atom://' + window.api.pathJoin(window.api.syncMsg('__static'), '/lib/MathJax.js'));
     // await loadScript(document, '../../../public/lib/MathJax.js');
   }
 }

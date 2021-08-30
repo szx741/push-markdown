@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-07-14 13:30:36
+ * @LastEditTime: 2021-08-30 20:04:09
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
@@ -57,9 +57,18 @@ ipcMain.on('process.versions', function (event, arg) {
   event.returnValue = process.versions;
 });
 
+ipcMain.on('__static', function (event, arg) {
+  // event.reply('exePath', path.dirname(app.getPath('exe')));
+  event.returnValue = __static;
+});
+
 // 中转消息，渲染进程发给主进程，主进程再发给渲染进程
 ipcMain.on('menu.settings', function (event, arg) {
   event.reply('menu.settings', arg);
+});
+// 中转消息，渲染进程发给主进程，主进程再发给渲染进程
+ipcMain.on('menu.sample', function (event, arg) {
+  event.reply('menu.sample', arg);
 });
 
 import Store from 'electron-store';

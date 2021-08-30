@@ -2,7 +2,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:14:13
- * @LastEditTime: 2021-07-08 13:36:58
+ * @LastEditTime: 2021-08-30 17:15:19
  * @Description:
  * @FilePath: \push-markdown\vue.config.js
  */
@@ -12,7 +12,6 @@ const path = require('path');
 function resolve(dir) {
   return path.join(__dirname, dir);
 }
-process.env.VUE_APP_BASE_URL = resolve('public');
 
 module.exports = {
   publicPath: './',

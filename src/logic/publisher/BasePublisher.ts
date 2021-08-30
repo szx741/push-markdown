@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-07-28 22:32:11
+ * @LastEditTime: 2021-08-30 21:40:56
  * @Description:
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -148,7 +148,7 @@ export class BasePublisher {
       { concurrency: 5 }
     );
     post.html = div.innerHTML;
-
+    console.log(oldPost);
     if (oldPost) {
       stateHandler(publisher.STATE_EDIT_POST);
       await this.editPost(oldPost, post);

@@ -1,6 +1,7 @@
 /**
  * Created by jzj on 2018/12/16.
  */
+
 'use strict';
 // import { shell } from 'electron';
 export function fileName(file: string) {
@@ -22,7 +23,7 @@ export function toStrArr(src: any) {
   return null;
 }
 
-const sampleFile = window.api.pathJoin(process.env.VUE_APP_BASE_URL, 'static/sample.md');
+const sampleFile = window.api.pathJoin(window.api.syncMsg('__static'), 'static/sample.md');
 
 export function isSampleFile(file: any) {
   return file === sampleFile;
@@ -34,16 +35,14 @@ export function getSampleFile() {
 
 export function openSampleFile() {
   window.api.send('menu.sample');
-  // remote.getCurrentWebContents().send('menu.sample');
 }
 
 export function openSettings() {
   window.api.send('menu.settings');
-  // remote.getCurrentWebContents().send('menu.settings');
 }
 
 //链接监听，如果带有data-href，那么就是打开应用内链接，否则就是用外部浏览器打开链接
-function linkListener(this: any, e: any) {
+function linkListener(this: HTMLAnchorElement, e: MouseEvent) {
   const attribute = this.getAttribute('data-href');
   if (attribute) {
     switch (attribute) {
@@ -58,9 +57,13 @@ function linkListener(this: any, e: any) {
     }
   }
   const href = this.href;
-  if (href && /^https?:\/\//.test(href)) {
-    e.preventDefault();
-    window.api.shell.openExternal(href);
+  if (href) {
+    if (/^https?:\/\//.test(href)) {
+      e.preventDefault();
+      window.api.shell.openExternal(href);
+    } else {
+      e.preventDefault();
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "push-markdown",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "description": "将本地markdown推送到博客，比如WordPress",
   "author": "szx",
@@ -31,7 +31,7 @@
     "js-base64": "^3.6.1",
     "jsdom": "13.1.0",
     "markdown-it": "^12.1.0",
-    "markdown-it-anchor": "5.0.2",
+    "markdown-it-anchor": "8.3.0",
     "markdown-it-mathjax": "^2.0.0",
     "markdown-it-table-of-contents": "^0.5.2",
     "markdown-it-title": "^4.0.0",

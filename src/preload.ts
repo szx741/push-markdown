@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-07-14 14:24:15
+ * @LastEditTime: 2021-08-30 22:14:05
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -11,6 +11,8 @@ import { contextBridge, ipcRenderer, shell } from 'electron';
 import fs from 'fs-extra';
 import Store from 'electron-store';
 import path from 'path';
+import request from 'request';
+
 // import { filenamifyPath } from 'filenamify';
 
 import md5File from 'md5-file';
@@ -18,6 +20,7 @@ import md5File from 'md5-file';
 // const filenamify = (s: any) => _filenamify(s, { replacement: '-' });
 
 import { copyFileSync } from 'fs';
+import MetaWeblog from 'metaweblog-api';
 // 存储的文件名为settings
 const storeSettings = new Store({ name: 'settings' });
 const storeRecord = new Store({ name: 'use-record' });
@@ -34,7 +37,8 @@ const validChannels = [
   'menu.settings',
   'menu.open',
   'menu.publish',
-  'process.versions'
+  'process.versions',
+  '__static'
 ];
 
 contextBridge.exposeInMainWorld('api', {
@@ -101,5 +105,18 @@ contextBridge.exposeInMainWorld('api', {
   mathJaxPath: mathJaxPath,
   md5(file: any) {
     return md5File.sync(file);
+  },
+  async checkUrlValid(url: string) {
+    return (
+      url &&
+      new Promise((resolve, reject) => {
+        request.head(url, function (error: any, response: any, body: any) {
+          resolve(!error && response && response.statusCode === 200);
+        });
+      })
+    );
+  },
+  metaWeblog(url: string) {
+    return new MetaWeblog(url);
   }
 });

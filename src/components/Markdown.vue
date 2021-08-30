@@ -167,7 +167,7 @@
       }
     },
     async updated() {
-      const markdown = this.$refs['markdown'];
+      const markdown: any = this.$refs['markdown'];
       utils.setLinks(markdown);
     }
   });

@@ -8,7 +8,6 @@
 // import path from 'path';
 import fm from 'front-matter';
 import highlight from 'highlight.js';
-import uslug from 'uslug';
 import MarkdownIt from 'markdown-it';
 import * as utils from '../utils';
 import * as mermaidRenderer from './mermaid-front-renderer';
@@ -16,15 +15,15 @@ import * as mathJaxRenderer from './mathjax-front-renderer';
 import * as config from '../config';
 import { get } from './markdown-it-mathjax';
 import { htmlToText } from 'html-to-text';
-import * as markdownItTitle from 'markdown-it-title';
-import * as markdownItUnderline from 'markdown-it-underline';
+import markdownItTitle from 'markdown-it-title';
+import markdownItUnderline from 'markdown-it-underline';
 import slugify from '@sindresorhus/slugify';
 import * as markdownItAnchor from 'markdown-it-anchor';
 import * as markdownItTableOfContents from 'markdown-it-table-of-contents';
 import { markdownItMermaid } from './markdown-it-mermaid';
 import { copyFileSync } from 'fs';
 // import * as markdownItUnderline from 'markdown-it-underline';
-// import * as markdownItUnderline from 'markdown-it-underline';
+import uslug from 'uslug';
 
 let renderConfig: any;
 let md: any;
@@ -49,11 +48,9 @@ function init() {
   md.use(markdownItUnderline);
 
   // generate anchor for heading
-  md.use(markdownItAnchor, {
-    slugify: (s: any) => slugify(s)
-  });
-
+  md.use(markdownItAnchor.default, { slugify: (s: string) => uslug(s) });
   // 目录插件
+  // md.use(markdownItTableOfContents);
   md.use(markdownItTableOfContents, {
     markerPattern: /^\[toc]/im,
     includeLevel: [1, 2, 3, 4, 5, 6]
@@ -71,6 +68,24 @@ function init() {
   if (isFeatureEnabled(renderConfig.mermaid)) {
     md.use(markdownItMermaid);
   }
+
+  const defaultRender = md.renderer.rules.link_open || function(tokens:any, idx:any, options:any, env:any, self:any) {
+    return self.renderToken(tokens, idx, options);
+  };
+  
+  md.renderer.rules.link_open = function (tokens:any, idx:any, options:any, env:any, self:any) {
+    // If you are sure other plugins can't add `target` - drop check below
+    const aIndex = tokens[idx].attrIndex('target');
+  
+    if (aIndex < 0) {
+      tokens[idx].attrPush(['target', '_blank']); // add new attribute
+    } else {
+      tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
+    }
+  
+    // pass token to default renderer.
+    return defaultRender(tokens, idx, options, env, self);
+  };
 }
 
 export function notifyConfigChanged() {

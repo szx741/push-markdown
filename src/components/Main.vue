@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-08-12 15:23:43
+ * @LastEditTime: 2021-08-30 19:27:44
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -163,7 +163,6 @@
       window.api.receive('menu.sample', () => {
         this.openFile(utils.getSampleFile());
       });
-
     }
   });
 </script>

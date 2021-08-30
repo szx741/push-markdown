@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-07-21 19:43:12
+ * @LastEditTime: 2021-08-30 22:04:27
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -37,10 +37,10 @@ async function createWindow() {
       // enableRemoteModule: true,
       // nodeIntegration: true,  //默认不开启node集成，为了安全😊
       contextIsolation: true, //上下文隔离，开起来吧，为了安全😊
-      webSecurity: false // 关闭跨域限制，为了安全😊
+      webSecurity: true // 关闭跨域限制，为了安全😊
     },
     // eslint-disable-next-line
-    icon: `${process.env.VUE_APP_BASE_URL}/app.ico`
+    icon: `${__static}/app.ico`
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -89,8 +89,17 @@ app.on('ready', async () => {
 // 注册拦截器，使用atom://来代替file://，这样子也不需要关闭webSecurity https://www.electronjs.org/docs/api/protocol
 app.whenReady().then(() => {
   protocol.registerFileProtocol('atom', (request, callback) => {
-    const url = decodeURI(request.url).substr(7);
-    callback({ path: path.normalize(url) });
+    const url = request.url.replace(/^atom:\/\//, '')
+    // Decode URL to prevent errors when loading filenames with UTF-8 chars or chars like "#"
+    const decodedUrl = decodeURI(url) // Needed in case URL contains spaces
+    try {
+      return callback({ path: path.normalize(decodedUrl) })
+    }
+    catch (error) {
+      console.error('ERROR: registerLocalResourceProtocol: Could not get file path:', error)
+    }
+    // const url = decodeURI(request.url).substr(7);
+    // callback({ path: path.normalize(url) });
   });
 });
 

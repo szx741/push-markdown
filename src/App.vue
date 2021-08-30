@@ -1,14 +1,14 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-11 12:38:37
+ * @LastEditTime: 2021-08-30 19:28:04
  * @Description: 
  * @FilePath: \push-markdown\src\App.vue
 -->
 <template>
-  <div id="app">
-    <router-view></router-view>
-  </div>
+  <!-- <div id="app"> -->
+  <router-view></router-view>
+  <!-- </div> -->
 </template>
 <!--<template>
   <div id="app">
