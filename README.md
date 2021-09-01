@@ -14,7 +14,7 @@
 
 ## 软件简介
 
-**Push Markdown **是一款将本地Markdown文件发布到博客的开源工具，基于Electron实现，支持中英文，目前只支持windows。
+**Push Markdown** 是一款将本地Markdown文件发布到博客的开源工具，基于Electron实现，支持中英文，目前只支持windows。
 
 1. 支持主流Markdown语法、TOC、代码高亮、MathJax数学公式，支持本地预览和简易编辑功能（建议使用Haroopad、Typora等工具编写好后，再使用本工具发布）。
 2. 全自动博客发布。博客可设置标题、摘要、固定链接、作者、发布时间、标签、分类等属性，自动批量上传markdown文件中引用的本地图片。支持多站点同时发布。目前支持MetaWeblog接口，兼容WordPress、csdn、cnblogs、oschina等博客，后续可以继续开发其他接口。
