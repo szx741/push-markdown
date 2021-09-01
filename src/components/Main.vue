@@ -1,14 +1,24 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-08-30 19:27:44
+ * @LastEditTime: 2021-09-01 19:33:57
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
 <template>
-  <div class="root">
+  <div class="root" draggable="true" id="drag" @dragover="fileDragover" @drop="fileDrop">
     <div class="tab-titles">
-      <TabTitle v-for="(tab, i) in tabs" :key="tab.type" :tab-title="tabTitle(tab)" :selected="current === i" :tab-click="() => selectTab(i)" :tab-close="() => closeTab(i)" :modified="tab.modified">
+      <TabTitle
+        v-for="(tab, i) in tabs"
+        :key="tab.type"
+        :tab-type="tab.type"
+        :tab-title="tabTitle(tab)"
+        :selected="current === i"
+        :tab-refresh="() => refreshTab(i)"
+        :tab-click="() => selectTab(i)"
+        :tab-close="() => closeTab(i)"
+        :modified="tab.modified"
+      >
       </TabTitle>
       <!-- <TabTitle></TabTitle> -->
     </div>
@@ -56,14 +66,15 @@
       return {
         // tabs: useRecord.getTabs(),
         current: useRecord.getCurrentTab(),
-        statusText: null
+        statusText: null,
+        MAX_FILE_SIZE: 1000 * 1000
       };
     },
     watch: {
       tabs: {
         handler(val, oldVal) {
           useRecord.saveTabs(val);
-          console.log('save tab info');
+          // console.log('save tab info');
         },
         deep: true
       },
@@ -72,7 +83,20 @@
       }
     },
     methods: {
-      openFile(file: any) {
+      // 拖拽上传
+      fileDragover(e: Event) {
+        e.preventDefault();
+      },
+      fileDrop(e: DragEvent) {
+        e.preventDefault();
+        const file = e.dataTransfer?.files[0]; // 获取到第一个上传的文件对象
+        if (!file) return;
+        if (file.size > this.MAX_FILE_SIZE) {
+          return alert('文件大小不能超过10M');
+        }
+        this.openFile(file.path);
+      },
+      async openFile(file: any) {
         const index = this.tabs.findIndex((tab: any) => tab.file === file);
         if (index === -1) {
           if (window.api.fsExistsSync(file)) {
@@ -112,7 +136,12 @@
         this.tabs.splice(pos, 0, tab);
         this.current = pos;
       },
-      closeTab(index: any) {
+      async refreshTab(index: any) {
+        const file = this.tabs[index].file;
+        await this.closeTab(index);
+        await this.openFile(file);
+      },
+      async closeTab(index: any) {
         const tab = this.tabs[index];
         if (tab.type === 'markdown' && tab.modified && !utils.isSampleFile(tab.file)) {
           if (!window.confirm(i18n.global.t('closeModifiedFile'))) {

@@ -1,39 +1,3 @@
----
-# 注释：文件开头使用YAML语法配置文章信息，之后是正常的Markdown语法
-# Note: The beginning of the file uses YAML syntax to configure the blog meta data, followed by the normal Markdown syntax.
-
-# 此处如果不配置标题，则提取Markdown中的一级标题，或使用文件名
-# Title will be extracted from heading 1 of markdown or using file name if not configured here.
-title: psuh markdown
-
-
-# 此处如果不配置摘要，则从正文提取开头若干文字
-# Abstract will be extracted from the begining of markdown content if not configured here.
-abstract: 关于push markdown。
-
-# URL用于固定链接、编辑文章功能，建议所有文章都配置
-# URL is used for permalink and article editing, and it is recommended to be configured.
-url: markdown
-
-
-# 文章发布时间，使用的时区和系统设置一致，不设置则使用当前时间
-# Article post time, time zone is the same as the system settings. Current time will be used if not configured here.
-date: 
-
-
-# 文章分类
-category:
-- 图一乐
-- 网站建设
-
-
-# 文章标签
-tags:
-- 图一乐
-- 网站建设
-
----
-
 # Push Markdown
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://raw.githubusercontent.com/meituan/WMRouter/master/LICENSE)
@@ -42,69 +6,35 @@ tags:
 
 原代码地址：https://github.com/jzj1993/PublishMarkdown
 
-XML-RPC网址：https://codex.wordpress.org/zh-cn:XML-RPC_Support（需要翻墙）、https://developer.wordpress.org/apis/handbook/xml-rpc/
-
-## 简介
+## 背景
 
 由于原来的代码并没有进行更新维护，框架可能有点老，而且有时候有bug，因此萌生了用基于electron13、vue3和TypeScript重构代码的想法。
 
 由于我本人并不会electron开发和vue开发，算是半个开发小白，所以也想借助最近搭建博客的热情来顺便重构一下这款软件的代码。毕竟兴趣是最好的老师，而且在别人的基础上前行，也是能够进步非常快的，希望我能够真正的完成这款软件的重构，一步一步个脚印，无限进步吧！
 
-## wordpress设置
+## 软件简介
 
-### 脚本替换
+**Push Markdown **是一款将本地Markdown文件发布到博客的开源工具，基于Electron实现，支持中英文，目前只支持windows。
 
-运行[change.sh](docs/change.sh)脚本，需要放在wordpress根目录下，或者自己改一下里面的path路径，然后给与执行权限，运行一下就行。
+1. 支持主流Markdown语法、TOC、代码高亮、MathJax数学公式，支持本地预览和简易编辑功能（建议使用Haroopad、Typora等工具编写好后，再使用本工具发布）。
+2. 全自动博客发布。博客可设置标题、摘要、固定链接、作者、发布时间、标签、分类等属性，自动批量上传markdown文件中引用的本地图片。支持多站点同时发布。目前支持MetaWeblog接口，兼容WordPress、csdn、cnblogs、oschina等博客，后续可以继续开发其他接口。
+3. 对文章上传逻辑和图片上传逻辑进行了优化，不仅只依赖本地缓存，这样能适应多台设备和新装软件的情况，详情逻辑可以查看我的[技术博客](https://szx.life/push-markdown/push-markdown重构)。
 
-### 手动替换
+![欢迎界面](images/欢迎界面.png)
 
-#### base64编码
+## 使用教程
 
-参考网址：https://www.znian.cn/823.html
-
-图片上传默认编码发现不行，不知道为什么，原来的工具是可以支持的，明明代码都是一样的，所以需要改一下。xmlrpc将媒体文件的解码方式改为base64。
-
-文件路径在wp-includes/class-wp-xmlrpc-server.php，因此需要
-
-找到 mw_newMediaObject函数下面的语句
-
-```php
-$bits = $data['bits'];
-```
-
-改成下面这条语句
-
-```php
-$bits = base64_decode($data['bits']);
-```
-
-#### 上传媒体覆盖
-
-并在后面加入这一条语句，作用是为了xmlrpc上传媒体文件时覆盖文件，而不是创建新的文件（别不改变原来前台界面上传媒体文件的逻辑，仅为xmlrpc方式）。
-
-可以参考[网址](https://gist.github.com/koke/5720862#file-xmlrpc-test-upload-php)，或者参考我拷贝的[本地文件](docs/class-wp-xmlrpc-server.php)，在版本5.8的基础上进行的修改。
-
-```php
-if ( !empty($data['overwrite']) && ($data['overwrite'] == true) ) {
-    // Get postmeta info on the object.
-    $old_file = $wpdb->get_row("
-		SELECT ID
-    	FROM {$wpdb->posts}
-		WHERE post_title = '{$name}'
-		AND post_type = 'attachment'
-		");
-
-    // Delete previous file.
-    wp_delete_attachment($old_file->ID);
-
-    // Make sure the new name is different by pre-pending the
-    // previous post id.
-    //$filename = preg_replace('/^wpid\d+-/', '', $name);
-    //$name = "wpid{$old_file->ID}-{$filename}";
-}
-```
+**务必先查看**[**使用教程**](docs/使用教程.md)**！！！**
 
 ## 重要版本
+
+### v1.1.0
+
+- 将electron升级为14（是的，我是个升级怪）
+- 半修复锚点，如果想实现tab的效果，那么需要用全角中文来替换标题
+- 加入一键重载的按钮，原理很简单，先关闭再打开（懒）
+- 将tab转换为半角空格，因为这样子源码好看点，没有丑陋的emsp
+- 重新加入MathJax，有万能的markdown-it库，直接搞定。
 
 ### v1.0.6
 
@@ -171,15 +101,14 @@ if ( !empty($data['overwrite']) && ($data['overwrite'] == true) ) {
 
 ## 待做
 
-- [ ] v-html改为组件模版，为了安全。
-- [ ] 标题栏和菜单栏实现。
+- [ ] ~~v-html改为组件模版，为了安全。~~（懒，问题不大）
+- [ ] ~~标题栏和菜单栏实现~~。（懒，不想实现）
 - [x] ~~文章图片cache基类这个逻辑可能还需要再重新写一遍，目前觉得用md5进行重写会不会合适一点？本地记录一下图片的名称和md5，然后比对。~~（不用md5，因为麻烦，还耗费资源，目前没看到必要性，详细看1.0.4）
-- [x] ~~一个tab键转换的时候会变成一个空格键，希望能够变成一个全角空格~~（已经修复，直接将`\t`替换`&emsp;`就行了 ）。
-- [ ] mathjax实现，不一定做，因为现在没用到，而且很麻烦。
+- [x] ~~一个tab键转换的时候会变成一个空格键，希望能够变成一个全角空格~~（~~已经修复，直接将`\t`替换`&emsp;`就行~~~~了 ）~~~~（又修改了一遍，将\t替换为全角空格）。
+- [x] mathjax实现，不一定做，因为现在没用到，而且很麻烦。
 - [x] 图片居中
 - [x] 记录文件打开历史
 - [x] 文件修改后有标记
-- [ ] 能够有一键重载文件的按钮
+- [x] 能够有一键重载文件的按钮
 - [ ] 使用typescript（即不要全用any）
 - [ ] 改成vue3格式
-

@@ -100,33 +100,16 @@ const zh = {
     confirmUrlCancel: '取消发布'
   },
 
-  // '<h2>简介</h2>' +
-  // '<p>Publish Markdown是一款将本地Markdown文件发布到博客的开源工具，基于Electron实现，支持中英文，兼容Windows、Linux、MacOS平台。</p>' +
-  // '<ol>' +
-  // '<li>支持主流Markdown语法、TOC、代码高亮、MathJax数学公式，支持本地预览和简易编辑功能（建议使用Haroopad、Typora等工具编写好后，再使用本工具发布）。</li>' +
-  // '<li>全自动博客发布。博客可设置标题、摘要、固定链接、作者、发布时间、标签、分类等属性，自动批量上传markdown文件中引用的本地图片。支持多站点同时发布。目前支持MetaWeblog接口，兼容WordPress、csdn、cnblogs、oschina等博客，后续可以继续开发其他接口。</li>' +
-  // '<li>已经通过本工具发布到远程的博客，可以使用本工具更新(博客使用固定链接即url区分)，且更新时相同图片无需重复上传(图片使用文件md5区分)。</li>' +
-  // '</ol>' +
-  // '<h2>使用说明</h2>' +
-  // '<ol>' +
-  // '<li>从菜单打开<a href="#" data-href="settings">设置</a>，配置需要发布的博客网址和账户信息。</li>' +
-  // '<li>从菜单打开要发布的Markdown文件，查看渲染结果是否正确。注意Markdown源文件必须是UTF-8编码，扩展名为<code>.md</code>。</li>' +
-  // '<li>从菜单点击发布，弹窗勾选需要发布的博客，点击“发布”即可。本地预览使用的是GitHub风格的样式，发布到博客后，最终效果取决于博客的CSS样式配置。</li>' +
-  // '<li>对于<b>使用本工具发布过的文章</b>，使用<b>相同URL</b>再次发布到<b>相同站点</b>时，可以在发布时选择编辑已有文章还是创建新文章。</li>' +
-  // '<li>如果对文档编写格式存在疑问，可以随时打开<a href="#" data-href="sample">示例文档</a>查看。</li>' +
-  // '<li>更多内容请查看<a href="https://github.com/jzj1993/PublishMarkdown">GitHub</a>，<a href="http://paincker.com/publish-markdown">技术博客</a>。</li>' +
-  // '</ol>'
-
   introduction: `
     <h2>简介</h2>
       <p>Push Markdown是一款将本地Markdown文件发布到博客的开源工具，基于Electron实现，支持中英文，目前只支持windows。</p>
       <ol>
-        <li>支持主流Markdown语法、TOC、代码高亮、<strike>MathJax数学公式</strike>，支持本地预览和简易编辑功能（建议使用Haroopad、Typora等工具编写好后，再使用本工具发布）。</li>
+        <li>支持主流Markdown语法、TOC、代码高亮、MathJax数学公式，支持本地预览和简易编辑功能（建议使用Haroopad、Typora等工具编写好后，再使用本工具发布）。</li>
         <li>全自动博客发布。博客可设置标题、摘要、固定链接、作者、发布时间、标签、分类等属性，自动批量上传markdown文件中引用的本地图片。支持多站点同时发布。目前支持MetaWeblog接口，兼容WordPress、csdn、cnblogs、oschina等博客，后续可以继续开发其他接口。</li>
         <li>已经通过本工具发布到远程的博客，可以使用本工具更新(博客使用固定链接即url区分)，且更新时相同图片无需重复上传(图片使用文件md5区分)。</li>
       </ol>
     <h2>使用说明</h2>
-    <h3>使用前一定要先参考<a href="https://gitee.com/xaotuman/push-markdown#wordpress设置">wordpress设置</a>！！！！！</h3>
+    <h3>使用前一定要先参考<a href="https://gitee.com/xaotuman/push-markdown/blob/master/docs/%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA.md">使用教程</a>！！！！！</h3>
     <ol>
       <li>从菜单打开<a href="#" data-href="settings">设置</a>，配置需要发布的博客网址和账户信息。</li>
       <li>从菜单打开要发布的Markdown文件，查看渲染结果是否正确。注意Markdown源文件必须是UTF-8编码，扩展名为<code>.md</code>。</li>

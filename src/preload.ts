@@ -1,25 +1,17 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-08-30 22:14:05
+ * @LastEditTime: 2021-09-01 16:46:31
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
 /* eslint-disable */
-import { typesetMath, mathJaxPath } from 'mathjax-electron';
 import { contextBridge, ipcRenderer, shell } from 'electron';
 import fs from 'fs-extra';
 import Store from 'electron-store';
 import path from 'path';
 import request from 'request';
-
-// import { filenamifyPath } from 'filenamify';
-
 import md5File from 'md5-file';
-
-// const filenamify = (s: any) => _filenamify(s, { replacement: '-' });
-
-import { copyFileSync } from 'fs';
 import MetaWeblog from 'metaweblog-api';
 // 存储的文件名为settings
 const storeSettings = new Store({ name: 'settings' });
@@ -49,14 +41,11 @@ contextBridge.exposeInMainWorld('api', {
     }
   },
   receive: (channel: string, func: Function) => {
-    // let validChannels = ['fromMain', 'exePath', 'version'];
     if (validChannels.includes(channel)) {
-      // Deliberately strip event as it includes `sender`
       ipcRenderer.on(channel, (event, ...args) => func(...args));
     }
   },
   syncMsg: function (channel: string, data: any) {
-    // let validChannels = ['fromMain', 'exePath', 'version'];
     if (validChannels.includes(channel)) {
       return ipcRenderer.sendSync(channel, data); // prints "pong"
     }
@@ -90,7 +79,6 @@ contextBridge.exposeInMainWorld('api', {
   fsWriteFile: fs.writeFile,
   fsWriteFileSync: fs.writeFileSync,
   fsExistsSync: fs.existsSync,
-  typesetMath: typesetMath,
   newStore(name: string) {
     return new Store({ name }).path;
   },
@@ -102,7 +90,6 @@ contextBridge.exposeInMainWorld('api', {
     const store = new Store({ name });
     return store.get(key);
   },
-  mathJaxPath: mathJaxPath,
   md5(file: any) {
     return md5File.sync(file);
   },

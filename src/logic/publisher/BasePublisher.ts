@@ -1,21 +1,14 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-08-30 21:40:56
- * @Description:
+ * @LastEditTime: 2021-09-01 17:32:28
+ * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
- */
-/**
- * 博客发布基类，可以有多种实现
- *
- * Created by jzj on 2018/12/24.
  */
 'use strict';
 
 import { Promise as _Promise } from 'bluebird';
-import request from 'request';
 import { JSDOM } from 'jsdom';
-
 import * as renderer from '../renderer';
 import * as publisher from './index';
 
@@ -51,17 +44,6 @@ export function readFileBase64(file: string) {
   } catch (err) {
     console.log(err);
   }
-}
-
-export function checkUrlValid(url: any) {
-  return (
-    url &&
-    new Promise((resolve, reject) => {
-      request.head(url, function (error: any, response: any, body: any) {
-        resolve(!error && response && response.statusCode === 200);
-      });
-    })
-  );
 }
 
 /**

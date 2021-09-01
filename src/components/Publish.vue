@@ -113,7 +113,6 @@
   import { Publisher } from '../logic/publisher';
   import { openSampleFile } from '../logic/utils';
   import * as statusBar from '../logic/statusBar';
-  import { windowsStore } from 'process';
 
   import Promise from 'bluebird';
   import * as config from '../logic/config';

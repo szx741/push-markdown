@@ -65,7 +65,6 @@
   import { defineComponent } from 'vue';
 
   import dateFormat from 'dateformat';
-  import debounce from 'lodash.debounce';
   import * as utils from '../logic/utils';
   // import { djfj } from '@/logic/test';
   // import { djfj } from '@/logic/renderer';
@@ -73,6 +72,7 @@
   import Publish from '@/components/Publish.vue';
   import * as statusBar from '../logic/statusBar';
   import i18n from '@/common/lib/language';
+  import dayjs from 'dayjs';
 
   interface data {
     modified: any;
@@ -94,15 +94,6 @@
     methods: {
       async debounceUpdate() {
         const _this = this;
-        // debounce(
-        //   async function () {
-        //     console.log('debounce update');
-        //     _this.post = (await renderer.render(_this.src, _this.file, true)) || {};
-        //   },
-        //   300,
-        //   { leading: true }
-        // );
-        // console.log('this.src', this.src);
         this.post = await renderer.render(_this.src, _this.file, true);
       },
       onSave() {
@@ -144,7 +135,7 @@
         this.modified = true;
       },
       formatDate(date: any) {
-        return dateFormat(date, 'yyyy-mm-dd HH:MM:ss');
+        return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
       }
     },
     async mounted() {
@@ -153,7 +144,7 @@
       window.api.receive('menu.save', this.onSave);
     },
     watch: {
-      async file() {
+      file() {
         this.readFile();
       },
       async src() {
@@ -162,8 +153,6 @@
       modified() {
         console.log('this.num', this.num);
         this.$emit('setModified', this.num, this.modified);
-        // this.$emit('方法名', 'dd');
-        // this.modifiedHandler && this.modifiedHandler(this.modified);
       }
     },
     async updated() {

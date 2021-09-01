@@ -1,12 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-08-12 15:26:44
+ * @LastEditTime: 2021-09-01 17:26:41
  * @Description:
  * @FilePath: \push-markdown\src\logic\useRecord.ts
- */
-/**
- * Created by jzj on 2020-04-04.
  */
 'use strict';
 

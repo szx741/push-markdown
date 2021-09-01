@@ -125,11 +125,8 @@
       },
       render: {
         handler() {
-          console.log('11111111111');
           config.saveRenderConfig(this.render);
-          console.log('2222222222');
           renderer.notifyConfigChanged();
-          console.log('13333333311');
           console.log('render settings saved');
         },
         deep: true

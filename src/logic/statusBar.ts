@@ -1,14 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-07-07 17:22:38
- * @Description:
+ * @LastEditTime: 2021-09-01 17:26:38
+ * @Description: 状态栏信息显示
  * @FilePath: \push-markdown\src\logic\statusBar.ts
- */
-/**
- * 状态栏信息显示
- *
- * Created by jzj on 2018/12/16.
  */
 'use strict';
 

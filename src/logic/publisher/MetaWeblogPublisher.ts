@@ -1,19 +1,19 @@
-/**
- * 基于MetaWeblog接口的博客发布器，支持WordPress等博客
- *
+/*
+ * @Author: szx
+ * @Date: 2021-08-27 17:11:08
+ * @LastEditTime: 2021-09-01 17:28:12
+ * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
  * https://github.com/uhavemyword/metaweblog-api
- *
- * Created by jzj on 2018/12/24.
+ * @FilePath: \push-markdown\src\logic\publisher\MetaWeblogPublisher.ts
  */
-
 'use strict';
 
 import MetaWeblog from 'metaweblog-api';
 
 import { FileCache, PostCache } from './PublishCache';
-import { checkUrlValid, getMimeType, BasePublisher, readFileBase64 } from './BasePublisher';
+import { getMimeType, BasePublisher, readFileBase64 } from './BasePublisher';
 
 /**
  * 基于MetaWeblog接口的博客发布器
@@ -36,38 +36,38 @@ export class MetaWeblogPublisher extends BasePublisher {
   }
 
   async getOldPost(post: any, blogID: number) {
-      // 1、手动更新指定文章的ID，必须大于0
-      if (blogID > 0) {
-        console.log('手动更新指定文章ID');
-        const oldPost = await this.metaWeblog.getPost(blogID.toString(), this.username, this.password).catch(() => null);
-        if (oldPost && oldPost.postid == blogID.toString()) {
+    // 1、手动更新指定文章的ID，必须大于0
+    if (blogID > 0) {
+      console.log('手动更新指定文章ID');
+      const oldPost = await this.metaWeblog.getPost(blogID.toString(), this.username, this.password).catch(() => null);
+      if (oldPost && oldPost.postid == blogID.toString()) {
+        return this.toPost(oldPost);
+      }
+    }
+    // 2、否则，从本地缓存查找之前的ID
+    const oldPostId = await this.postCache.get(post);
+    console.log('getOldPost', oldPostId);
+    if (oldPostId) {
+      console.log('metaweblog old post id', oldPostId);
+      const oldPost = await this.metaWeblog.getPost(oldPostId, this.username, this.password).catch(() => null);
+      console.log('metaweblog old post', oldPost);
+      // noinspection EqualityComparisonWithCoercionJS
+      if (oldPost && oldPost.postid == oldPostId) {
+        return this.toPost(oldPost);
+      }
+    }
+    // 3、如果在本地缓存也找不到的话，说明第一次用这个软件，那么就从博客获取所有的文章匹配相同的标题
+    if (blogID == 0) {
+      const arr = await this.metaWeblog.getRecentPosts('', this.username, this.password, 1000);
+      for (const a of arr) {
+        if (a.title == post.title && a.postid) {
+          console.log('本地可能没有缓存，因此去查找wordpress上的所有博客，匹配到相同的标题即为同一篇');
+          const oldPost = await this.metaWeblog.getPost(a.postid, this.username, this.password).catch(() => null);
           return this.toPost(oldPost);
         }
       }
-      // 2、否则，从本地缓存查找之前的ID
-      const oldPostId = await this.postCache.get(post);
-      console.log('getOldPost', oldPostId);
-      if (oldPostId) {
-        console.log('metaweblog old post id', oldPostId);
-        const oldPost = await this.metaWeblog.getPost(oldPostId, this.username, this.password).catch(() => null);
-        console.log('metaweblog old post', oldPost);
-        // noinspection EqualityComparisonWithCoercionJS
-        if (oldPost && oldPost.postid == oldPostId) {
-          return this.toPost(oldPost);
-        }
-      }
-      // 3、如果在本地缓存也找不到的话，说明第一次用这个软件，那么就从博客获取所有的文章匹配相同的标题
-      if (blogID == 0) {
-        const arr = await this.metaWeblog.getRecentPosts('', this.username, this.password, 1000);
-        for (const a of arr) {
-          if (a.title == post.title && a.postid) {
-            console.log('本地可能没有缓存，因此去查找wordpress上的所有博客，匹配到相同的标题即为同一篇');
-            const oldPost = await this.metaWeblog.getPost(a.postid, this.username, this.password).catch(() => null);
-            return this.toPost(oldPost);
-          }
-        }
-      }
-      return null;
+    }
+    return null;
   }
 
   async newPost(post: any) {

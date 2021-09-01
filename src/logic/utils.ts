@@ -1,7 +1,10 @@
-/**
- * Created by jzj on 2018/12/16.
+/*
+ * @Author: szx
+ * @Date: 2021-08-27 17:11:08
+ * @LastEditTime: 2021-09-01 21:44:02
+ * @Description: 
+ * @FilePath: \push-markdown\src\logic\utils.ts
  */
-
 'use strict';
 // import { shell } from 'electron';
 export function fileName(file: string) {
@@ -91,41 +94,4 @@ export function setTextareaTabKey(textarea: any) {
       }
     };
   }
-}
-
-/**
- * insert script to document head
- *
- * @param document
- * @param src script src. file:///xxx.js
- * @param text script text. var a = 1...
- * @return {undefined|Promise<any>}
- */
-export function loadScript(document: any, src: any, text: any = null): undefined | Promise<any> {
-  return (
-    (src || text) &&
-    new Promise<void>((resolve, reject) => {
-      try {
-        console.log('document:', document);
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        if (src != undefined) {
-          script.src = src;
-        }
-        if (text != undefined) {
-          script.text = text;
-        }
-
-        script.addEventListener('load', () => {
-          console.log('script load success [' + (src || text) + ']');
-          resolve();
-        });
-        console.log('script:', script);
-        document.getElementsByTagName('head')[0].appendChild(script);
-      } catch (error) {
-        console.error('script load failed [' + (src || text) + ']', error);
-        reject(error);
-      }
-    })
-  );
 }

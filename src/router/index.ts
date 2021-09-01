@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-14 16:04:21
+ * @LastEditTime: 2021-09-01 17:23:17
  * @Description:
  * @FilePath: \push-markdown\src\router\index.ts
  */
@@ -13,15 +13,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Main',
     component: Main
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-    // component: () => import(/* webpackChunkName: "about" */ '@/components/Markdown.vue')
   }
 ];
 

@@ -1,14 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-07-14 14:34:24
- * @Description:
+ * @LastEditTime: 2021-09-01 21:59:40
+ * @Description: user settings
  * @FilePath: \push-markdown\src\logic\config.ts
- */
-/**
- * user settings
- *
- * Created by jzj on 2018/12/23.
  */
 'use strict';
 
@@ -32,8 +27,6 @@ const defaultSites = [newSite()];
 
 export function getSites() {
   const sites = window.api.storeSettingsGet('sites', defaultSites);
-  // console.log('sites:', sites);
-  // decode
   return (
     sites &&
     sites.map((site: any) => {
@@ -71,7 +64,7 @@ export function getRenderConfig() {
   const defaultValue = {
     abstract: 'article',
     highlight: 'preview',
-    mathjax: 'preview',
+    mathjax: 'publish',
     mermaid: 'preview'
   };
   const config = window.api.storeSettingsGet('render', {});

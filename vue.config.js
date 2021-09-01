@@ -2,7 +2,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:14:13
- * @LastEditTime: 2021-08-30 17:15:19
+ * @LastEditTime: 2021-09-01 21:14:40
  * @Description:
  * @FilePath: \push-markdown\vue.config.js
  */
@@ -40,9 +40,6 @@ module.exports = {
               arch: 'x64'
             }
           ]
-        },
-        mac: {
-          icon: './public/app.png'
         }
       }
     },

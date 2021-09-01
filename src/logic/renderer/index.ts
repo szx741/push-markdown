@@ -1,30 +1,27 @@
-/**
- * 渲染器，用于本地预览和远程发布
- *
- * Created by jzj on 2018/12/11.
+/*
+ * @Author: szx
+ * @Date: 2021-08-27 17:11:08
+ * @LastEditTime: 2021-09-01 18:55:57
+ * @Description: 渲染器，用于本地预览和远程发布
+ * @FilePath: \push-markdown\src\logic\renderer\index.ts
  */
 'use strict';
-
 // import path from 'path';
 import fm from 'front-matter';
 import highlight from 'highlight.js';
 import MarkdownIt from 'markdown-it';
 import * as utils from '../utils';
 import * as mermaidRenderer from './mermaid-front-renderer';
-import * as mathJaxRenderer from './mathjax-front-renderer';
 import * as config from '../config';
-import { get } from './markdown-it-mathjax';
 import { htmlToText } from 'html-to-text';
 import markdownItTitle from 'markdown-it-title';
 import markdownItUnderline from 'markdown-it-underline';
-import slugify from '@sindresorhus/slugify';
 import * as markdownItAnchor from 'markdown-it-anchor';
 import * as markdownItTableOfContents from 'markdown-it-table-of-contents';
 import { markdownItMermaid } from './markdown-it-mermaid';
-import { copyFileSync } from 'fs';
-// import * as markdownItUnderline from 'markdown-it-underline';
+import mathjax3 from 'markdown-it-mathjax3';
 import uslug from 'uslug';
-
+const blank = decodeURI('%E3%80%80');
 let renderConfig: any;
 let md: any;
 
@@ -56,33 +53,32 @@ function init() {
     includeLevel: [1, 2, 3, 4, 5, 6]
   });
 
-  // mathjax preprocess
-  // $\frac{a}{b}$  ==>  \( \frac{a}{b} \)
-  // $$ \frac{a}{b} $$  ==>  \[ \frac{a}{b} \]
-  if (isFeatureEnabled(renderConfig.mathjax)) {
-    md.use(get());
-  }
-
   // // mermaid preprocess
   // // ```mermaid ... ```  ==>  <div class="mermaid">...</div>
   if (isFeatureEnabled(renderConfig.mermaid)) {
     md.use(markdownItMermaid);
   }
 
-  const defaultRender = md.renderer.rules.link_open || function(tokens:any, idx:any, options:any, env:any, self:any) {
-    return self.renderToken(tokens, idx, options);
-  };
-  
-  md.renderer.rules.link_open = function (tokens:any, idx:any, options:any, env:any, self:any) {
+  if (isFeatureEnabled(renderConfig.mathjax)) {
+    md.use(mathjax3);
+  }
+
+  const defaultRender =
+    md.renderer.rules.link_open ||
+    function (tokens: any, idx: any, options: any, env: any, self: any) {
+      return self.renderToken(tokens, idx, options);
+    };
+
+  md.renderer.rules.link_open = function (tokens: any, idx: any, options: any, env: any, self: any) {
     // If you are sure other plugins can't add `target` - drop check below
     const aIndex = tokens[idx].attrIndex('target');
-  
-    if (aIndex < 0) {
-      tokens[idx].attrPush(['target', '_blank']); // add new attribute
-    } else {
-      tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
+    const hIndex = tokens[idx].attrIndex('href');
+    if (hIndex == 0) {
+      tokens[idx].attrs[hIndex][1] = decodeURI(tokens[idx].attrs[hIndex][1].replace(/%E3%80%80/g, '-'));
     }
-  
+    if (aIndex < 0 && tokens[idx].attrs[hIndex][1].indexOf('#') != 0) {
+      tokens[idx].attrPush(['target', '_blank']); // add new attribute
+    }
     // pass token to default renderer.
     return defaultRender(tokens, idx, options, env, self);
   };
@@ -95,7 +91,17 @@ export function notifyConfigChanged() {
 function tab2Emsp(div: HTMLElement) {
   const pElements = div.getElementsByTagName('p');
   for (const pe of pElements) {
-    pe.innerHTML = pe.innerHTML.replace(/\t/g, '&emsp;');
+    // pe.innerHTML = pe.innerHTML.replace(/\t/g, '&emsp;');
+    pe.innerHTML = pe.innerHTML.replace(/\t/g, blank);
+  }
+  
+  const hArr = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+  for (const h of hArr) {
+    const hElements = div.getElementsByTagName(h);
+    for (const he of hElements) {
+      // pe.innerHTML = pe.innerHTML.replace(/\t/g, '&emsp;');
+      he.innerHTML = he.innerHTML.replace(/\t/g, blank);
+    }
   }
 }
 
@@ -245,12 +251,6 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
   if (shouldRenderFeature(isPreview, renderConfig.mermaid)) {
     await mermaidRenderer.render(div);
   }
-  // 是否渲染mathjax
-  // if (env.hasMath && shouldRenderFeature(isPreview, renderConfig.mathjax)) {
-  //   document.body.appendChild(div);
-  //   await mathJaxRenderer.render(div);
-  //   document.body.removeChild(div);
-  // }
   html = div.innerHTML;
   div.innerHTML = '';
   // post

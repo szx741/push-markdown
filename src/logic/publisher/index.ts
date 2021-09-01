@@ -1,14 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2021-07-27 14:44:39
- * @Description:
+ * @LastEditTime: 2021-09-01 17:27:55
+ * @Description:文章发布工具。根据type调用不同的实现。目前支持MetaWeblog。
  * @FilePath: \push-markdown\src\logic\publisher\index.ts
- */
-/**
- * 文章发布工具。根据type调用不同的实现。目前支持MetaWeblog。
- *
- * Created by jzj on 2018/12/7.
  */
 'use strict';
 

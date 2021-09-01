@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-08-30 20:04:09
+ * @LastEditTime: 2021-09-01 13:10:42
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
@@ -70,6 +70,13 @@ ipcMain.on('menu.settings', function (event, arg) {
 ipcMain.on('menu.sample', function (event, arg) {
   event.reply('menu.sample', arg);
 });
+
+ipcMain.on('ondragstart', (event, filePath) => {
+  event.sender.startDrag({
+    file: filePath,
+    icon: '/path/to/icon.png'
+  })
+})
 
 import Store from 'electron-store';
 
