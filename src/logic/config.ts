@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-09-01 21:59:40
+ * @LastEditTime: 2021-09-02 12:42:57
  * @Description: user settings
  * @FilePath: \push-markdown\src\logic\config.ts
  */

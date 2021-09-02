@@ -70,7 +70,6 @@
       <p>
         <label for="math">{{ $t('setting.renderFeature.mathjax') }}</label>
         <select id="math" v-model="render.mathjax">
-          <option value="preview">{{ $t('setting.renderFeature.options.previewOnly') }}</option>
           <option value="publish">{{ $t('setting.renderFeature.options.previewAndPublish') }}</option>
           <option value="none">{{ $t('setting.renderFeature.options.disable') }}</option>
         </select>

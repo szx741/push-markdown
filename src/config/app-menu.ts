@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:42:15
- * @LastEditTime: 2021-07-11 22:20:34
+ * @LastEditTime: 2021-09-02 13:00:11
  * @Description: 菜单栏设置
  * @FilePath: \push-markdown\src\config\app-menu.ts
  */
@@ -205,6 +205,13 @@ export function init(mainWindow: BrowserWindow) {
           label: l.viewSampleFile,
           click: function () {
             webContents.send('menu.sample');
+          }
+        },
+        {
+          label: l.tutorials,
+          click: function () {
+            // app.getAppPath();
+            shell.openExternal('https://gitee.com/xaotuman/push-markdown/blob/master/docs/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.md');
           }
         },
         {

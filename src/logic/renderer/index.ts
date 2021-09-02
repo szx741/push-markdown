@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-09-01 18:55:57
+ * @LastEditTime: 2021-09-02 12:42:17
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\src\logic\renderer\index.ts
  */
@@ -94,7 +94,7 @@ function tab2Emsp(div: HTMLElement) {
     // pe.innerHTML = pe.innerHTML.replace(/\t/g, '&emsp;');
     pe.innerHTML = pe.innerHTML.replace(/\t/g, blank);
   }
-  
+
   const hArr = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
   for (const h of hArr) {
     const hElements = div.getElementsByTagName(h);
