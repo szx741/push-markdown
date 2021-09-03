@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-09-01 17:28:12
+ * @LastEditTime: 2021-09-03 14:33:22
  * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -142,7 +142,6 @@ export class MetaWeblogPublisher extends BasePublisher {
       bits: bits,
       overwrite: true
     };
-
     const result: any = await this.metaWeblog.newMediaObject(this.blogId, this.username, this.password, mediaObject);
     console.log('newMediaObject Result:', result);
     const { id, url, type } = result;
