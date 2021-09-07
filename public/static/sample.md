@@ -108,7 +108,7 @@ Anchor references (note that all lowercase English, between the spaces need to b
 
 Web images will not be uploaded when publish.
 
-![网络图片](https://github.com/jzj1993/PublishMarkdown/raw/master/docs/sample-web-image.png)
+![网络图片](https://gitee.com/xaotuman/push-markdown/raw/master/images/sample-web-image.png)
 
 
 ### 本地图片 Local Images
