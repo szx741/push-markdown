@@ -1,13 +1,13 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-09-03 14:33:31
+ * @LastEditTime: 2021-09-10 19:07:31
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
 'use strict';
 // 主进程使用 BrowserWindow 实例创建页面，销毁后进程也会被终止
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow } from 'electron';
 import log from 'electron-log';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
@@ -59,6 +59,20 @@ async function createWindow() {
   AppMenu.init(mainWindow);
 }
 
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    // 当运行第二个实例时,将会聚焦到mainWindow这个窗口
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+      mainWindow.show();
+    }
+  });
+}
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
@@ -76,7 +90,7 @@ app.on('ready', async () => {
     // Install Vue Devtools
     try {
       await installExtension(VUEJS3_DEVTOOLS);
-    } catch (e) {
+    } catch (e: any) {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }
@@ -89,14 +103,13 @@ app.on('ready', async () => {
 // 注册拦截器，使用atom://来代替file://，这样子也不需要关闭webSecurity https://www.electronjs.org/docs/api/protocol
 app.whenReady().then(() => {
   protocol.registerFileProtocol('atom', (request, callback) => {
-    const url = request.url.replace(/^atom:\/\//, '')
+    const url = request.url.replace(/^atom:\/\//, '');
     // Decode URL to prevent errors when loading filenames with UTF-8 chars or chars like "#"
-    const decodedUrl = decodeURI(url) // Needed in case URL contains spaces
+    const decodedUrl = decodeURI(url); // Needed in case URL contains spaces
     try {
-      return callback({ path: path.normalize(decodedUrl) })
-    }
-    catch (error) {
-      console.error('ERROR: registerLocalResourceProtocol: Could not get file path:', error)
+      return callback({ path: path.normalize(decodedUrl) });
+    } catch (error) {
+      console.error('ERROR: registerLocalResourceProtocol: Could not get file path:', error);
     }
     // const url = decodeURI(request.url).substr(7);
     // callback({ path: path.normalize(url) });
