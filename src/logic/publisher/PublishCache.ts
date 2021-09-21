@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2021-07-13 21:27:34
+ * @LastEditTime: 2021-09-21 16:37:22
  * @Description: 文章、图片发布缓存，避免文章、图片重复发布
  * @FilePath: \push-markdown\src\logic\publisher\PublishCache.ts
  */
@@ -25,7 +25,7 @@ class Cache {
     if (object && data) {
       const key = this.key(object);
       if (key) {
-        console.log('put:', key);
+        // console.log('put:', key);
         window.api.storeSet(this.storeName, key, data);
         return true;
       }
@@ -36,7 +36,7 @@ class Cache {
   async get(object: any) {
     if (object) {
       const key = this.key(object);
-      console.log(key);
+      // console.log(key);
       if (key) {
         return window.api.storeGet(this.storeName, key);
       }

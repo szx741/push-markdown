@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-09-03 14:33:48
+ * @LastEditTime: 2021-09-21 16:39:02
  * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -115,7 +115,7 @@ export class BasePublisher {
         if (src && src.startsWith('atom://')) {
           const file = decodeURI(src.substr('atom://'.length));
           if (window.api.fsExistsSync(file)) {
-            console.log('存在图片');
+            console.log('本地存在此图片');
             const url: any = await this.uploadMedia(file, mediaMode);
             if (url) {
               img.setAttribute('src', url);

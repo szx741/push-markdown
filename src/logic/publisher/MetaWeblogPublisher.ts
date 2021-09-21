@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-09-03 14:33:22
+ * @LastEditTime: 2021-09-21 16:40:41
  * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -24,7 +24,7 @@ export class MetaWeblogPublisher extends BasePublisher {
   username: string;
   password: string;
   postCache: PostCache;
-  mediaCache: any;
+  mediaCache: FileCache;
   constructor(url: any, username: any, password: any) {
     super();
     this.metaWeblog = window.api.metaWeblog(url);
@@ -135,6 +135,7 @@ export class MetaWeblogPublisher extends BasePublisher {
         return url;
       }
     }
+    console.log('无本地缓存记录或者网络图片检测失败，采用强制更新图片');
     const bits = readFileBase64(file);
     const mediaObject = {
       name: window.api.pathBasename(file),
