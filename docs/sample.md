@@ -13,8 +13,8 @@ title: push-markdown 示例文档
 abstract: 你好！这是一篇示例文档！
 
 
-# URL用于固定链接、编辑文章功能，建议所有文章都配置
-# URL is used for permalink and article editing, and it is recommended to be configured.
+# URL用于固定链接、编辑文章功能，如果不配置，那么就会将标题转换为拼音，并且用"-"连接
+# URL for fixed links, edit article function, if not configured, then the title will be converted to pinyin and connected with "-"
 url: sample-docs-1
 
 
@@ -108,7 +108,7 @@ Anchor references (note that all lowercase English, between the spaces need to b
 
 Web images will not be uploaded when publish.
 
-![网络图片](https://github.com/jzj1993/PublishMarkdown/raw/master/docs/sample-web-image.png)
+![网络图片](https://gitee.com/xaotuman/push-markdown/raw/master/images/sample-web-image.png)
 
 
 ### 本地图片 Local Images
