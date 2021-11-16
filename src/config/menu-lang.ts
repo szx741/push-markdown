@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:00:58
- * @LastEditTime: 2021-09-02 12:59:29
+ * @LastEditTime: 2021-11-16 20:33:26
  * @Description: 窗口的多语言支持
  * @FilePath: \push-markdown\src\config\menu-lang.ts
  */
@@ -26,6 +26,7 @@ export const en = {
   selectAll: 'Select All',
   // view: 'View',
   reload: 'Reload',
+  fileTree: 'File tree',
   toggleFullScreen: 'Toggle Full Screen',
   toggleDevTools: 'Toggle Developer Tools',
   window: 'Window',
@@ -35,7 +36,7 @@ export const en = {
   learnMore: 'Learn More',
   openWelcomePage: 'Open Welcome Page',
   viewSampleFile: 'View Sample File',
-  tutorials:'Tutorials',
+  tutorials: 'Tutorials',
   about: 'About ',
   services: 'Services',
   hide: 'Hide ',
@@ -63,6 +64,7 @@ export const zh = {
   selectAll: '全选',
   // view: '显示',
   reload: '重新加载',
+  fileTree: '文件列表',
   toggleFullScreen: '切换全屏',
   toggleDevTools: '切换开发者工具',
   window: '窗口',
@@ -72,7 +74,7 @@ export const zh = {
   learnMore: '了解更多',
   openWelcomePage: '打开欢迎页',
   viewSampleFile: '查看示例文档',
-  tutorials:'使用教程',
+  tutorials: '使用教程',
   about: '关于',
   services: '服务',
   hide: '隐藏',

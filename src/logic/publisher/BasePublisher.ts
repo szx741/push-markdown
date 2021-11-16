@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-09-21 16:39:02
+ * @LastEditTime: 2021-11-16 14:19:12
  * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -115,7 +115,6 @@ export class BasePublisher {
         if (src && src.startsWith('atom://')) {
           const file = decodeURI(src.substr('atom://'.length));
           if (window.api.fsExistsSync(file)) {
-            console.log('本地存在此图片');
             const url: any = await this.uploadMedia(file, mediaMode);
             if (url) {
               img.setAttribute('src', url);
@@ -123,7 +122,7 @@ export class BasePublisher {
               console.error('media process failure', file);
             }
           } else {
-            console.error('media not exists', file);
+            console.error('错误，本地不存在这张图片！', file);
           }
         }
       },

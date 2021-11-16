@@ -196,22 +196,55 @@
   }
 
   .left {
+    display: flex;
     overflow: hidden;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #eeeeee;
   }
 
   .right {
-    overflow: scroll;
+    overflow-y: scroll;
+  }
+
+  .right::-webkit-scrollbar {
+    width: 10px;
+    height: 1px;
+  }
+  /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
+  .right::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #cacaca;
+  }
+  /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
+  .right::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: #eeeeee;
   }
 
   textarea {
     width: 100%;
     height: 100%;
-
+    // overflow: hidden;
     margin: 0;
     border: none;
     outline: none;
     resize: none;
+    background-color: rgb(255, 255, 255);
+    color: rgb(77, 77, 77);
+  }
+
+  textarea::-webkit-scrollbar {
+    width: 10px;
+    height: 1px;
+  }
+  // /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
+  textarea::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #cacaca;
+  }
+  /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
+  textarea::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: #eeeeee;
   }
 
   .content {

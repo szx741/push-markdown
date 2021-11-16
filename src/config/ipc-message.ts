@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-09-01 13:10:42
+ * @LastEditTime: 2021-11-16 20:34:10
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
@@ -66,6 +66,10 @@ ipcMain.on('__static', function (event, arg) {
 ipcMain.on('menu.settings', function (event, arg) {
   event.reply('menu.settings', arg);
 });
+ipcMain.on('menu.showfile', function (event, arg) {
+  event.reply('menu.showfile', arg);
+});
+
 // 中转消息，渲染进程发给主进程，主进程再发给渲染进程
 ipcMain.on('menu.sample', function (event, arg) {
   event.reply('menu.sample', arg);

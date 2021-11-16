@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-09-21 16:21:20
+ * @LastEditTime: 2021-11-16 20:48:21
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -16,6 +16,7 @@ import MetaWeblog from 'metaweblog-api';
 // 存储的文件名为settings
 const storeSettings = new Store({ name: 'settings' });
 const storeRecord = new Store({ name: 'use-record' });
+const storeShowFile = new Store({ name: 'show-file' });
 
 const validChannels = [
   'fromMain',
@@ -29,6 +30,7 @@ const validChannels = [
   'menu.settings',
   'menu.open',
   'menu.publish',
+  'menu.showfile',
   'process.versions',
   '__static'
 ];
@@ -68,6 +70,12 @@ contextBridge.exposeInMainWorld('api', {
   storeRecordGet(key: any, value: any) {
     return storeRecord.get(key, value);
   },
+  storeShowFileSet(key: any, value: any) {
+    return storeShowFile.set(key, value);
+  },
+  storeShowFileGet(key: any, value: any) {
+    return storeShowFile.get(key, value);
+  },
   fsReadFile: fs.readFile,
   fsReadFileSync: fs.readFileSync,
   shell: shell,
@@ -76,9 +84,31 @@ contextBridge.exposeInMainWorld('api', {
   pathIsAbsolute: path.isAbsolute,
   pathDirname: path.dirname,
   pathExtname: path.extname,
+  pathResolve: path.resolve,
   fsWriteFile: fs.writeFile,
   fsWriteFileSync: fs.writeFileSync,
   fsExistsSync: fs.existsSync,
+  fsReaddirSync: fs.readdirSync,
+  fsStatSync: fs.statSync,
+  fsLstatSync: fs.lstatSync,
+  isFileOrDir(_path: string, file: string) {
+    try {
+      let stat = fs.lstatSync(path.join(_path, file));
+      return [stat.isFile(), stat.isDirectory()];
+    } catch (e) {
+      return [false, false];
+    }
+  },
+  isDir(path: string) {
+    try {
+      var stat = fs.lstatSync(path);
+      return stat.isDirectory();
+    } catch (e) {
+      // lstatSync throws an error if path doesn't exist
+      return false;
+    }
+  },
+  fsLstat: fs.lstat,
   newStore(name: string) {
     return new Store({ name }).path;
   },
@@ -97,7 +127,8 @@ contextBridge.exposeInMainWorld('api', {
     return (
       url &&
       new Promise((resolve, reject) => {
-        request.head(url, function (error: any, response: any, body: any) {
+        request.head(encodeURI(url), function (error: any, response: any, body: any) {
+          console.log(error, response, body);
           resolve(!error && response && response.statusCode === 200);
         });
       })

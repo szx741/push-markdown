@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-09-21 16:40:41
+ * @LastEditTime: 2021-11-16 14:18:08
  * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -130,12 +130,17 @@ export class MetaWeblogPublisher extends BasePublisher {
     // 上传模式为从cache中获取
     if (mediaMode === 'cache') {
       const url = await this.mediaCache.get(file);
-      if (url && (await window.api.checkUrlValid(url))) {
-        console.log(`use cached media: ${file} ==> ${url}`);
-        return url;
+      if (url) {
+        if (await window.api.checkUrlValid(url)) {
+          console.log('本地有缓存记录，且网络检测成功，将使用网络已有的图片');
+          return url;
+        } else {
+          console.log('本地有缓存记录，之前上传的url是：', url, '但是网络图片检测失败，将采取强制更新图片的措施');
+        }
+      } else {
+        console.log('无本地缓存记录，将更新图片（强制）');
       }
     }
-    console.log('无本地缓存记录或者网络图片检测失败，采用强制更新图片');
     const bits = readFileBase64(file);
     const mediaObject = {
       name: window.api.pathBasename(file),

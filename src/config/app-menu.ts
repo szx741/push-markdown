@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:42:15
- * @LastEditTime: 2021-09-02 13:00:11
+ * @LastEditTime: 2021-11-16 20:31:11
  * @Description: 菜单栏设置
  * @FilePath: \push-markdown\src\config\app-menu.ts
  */
@@ -147,6 +147,15 @@ export function init(mainWindow: BrowserWindow) {
       label: l.window,
       role: 'window',
       submenu: [
+        {
+          label: l.fileTree,
+          accelerator: (function () {
+            return 'Ctrl+Shift+L';
+          })(),
+          click: function () {
+            webContents.send('menu.showfile');
+          }
+        },
         {
           label: l.toggleFullScreen,
           accelerator: (function () {
