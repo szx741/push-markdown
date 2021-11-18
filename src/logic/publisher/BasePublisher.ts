@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-11-16 14:19:12
+ * @LastEditTime: 2021-11-18 13:45:32
  * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -38,13 +38,13 @@ export function getMimeType(file: any) {
   return type;
 }
 
-export function readFileBase64(file: string) {
-  try {
-    return window.api.fsReadFileSync(file, { encoding: 'base64' });
-  } catch (err) {
-    console.log(err);
-  }
-}
+// export function readFileBase64(file: string) {
+//   try {
+//     return window.api.fsReadFileSync(file, { encoding: 'base64' });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 
 /**
  * 博客发布基类

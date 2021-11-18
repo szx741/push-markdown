@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2021-09-10 19:07:31
+ * @LastEditTime: 2021-11-18 14:40:27
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -10,7 +10,7 @@
 import { app, protocol, BrowserWindow } from 'electron';
 import log from 'electron-log';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
-import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as AppMenu from '@/config/app-menu';
 import path from 'path';
 import { ipcMainCollection } from '@/config/ipc-message';
@@ -89,7 +89,7 @@ app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
-      await installExtension(VUEJS3_DEVTOOLS);
+      await installExtension(VUEJS_DEVTOOLS);
     } catch (e: any) {
       console.error('Vue Devtools failed to install:', e.toString());
     }

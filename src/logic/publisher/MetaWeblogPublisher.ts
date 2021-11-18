@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-11-16 14:18:08
+ * @LastEditTime: 2021-11-18 22:10:58
  * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -13,7 +13,7 @@
 import MetaWeblog from 'metaweblog-api';
 
 import { FileCache, PostCache } from './PublishCache';
-import { getMimeType, BasePublisher, readFileBase64 } from './BasePublisher';
+import { getMimeType, BasePublisher } from './BasePublisher';
 
 /**
  * 基于MetaWeblog接口的博客发布器
@@ -25,9 +25,12 @@ export class MetaWeblogPublisher extends BasePublisher {
   password: string;
   postCache: PostCache;
   mediaCache: FileCache;
+  url: string;
   constructor(url: any, username: any, password: any) {
     super();
+    window.api.syncMsg('new-metaweblog', url);
     this.metaWeblog = window.api.metaWeblog(url);
+    this.url = url;
     this.blogId = '';
     this.username = username;
     this.password = password;
@@ -71,7 +74,7 @@ export class MetaWeblogPublisher extends BasePublisher {
   }
 
   async newPost(post: any) {
-    const _post = await this.toMetaWeblogPost(post);
+    const _post = this.toMetaWeblogPost(post);
     const id = await this.metaWeblog.newPost(this.blogId, this.username, this.password, _post, true);
     console.log('newpost this.blogId:', id);
 
@@ -80,7 +83,7 @@ export class MetaWeblogPublisher extends BasePublisher {
   }
 
   async editPost(oldPost: any, post: any) {
-    const _post = await this.toMetaWeblogPost(post);
+    const _post = this.toMetaWeblogPost(post);
     const id = oldPost.id;
     await this.metaWeblog.editPost(id, this.username, this.password, _post, true); // return true
     await this.postCache.put(post, id);
@@ -97,7 +100,7 @@ export class MetaWeblogPublisher extends BasePublisher {
   }
 
   // noinspection JSMethodCanBeStatic
-  async toMetaWeblogPost(post: any) {
+  toMetaWeblogPost(post: any) {
     // await this.checkCategoryExists(post)
     return {
       title: post.title,
@@ -105,7 +108,7 @@ export class MetaWeblogPublisher extends BasePublisher {
       post_type: 'post',
       dateCreated: post.date,
       categories: post.categories,
-      mt_keywords: post.tags,
+      mt_keywords: post.tags.toString(),
       mt_excerpt: post.abstract,
       wp_slug: post.url,
       post_status: 'publish'
@@ -141,18 +144,25 @@ export class MetaWeblogPublisher extends BasePublisher {
         console.log('无本地缓存记录，将更新图片（强制）');
       }
     }
-    const bits = readFileBase64(file);
-    const mediaObject = {
-      name: window.api.pathBasename(file),
-      type: getMimeType(file),
-      bits: bits,
-      overwrite: true
-    };
-    const result: any = await this.metaWeblog.newMediaObject(this.blogId, this.username, this.password, mediaObject);
+
+    const bits = window.api.fsReadFileSync(file);
+    let isByte = false;
+    if (this.url.indexOf('rpc.cnblogs.com') != -1) {
+      isByte = true;
+    }
+
+    const result = window.api.syncMsg('new-media-object', [isByte, this.blogId, this.username, this.password, window.api.pathBasename(file), getMimeType(file), bits]);
+
     console.log('newMediaObject Result:', result);
-    const { id, url, type } = result;
-    await this.mediaCache.put(file, url);
-    console.log(`media uploaded: ${file} ==> ${url}`);
-    return url;
+
+    if (result[0] == true) {
+      const url = result[1];
+      await this.mediaCache.put(file, url);
+      console.log(`media uploaded: ${file} ==> ${url}`);
+      return url;
+    } else {
+      console.error(result[1]);
+      return false;
+    }
   }
 }

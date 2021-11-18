@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-11-16 20:48:21
+ * @LastEditTime: 2021-11-18 22:06:49
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -32,6 +32,8 @@ const validChannels = [
   'menu.publish',
   'menu.showfile',
   'process.versions',
+  'new-media-object',
+  'new-metaweblog',
   '__static'
 ];
 
@@ -77,7 +79,22 @@ contextBridge.exposeInMainWorld('api', {
     return storeShowFile.get(key, value);
   },
   fsReadFile: fs.readFile,
-  fsReadFileSync: fs.readFileSync,
+  fsReadFileSync(file: string) {
+    try {
+      return fs.readFileSync(file, { encoding: 'base64' });
+    } catch {
+      return false;
+    }
+  },
+  bufReadFileSync(file: string) {
+    try {
+      const pic = fs.readFileSync(file, { encoding: 'base64' });
+      console.log(Buffer.from(pic, 'base64'));
+      return Buffer.from(pic, 'base64');
+    } catch {
+      return false;
+    }
+  },
   shell: shell,
   pathBasename: path.basename,
   pathJoin: path.join,

@@ -1,14 +1,17 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-11-16 20:34:10
+ * @LastEditTime: 2021-11-18 22:18:30
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
 
 import { app, ipcMain } from 'electron';
-
 import path from 'path';
+import Store from 'electron-store';
+import MetaWeblog from 'metaweblog-api';
+let metaweblog: MetaWeblog;
+
 /*
   // 实验性质
   ipcMain.on('toMain', (event, args) => {
@@ -66,9 +69,10 @@ ipcMain.on('__static', function (event, arg) {
 ipcMain.on('menu.settings', function (event, arg) {
   event.reply('menu.settings', arg);
 });
-ipcMain.on('menu.showfile', function (event, arg) {
-  event.reply('menu.showfile', arg);
-});
+
+// ipcMain.on('menu.showfile', function (event, arg) {
+//   event.reply('menu.showfile', arg);
+// });
 
 // 中转消息，渲染进程发给主进程，主进程再发给渲染进程
 ipcMain.on('menu.sample', function (event, arg) {
@@ -79,10 +83,41 @@ ipcMain.on('ondragstart', (event, filePath) => {
   event.sender.startDrag({
     file: filePath,
     icon: '/path/to/icon.png'
-  })
-})
+  });
+});
 
-import Store from 'electron-store';
+// 中转消息，渲染进程发给主进程，主进程再发给渲染进程
+// ipcMain.on('new-media-object', async function (event, meta: any, blogId: string, username: string, password: string, mediaObject: any) {
+ipcMain.on('new-media-object', async function (event, arg) {
+  try {
+    if (arg[0] == true) {
+      arg[6] = Buffer.from(arg[6], 'base64');
+    }
+    const mediaObject = {
+      name: arg[4],
+      type: arg[5],
+      bits: arg[6],
+      overwrite: true
+    };
+    // const meta = new MetaWeblog(arg[0]);
+    const res: any = await metaweblog.newMediaObject(arg[1], arg[2], arg[3], mediaObject);
+    event.returnValue = [true, res.url];
+  } catch (err: any) {
+    event.returnValue = [false, err.toString()];
+  }
+});
+
+ipcMain.on('new-metaweblog', function (event, arg) {
+  metaweblog = new MetaWeblog(arg);
+  event.returnValue = true;
+});
+
+// ipcMain.on('new-media-object', async function (event, arg) {
+//   console.log('meta', meta);
+//   const result = await meta.newMediaObject(blogId, username, password, mediaObject);
+//   console.log('new-media-object:', result);
+//   event.reply('new-media-object', result);
+// });
 
 Store.initRenderer();
 

@@ -1,8 +1,8 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-11-16 20:34:50
- * @Description: 
+ * @LastEditTime: 2021-11-18 13:32:46
+ * @Description:
  * @FilePath: \push-markdown\src\logic\utils.ts
  */
 'use strict';
