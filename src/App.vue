@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-11-19 15:57:44
+ * @LastEditTime: 2021-11-19 17:47:43
  * @Description: 
  * @FilePath: \push-markdown\src\App.vue
 -->
@@ -61,9 +61,8 @@
   }
 </style> -->
 <style lang="scss">
-  // @import '~github-markdown-css/github-markdown-dark.css';
-  @import '~github-markdown-css/github-markdown.css';
-  // @import './common/assets/theme/github-markdown-light.css';
+  @import './common/assets/theme/github-markdown-light.css';
+  @import './common/assets/theme/github-markdown-dark.css';
   @import './common/assets/theme/splendor.css';
   @import './common/assets/theme/wysiwyg.css';
 

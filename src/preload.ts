@@ -32,6 +32,8 @@ const validChannels = [
   'menu.showfile',
   'process.versions',
   'menu.theme',
+
+
   'new-media-object',
   'new-metaweblog',
   '__static'

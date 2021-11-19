@@ -1,11 +1,16 @@
 <!-- Markdown预览页面 -->
 
 <template>
-  <div class="wrapper" :class="{markdownBodyLight: lightActive, splendor: splendorActive, wysiwyg: wysiwygActive}">
+  <div class="wrapper" :class="{'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive}">
     <div class="container">
+
+      <!-- 编辑器  -->
       <div class="left">
         <textarea ref="textarea" class="content" v-model="src" @input="update" title="text"></textarea>
       </div>
+
+
+
       <div class="right">
         <div class="content">
           <h1 v-if="post.title" class="title">{{ post.title }}</h1>
@@ -52,7 +57,7 @@
             </table>
           </div>
 
-          <div class="markdown markdown-body" ref="markdown" v-html="post.html"></div>
+          <div class="markdown" ref="markdown" v-html="post.html"></div>
         </div>
       </div>
     </div>
@@ -166,7 +171,8 @@ import { watch } from 'fs';
     setup() {
       
       const theme: any = reactive({
-        lightActive: true,
+        githubActive: true,
+        darkActive: false,
         splendorActive: false,
         wysiwygActive: false
       });
@@ -174,7 +180,6 @@ import { watch } from 'fs';
       watchSetup(
         () => store.state.theme,
         (newVal: any, oldVal: any) => {
-          console.log(newVal)
           theme[oldVal + 'Active'] = false;
           theme[newVal + 'Active'] = true;
       })
@@ -190,6 +195,7 @@ import { watch } from 'fs';
 <style lang="scss" scoped>
   /*@import "../assets/MathJax.css";*/
   @import '~highlight.js/styles/github.css';
+
 
   .wrapper {
     width: 100%;
@@ -286,7 +292,8 @@ import { watch } from 'fs';
   .abstract {
     margin: 15px 0 25px 0;
     padding: 0 1em;
-    color: #6a737d;
+    // color: #6a737d;
+    // color: #454d57;
     border-left: 0.25em solid #dfe2e5;
 
     .meta-name {
@@ -304,7 +311,6 @@ import { watch } from 'fs';
       width: 98%;
       box-sizing: border-box;
       border: 1px solid #eee;
-      background-color: #f8f8f8;
       border-spacing: 20px 15px;
 
       * {
@@ -313,6 +319,8 @@ import { watch } from 'fs';
         text-align: left;
       }
     }
+
+    
   }
 
   .meta-item {

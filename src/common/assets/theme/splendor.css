@@ -8,6 +8,14 @@
       text-shadow: none !important;
     }
   
+
+    .splendor img {
+      border-style: none;
+      max-width: 100%;
+      box-sizing: content-box;
+      background-color: #ffffff;
+    }
+
     .splendor a,
     .splendor a:visited {
         text-decoration: underline;

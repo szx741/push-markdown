@@ -46,9 +46,10 @@ export const en = {
   bringAllToFront: 'Bring All to Front',
 
   theme: 'Theme',
-  light: 'github',
-  splendor: 'splendor',
-  wysiwyg: 'wysiwyg',
+  light: 'Github',
+  dark: 'Dark',
+  splendor: 'Splendor',
+  wysiwyg: 'Wysiwyg',
 };
 
 export const zh = {
@@ -89,7 +90,8 @@ export const zh = {
   bringAllToFront: '前置全部窗口',
 
   theme: '主题',
-  light: 'github',
-  splendor: '异彩',
-  wysiwyg: '所见即所得',
+  light: 'Github',
+  dark: 'Night',
+  splendor: 'Splendor',
+  wysiwyg: 'Wysiwyg',
 };

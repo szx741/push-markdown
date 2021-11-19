@@ -86,6 +86,7 @@ ipcMain.on('ondragstart', (event, filePath) => {
   });
 });
 
+
 // 中转消息，渲染进程发给主进程，主进程再发给渲染进程
 // ipcMain.on('new-media-object', async function (event, meta: any, blogId: string, username: string, password: string, mediaObject: any) {
 ipcMain.on('new-media-object', async function (event, arg) {

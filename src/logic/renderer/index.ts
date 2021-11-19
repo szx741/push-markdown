@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-11-19 16:19:04
+ * @LastEditTime: 2021-11-19 17:47:07
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\src\logic\renderer\index.ts
  */
@@ -131,7 +131,6 @@ function replaceLocalImages(div: HTMLElement, dir: any) {
         ele.appendChild(img);
       }
     }
-
     let src = img.getAttribute('src');
     if (!src) continue;
     src = decodeURI(src);
