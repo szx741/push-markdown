@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-11-19 13:12:56
+ * @LastEditTime: 2021-11-19 17:19:24
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -16,7 +16,6 @@ import MetaWeblog from 'metaweblog-api';
 // 存储的文件名为settings
 const storeSettings = new Store({ name: 'settings' });
 const storeRecord = new Store({ name: 'use-record' });
-const storeShowFile = new Store({ name: 'show-file' });
 
 const validChannels = [
   'fromMain',
@@ -73,11 +72,11 @@ contextBridge.exposeInMainWorld('api', {
   storeRecordGet(key: any, value: any) {
     return storeRecord.get(key, value);
   },
-  storeShowFileSet(key: any, value: any) {
-    return storeShowFile.set(key, value);
+  setShowFile(value: any) {
+    return storeSettings.set('show-file', value);
   },
-  storeShowFileGet(key: any, value: any) {
-    return storeShowFile.get(key, value);
+  getShowFile() {
+    return storeSettings.get('show-file', true);
   },
   fsReadFile: fs.readFile,
   fsReadFileSync(file: string) {

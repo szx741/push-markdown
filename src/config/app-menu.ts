@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:42:15
- * @LastEditTime: 2021-11-16 20:31:11
+ * @LastEditTime: 2021-11-19 17:06:31
  * @Description: 菜单栏设置
  * @FilePath: \push-markdown\src\config\app-menu.ts
  */
@@ -202,8 +202,6 @@ export function init(mainWindow: BrowserWindow) {
       ]
     },
 
-
-
     // 主题菜单
     {
       label: l.theme,
@@ -226,10 +224,9 @@ export function init(mainWindow: BrowserWindow) {
           click: function () {
             webContents.send('menu.theme', 'wysiwyg');
           }
-        },
+        }
       ]
     },
-
 
     // 帮助菜单
     {
