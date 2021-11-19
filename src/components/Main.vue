@@ -84,10 +84,6 @@
       // useRecord.getTabs()[useRecord.getCurrentTab() - 1].file
       return {
         // tabs: useRecord.getTabs(),
-<<<<<<< HEAD
-=======
-        file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()]?.file || window.api.syncMsg('__static')),
->>>>>>> 9316041fe64baed1def953a0abf72207362c14e7
         current: useRecord.getCurrentTab(),
         file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()]?.file || window.api.syncMsg('__static')),        // file:  '',
         

@@ -14,6 +14,8 @@ import { Menu, app, dialog, shell, BrowserWindow } from 'electron';
 import * as langConfig from '@/common/api/lang-config';
 import * as language from '@/config/menu-lang';
 
+import * as themeConfig from '@/common/api/theme-config'
+
 // 加载菜单栏
 export function init(mainWindow: BrowserWindow) {
   // webContents它负责渲染并控制网页
@@ -28,9 +30,17 @@ export function init(mainWindow: BrowserWindow) {
     init(mainWindow);
   }
 
+  function setTheme(theme: string) {
+    themeConfig.setTheme(theme)
+    webContents.send('menu.theme', theme);
+    init(mainWindow);
+  }
+
   // 获取语言设置
   const lang = langConfig.getLanguage();
   const l = lang === 'zh' ? language.zh : language.en;
+
+  const t = themeConfig.getTheme()
 
   // 菜单栏模板
   const template: any[] = [
@@ -211,20 +221,34 @@ export function init(mainWindow: BrowserWindow) {
       submenu: [
         {
           label: l.light,
+          type: 'checkbox',
+          checked: t === 'github',
           click: function () {
-            webContents.send('menu.theme', 'light');
+            setTheme('github')
+          }
+        },
+        {
+          label: l.dark,
+          type: 'checkbox',
+          checked: t === 'dark',
+          click: function () {
+            setTheme('dark')
           }
         },
         {
           label: l.splendor,
+          type: 'checkbox',
+          checked: t === 'splendor',
           click: function () {
-            webContents.send('menu.theme', 'splendor');
+            setTheme('splendor')
           }
         },
         {
           label: l.wysiwyg,
+          type: 'checkbox',
+          checked: t === 'wysiwyg',
           click: function () {
-            webContents.send('menu.theme', 'wysiwyg');
+            setTheme('wysiwyg')
           }
         },
       ]

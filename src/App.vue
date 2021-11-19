@@ -61,8 +61,8 @@
   }
 </style> -->
 <style lang="scss">
-  // @import '~github-markdown-css/github-markdown-dark.css';
   @import './common/assets/theme/github-markdown-light.css';
+  @import './common/assets/theme/github-markdown-dark.css';
   @import './common/assets/theme/splendor.css';
   @import './common/assets/theme/wysiwyg.css';
 

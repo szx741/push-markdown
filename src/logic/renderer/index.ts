@@ -128,7 +128,9 @@ function replaceLocalImages(div: HTMLElement, dir: any) {
         ele.appendChild(img);
       }
     }
-    const src = img.getAttribute('src');
+    let src = img.getAttribute('src');
+    if (!src) continue;
+    src = decodeURI(src)
     if (!src || src.match(/^((https?|file):\/\/|data:)/)) {
       continue;
     }

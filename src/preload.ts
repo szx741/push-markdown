@@ -32,15 +32,11 @@ const validChannels = [
   'menu.publish',
   'menu.showfile',
   'process.versions',
-<<<<<<< HEAD
-  '__static',
-
   'menu.theme',
-=======
+
   'new-media-object',
   'new-metaweblog',
   '__static'
->>>>>>> 9316041fe64baed1def953a0abf72207362c14e7
 ];
 
 contextBridge.exposeInMainWorld('api', {
