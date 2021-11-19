@@ -113,7 +113,7 @@ const zh = {
     <ol>
       <li>从菜单打开<a href="#" data-href="settings">设置</a>，配置需要发布的博客网址和账户信息。</li>
       <li>从菜单打开要发布的Markdown文件，查看渲染结果是否正确。注意Markdown源文件必须是UTF-8编码，扩展名为<code>.md</code>。</li>
-      <li>从菜单点击发布，弹窗勾选需要发布的博客，点击“发布”即可。本地预览使用的是GitHub风格的样式，发布到博客后，最终效果取决于博客的CSS样式配置。</li>
+      <li>从菜单点击发布，弹窗勾选需要发布的博客，点击“发布”即可。本地预览默认使用的是GitHub风格的样式，也可以更换样式，发布到博客后，最终效果取决于博客的CSS样式配置。</li>
       <li>对文章上传逻辑和图片上传逻辑进行了优化，不仅只依赖本地缓存，这样能适应多台设备和新装软件的情况，详情逻辑可以查看我的<a href="https://szx.life/push-markdown/push-markdown重构/">技术博客</a>。</li>
       <li>如果对文档编写格式存在疑问，可以随时打开<a href="#" data-href="sample">示例文档</a>查看。</li>
       <li>更多内容请查看<a href="https://gitee.com/xaotuman/push-markdown">Gitee</a>，<a href="https://szx.life/push-markdown/push-markdown重构/">技术博客</a>。</li>

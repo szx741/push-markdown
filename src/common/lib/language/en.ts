@@ -116,7 +116,7 @@ const en = {
     <ol>
       <li>Open <a href="#" data-href="settings">settings</a> from menu, configure the blog URL and account information.</li>
       <li>Open the Markdown file to be published from the menu to see if the rendering is correct. Note that the Markdown source file must be UTF-8 encoded with the <code>.md</code> extension. </li>
-      <li>Click Publish from the menu, check the blog you want to publish in the popup window, and click Publish. The local preview uses GitHub style styles, and the final result depends on the blog's CSS style configuration after publishing to the blog. </li>
+      <li>Click Publish from the menu, check the blog you want to publish in the popup window, and click Publish. The local preview uses the GitHub style by default, but you can also change the style, and the final result depends on the blog's CSS style configuration after publishing to the blog. </li>
       <li>The post upload logic and image upload logic have been optimized to rely on more than just local caching to accommodate multiple devices and newly installed software, see my <a href="https://szx.life/push-markdown/push-markdown重构/">technical blog</a> for more details on the logic. </li>
       <li>If you have questions about the formatting of the documentation, you can always open the <a href="#" data-href="sample">example documentation</a> to see it. </li>
       <li>For more, see the <a href="https://gitee.com/xaotuman/push-markdown">Gitee</a>, <a href="https://szx.life/push-markdown/push-markdown重构/">technical blog</a>. </li>

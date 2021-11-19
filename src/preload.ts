@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-11-19 17:19:24
+ * @LastEditTime: 2021-11-19 19:41:29
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -33,7 +33,6 @@ const validChannels = [
   'process.versions',
   'menu.theme',
 
-
   'new-media-object',
   'new-metaweblog',
   '__static'
@@ -48,7 +47,7 @@ contextBridge.exposeInMainWorld('api', {
   },
   receive: (channel: string, func: Function) => {
     if (validChannels.includes(channel)) {
-      ipcRenderer.on(channel, (event, ...args) => func(...args));
+      ipcRenderer.on(channel, (event: any, ...args: any) => func(...args));
     }
   },
   syncMsg: function (channel: string, data: any) {

@@ -20,7 +20,7 @@
 
 ## 软件简介
 
-**Push Markdown** 是一款将本地Markdown文件发布到Wordpress的开源工具，基于Electron实现，支持中英文，目前只支持windows。
+**Push Markdown** 是一款将本地Markdown文件发布到Wordpress和cnblogs的开源工具，基于Electron实现，支持中英文，目前支持windows和macos（个别版本）。
 
 1. 支持主流Markdown语法、TOC、代码高亮、MathJax数学公式，支持本地预览和简易编辑功能（建议使用Haroopad、Typora等工具编写好后，再使用本工具发布）。
 2. 全自动博客发布。博客可设置标题、摘要、固定链接、作者、发布时间、标签、分类等属性，自动批量上传markdown文件中引用的本地图片。
@@ -42,6 +42,20 @@
 [push-markdown 示例文档 – 巷子深的生活 (szx.life)](https://szx.life/sample-docs-1/)
 
 ## 重要版本
+
+**v1.2.0**
+
+- 软件适配macos
+- 博客适配cnblogs博客园
+- 新增主题切换，多款主题任你挑选
+- 新增侧边文件资源管理栏，可以快速打开同级目录下的文件
+- 修复锚点中有英文标点符号不能跳转的问题
+- 修复图片绝对路径使用\作为分隔符不能正常显示的问题
+- 修复了图片名称中含有中文从而导致网络检测失败的问题
+- 美化了滚动条
+- 修复滚动条高度不对的bug
+- 修复界面文本框拖拽的问题
+- 更新了使用文档
 
 **v1.1.2**
 
@@ -130,6 +144,11 @@
 - [x] 能够有一键重载文件的按钮
 - [ ] 使用typescript（即不要全用any）
 - [ ] 改成vue3格式
+- [x] 左侧使用类似Typora的文件管理的效果
+- [x] 适配cnblogs~~，oschina（没文档，不行）~~
+- [ ] 可选markdown的渲染样式
+
+
 
 ## 其他人的项目
 
@@ -139,3 +158,4 @@
 
 博客园上传markdown文件：[pycnblog](https://github.com/dongfanger/pycnblog)
 
+苹果用户非常棒的Markdown写作软件——MWeb：https://zh.mweb.im/
