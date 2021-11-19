@@ -105,10 +105,10 @@ const en = {
 
   introduction: `    
     <h2>Introduction</h2>
-      <p>Push Markdown is an open source tool for publishing local Markdown files to blogs, based on Electron implementation, supports English and Chinese, currently only supports windows.</p>
+      <p>Push Markdown is an open source tool for publishing local Markdown files to blogs, based on Electron implementation, supports English and Chinese, windows and macOS are currently supported</p>
       <ol>
         <li>Supports mainstream Markdown syntax, TOC, code highlighting, <strike>MathJax math equations</strike>, local preview and easy editing features (we recommend using Haroopad, Typora and other tools to write well, then use this tool to publish). </li>
-        <li>Automated blog publishing. Blog can set attributes such as title, summary, fixed link, author, publish time, tags, categories, etc. Automatically batch upload local images referenced in markdown files. Support multi-site publishing at the same time. Currently supports MetaWeblog interface, compatible with WordPress, csdn, cnblogs, oschina and other blogs, and can continue to develop other interfaces later. </li>
+        <li>Automated blog publishing. Blog can set attributes such as title, summary, fixed link, author, publish time, tags, categories, etc. Automatically batch upload local images referenced in markdown files. Support multi-site publishing at the same time. Currently only support MetaWeblog interface, compatible with WordPress, cnblogs the two blogs, the follow-up can continue to develop other interfaces. </li>
         <li>Blogs that have been published to remote by this tool can be updated using this tool (blogs are distinguished using fixed links i.e. url), and the same images do not need to be uploaded repeatedly when updating (images are distinguished using file md5). </li>
       </ol>
     <h2>Instructions for use</h2>
@@ -126,5 +126,3 @@ const en = {
     `
 };
 export default en;
-
-

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-11-18 13:45:32
+ * @LastEditTime: 2021-11-19 15:42:31
  * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -108,6 +108,7 @@ export class BasePublisher {
     // 上传图片的逻辑代码
     await _Promise.map(
       Array.from(div.getElementsByTagName('img')),
+
       async (img) => {
         const src = img.getAttribute('src');
         console.log(src);
@@ -116,6 +117,7 @@ export class BasePublisher {
           const file = decodeURI(src.substr('atom://'.length));
           if (window.api.fsExistsSync(file)) {
             const url: any = await this.uploadMedia(file, mediaMode);
+
             if (url) {
               img.setAttribute('src', url);
             } else {
@@ -129,7 +131,7 @@ export class BasePublisher {
       { concurrency: 5 }
     );
     post.html = div.innerHTML;
-    console.log(oldPost);
+    // console.log(oldPost);
     if (oldPost) {
       stateHandler(publisher.STATE_EDIT_POST);
       await this.editPost(oldPost, post);

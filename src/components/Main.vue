@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-11-19 13:06:13
+ * @LastEditTime: 2021-11-19 17:21:34
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -67,7 +67,6 @@
   import * as useRecord from '@/logic/useRecord';
   import * as utils from '@/logic/utils';
   import * as statusBar from '@/logic/statusBar';
-  import { getShowFile, saveShowFile } from '@/logic/showFile';
   import store from '../store/index';
 
   // import FileTree from '@/logic/fileManager/fileFree';
@@ -89,7 +88,7 @@
 
         statusText: null,
         MAX_FILE_SIZE: 1000 * 1000,
-        showfile: getShowFile()
+        showfile: window.api.getShowFile()
       };
     },
     watch: {
@@ -240,7 +239,7 @@
       window.api.receive('menu.showfile', () => {
         console.log(this.showfile);
         this.showfile = !this.showfile;
-        saveShowFile(this.showfile);
+        window.api.setShowFile(this.showfile);
       });
 
       window.api.receive('menu.welcome', () => {
