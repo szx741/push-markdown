@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-11-16 21:02:55
+ * @LastEditTime: 2021-11-18 16:55:42
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -84,6 +84,10 @@
       // useRecord.getTabs()[useRecord.getCurrentTab() - 1].file
       return {
         // tabs: useRecord.getTabs(),
+<<<<<<< HEAD
+=======
+        file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()]?.file || window.api.syncMsg('__static')),
+>>>>>>> 9316041fe64baed1def953a0abf72207362c14e7
         current: useRecord.getCurrentTab(),
         file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()]?.file || window.api.syncMsg('__static')),        // file:  '',
         
@@ -102,10 +106,7 @@
       },
       current() {
         const file = this.tabs[this.current].file;
-        console.log('current:', file);
-        this.file = file ? window.api.pathDirname(file) : '';
-        console.log('current:this', this.file);
-
+        this.file = file ? window.api.pathDirname(file) : window.api.pathDirname(window.api.syncMsg('__static'));
         useRecord.saveCurrentTab(this.current);
       }
     },
@@ -236,7 +237,6 @@
           this.selectTab(index);
         }
       });
-
       window.api.receive('menu.showfile', () => {
         console.log(this.showfile);
         this.showfile = !this.showfile;
