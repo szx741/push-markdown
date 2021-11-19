@@ -69,7 +69,7 @@
   import * as statusBar from '@/logic/statusBar';
   import { getShowFile, saveShowFile } from '@/logic/showFile';
 
-  // import FileTree from '@/logic/fileManager/fileFree';
+  // import FileTree from '@/logic/fileManager/fileFree';·
 
   export default defineComponent({
     name: 'Main',
@@ -81,7 +81,7 @@
     data() {
       return {
         // tabs: useRecord.getTabs(),
-        file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()].file),
+        file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()]?.file || window.api.syncMsg('__static')),
         current: useRecord.getCurrentTab(),
         statusText: null,
         MAX_FILE_SIZE: 1000 * 1000,

@@ -40,6 +40,13 @@ module.exports = {
               arch: 'x64'
             }
           ]
+        },
+        nsis: {
+          oneClick: true,
+          allowToChangeInstallationDirectory: true,
+          installerIcon: './public/app.ico',
+          createStartMenuShortcut: true,
+          shortcutName: 'push-markdown'
         }
       }
     },
