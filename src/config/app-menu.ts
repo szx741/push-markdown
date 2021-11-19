@@ -42,6 +42,7 @@ export function init(mainWindow: BrowserWindow) {
 
   const t = themeConfig.getTheme()
 
+
   // 菜单栏模板
   const template: any[] = [
     {

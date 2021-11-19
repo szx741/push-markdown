@@ -933,36 +933,38 @@
 }
 
 
-.hljs {
+.markdown-body-dark .hljs {
   color: #b0b7bf !important;
 }
 
-.hljs-keyword {
+.markdown-body-dark .hljs-keyword {
   color: #9a75b8 !important;
 }
 
-.hljs-tag {
+.markdown-body-dark .hljs-tag {
   color: #88825e !important;
 }
 
-.hljs-name {
+.markdown-body-dark .hljs-name {
   color: #4e9b4d !important;
 }
 
-.hljs-comment {
+.markdown-body-dark .hljs-comment {
   color: #9d7341 !important;
 }
 
-.hljs-string {
+.markdown-body-dark .hljs-string {
   color: #ce6a6a !important;
 }
 
-.hljs-attribute {
+.markdown-body-dark .hljs-attribute {
   color: #898bed !important;
 }
 
 .markdown-body-dark .meta .meta-name {
-  color: #aebbc3;
+  color: #aebbc3 !important;
   font-weight: 500;
   white-space: nowrap;
 }
+
+
