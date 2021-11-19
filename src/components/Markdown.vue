@@ -1,17 +1,15 @@
 <!-- Markdown预览页面 -->
 
 <template>
-  <div class="wrapper" :class="{'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive}">
-    <div class="container">
+  <div class="wrapper" >
+    <div class="container" :class="{'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive}">
 
       <!-- 编辑器  -->
       <div class="left">
-        <textarea ref="textarea" class="content" v-model="src" @input="update" title="text"></textarea>
+        <textarea ref="textarea" class="content" :class="{'left-light': !darkActive, 'left-dark': darkActive}" v-model="src" @input="update" title="text"></textarea>
       </div>
 
-
-
-      <div class="right">
+      <div class="right" :class="{'right-light': !darkActive, 'right-dark': darkActive}" >
         <div class="content">
           <h1 v-if="post.title" class="title">{{ post.title }}</h1>
 
@@ -62,7 +60,7 @@
       </div>
     </div>
 
-    <Publish :post="post" :active="active"></Publish>
+    <Publish class="markdown-body" :post="post" :active="active"></Publish>
   </div>
 </template>
 
@@ -195,12 +193,18 @@ import { watch } from 'fs';
 <style lang="scss" scoped>
   /*@import "../assets/MathJax.css";*/
   @import '~highlight.js/styles/github.css';
+  @import '../common/assets/theme/github-markdown-light.css';
+  @import '../common/assets/theme/github-markdown-dark.css';
+  @import '../common/assets/theme/splendor.css';
+  @import '../common/assets/theme/wysiwyg.css';
 
 
   .wrapper {
     width: 100%;
     height: 100%;
     position: relative;
+
+  
 
 
     // > * {
@@ -241,15 +245,26 @@ import { watch } from 'fs';
     width: 10px;
     height: 1px;
   }
-  /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
-  .right::-webkit-scrollbar-thumb {
+
+  // /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
+  .right-light::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: #cacaca;
   }
   /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
-  .right::-webkit-scrollbar-track {
+  .right-light::-webkit-scrollbar-track {
     border-radius: 10px;
     background: #eeeeee;
+  }
+
+  .right-dark::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #686c6f;
+  }
+  /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
+  .right-dark::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: transparent;
   }
 
   textarea {
@@ -269,14 +284,24 @@ import { watch } from 'fs';
     height: 1px;
   }
   // /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
-  textarea::-webkit-scrollbar-thumb {
+  .left-light::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: #cacaca;
   }
   /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
-  textarea::-webkit-scrollbar-track {
+  .left-light::-webkit-scrollbar-track {
     border-radius: 10px;
     background: #eeeeee;
+  }
+
+  .left-dark::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #686c6f;
+  }
+  /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
+  .left-dark::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: transparent;
   }
 
   .content {

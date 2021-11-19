@@ -21,10 +21,10 @@
 
 <script lang="ts">
   import { useI18n } from 'vue-i18n';
+  import store from './store/index';
   export default {
     name: 'PublishMarkdown',
     setup() {
-      const theme = 'markdown-body-light'
 
       const { t, locale } = useI18n();
       window.api.receive('menu.language', (data: any) => {
@@ -32,7 +32,8 @@
         locale.value = data; // change!
       });
       locale.value = window.api.getLanguage() === 'en' ? 'en' : 'zh';
-      console.log('初始化的locale', locale.value);
+      
+      console.log('初始化的locale', locale.value, window.api.getTheme());
       return { t, locale };
     }
   };
@@ -61,10 +62,7 @@
   }
 </style> -->
 <style lang="scss">
-  @import './common/assets/theme/github-markdown-light.css';
-  @import './common/assets/theme/github-markdown-dark.css';
-  @import './common/assets/theme/splendor.css';
-  @import './common/assets/theme/wysiwyg.css';
+  @import '~github-markdown-css/github-markdown.css';
 
   #app {
     height: 100%;

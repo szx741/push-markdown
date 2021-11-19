@@ -60,6 +60,9 @@ contextBridge.exposeInMainWorld('api', {
   getLanguage() {
     return storeSettings.get('language', 'zh');
   },
+  getTheme() {
+    return storeSettings.get('theme', 'github');
+  },
   getStoreSettingsClear() {
     return storeSettings.clear();
   },

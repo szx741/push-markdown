@@ -217,6 +217,10 @@
     },
 
     mounted() {
+
+      
+      store.commit('setTheme', window.api.getTheme());
+
       statusBar.setCallback((text: any) => {
         this.statusText = text;
       });
