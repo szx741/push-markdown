@@ -1,15 +1,14 @@
 <!-- Markdown预览页面 -->
 
 <template>
-  <div class="wrapper" >
-    <div class="container" :class="{'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive}">
-
+  <div class="wrapper">
+    <div class="container" :class="{ 'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive }">
       <!-- 编辑器  -->
       <div class="left">
-        <textarea ref="textarea" class="content" :class="{'left-light': !darkActive, 'left-dark': darkActive}" v-model="src" @input="update" title="text"></textarea>
+        <textarea ref="textarea" class="content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" v-model="src" @input="update" title="text"></textarea>
       </div>
 
-      <div class="right" :class="{'right-light': !darkActive, 'right-dark': darkActive}" >
+      <div class="right" :class="{ 'right-light': !darkActive, 'right-dark': darkActive }">
         <div class="content">
           <h1 v-if="post.title" class="title">{{ post.title }}</h1>
 
@@ -44,7 +43,7 @@
                 </td>
                 <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
               </tr>
-          
+
               <tr class="meta-item">
                 <td class="meta-name">{{ $t('meta.tags') }}</td>
                 <td class="meta-value list" v-if="post.tags">
@@ -78,7 +77,6 @@
   import dayjs from 'dayjs';
 
   import store from '../store/index';
-import { watch } from 'fs';
 
   interface data {
     modified: any;
@@ -167,7 +165,6 @@ import { watch } from 'fs';
     },
 
     setup() {
-      
       const theme: any = reactive({
         githubActive: true,
         darkActive: false,
@@ -180,12 +177,12 @@ import { watch } from 'fs';
         (newVal: any, oldVal: any) => {
           theme[oldVal + 'Active'] = false;
           theme[newVal + 'Active'] = true;
-      })
+        }
+      );
 
       return {
         ...toRefs(theme)
-      } 
-      
+      };
     }
   });
 </script>
@@ -198,14 +195,10 @@ import { watch } from 'fs';
   @import '../common/assets/theme/splendor.css';
   @import '../common/assets/theme/wysiwyg.css';
 
-
   .wrapper {
     width: 100%;
     height: 100%;
     position: relative;
-
-  
-
 
     // > * {
     // position: absolute;
@@ -344,8 +337,6 @@ import { watch } from 'fs';
         text-align: left;
       }
     }
-
-    
   }
 
   .meta-item {

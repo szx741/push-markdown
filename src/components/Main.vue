@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-11-19 18:27:41
+ * @LastEditTime: 2021-11-19 22:00:20
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -216,8 +216,6 @@
     },
 
     mounted() {
-
-      
       store.commit('setTheme', window.api.getTheme());
 
       statusBar.setCallback((text: any) => {

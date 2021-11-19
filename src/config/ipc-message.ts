@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-11-19 20:13:40
+ * @LastEditTime: 2021-11-19 21:57:59
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
@@ -87,7 +87,6 @@ ipcMain.on('ondragstart', (event, filePath) => {
 });
 
 // 中转消息，渲染进程发给主进程，主进程再发给渲染进程
-// ipcMain.on('new-media-object', async function (event, meta: any, blogId: string, username: string, password: string, mediaObject: any) {
 ipcMain.on('new-media-object', async function (event, arg) {
   try {
     metaweblog = new MetaWeblog(arg[7]);
