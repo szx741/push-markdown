@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-11-18 22:18:30
+ * @LastEditTime: 2021-11-19 13:07:06
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
