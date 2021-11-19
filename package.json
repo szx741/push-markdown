@@ -6,7 +6,8 @@
   "author": "szx",
   "scripts": {
     "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve"
+    "electron:serve": "vue-cli-service electron:serve",
+    "electron:build-mac": "vue-cli-service electron:build --macos"
   },
   "main": "background.js",
   "dependencies": {
@@ -66,7 +67,7 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "css-loader": "^5.2.6",
-    "electron": "^15.2.0",
+    "electron": "^16.0.0",
     "electron-devtools-installer": "^3.2.0",
     "eslint": "^6.8.0",
     "eslint-plugin-html": "^6.2.0",

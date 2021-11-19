@@ -2,7 +2,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:14:13
- * @LastEditTime: 2021-09-01 21:14:40
+ * @LastEditTime: 2021-11-19 18:53:33
  * @Description:
  * @FilePath: \push-markdown\vue.config.js
  */
@@ -30,7 +30,10 @@ module.exports = {
         copyright: 'Copyright © year ',
         nsis: {
           oneClick: false,
-          allowToChangeInstallationDirectory: true
+          allowToChangeInstallationDirectory: true,
+          installerIcon: './public/app.ico',
+          createStartMenuShortcut: true,
+          shortcutName: 'push-markdown'
         },
         win: {
           icon: './public/app.ico',
@@ -38,6 +41,14 @@ module.exports = {
             {
               target: 'nsis',
               arch: 'x64'
+            }
+          ]
+        },
+        mac: {
+          icon: './public/app.ico',
+          target: [
+            {
+              target: 'default'
             }
           ]
         }

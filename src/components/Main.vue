@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-11-19 17:21:34
+ * @LastEditTime: 2021-11-19 18:27:41
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -69,7 +69,7 @@
   import * as statusBar from '@/logic/statusBar';
   import store from '../store/index';
 
-  // import FileTree from '@/logic/fileManager/fileFree';
+  // import FileTree from '@/logic/fileManager/fileFree';·
 
   export default defineComponent({
     name: 'Main',

@@ -46,7 +46,7 @@
                 </td>
                 <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
               </tr>
-
+          
               <tr class="meta-item">
                 <td class="meta-name">{{ $t('meta.tags') }}</td>
                 <td class="meta-value list" v-if="post.tags">
