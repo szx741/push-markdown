@@ -7,7 +7,8 @@
 -->
 <template>
   <!-- <div id="app"> -->
-  <router-view></router-view>
+      <router-view></router-view>
+  
   <!-- </div> -->
 </template>
 <!--<template>
@@ -23,6 +24,8 @@
   export default {
     name: 'PublishMarkdown',
     setup() {
+      const theme = 'markdown-body-light'
+
       const { t, locale } = useI18n();
       window.api.receive('menu.language', (data: any) => {
         console.log('修改后的locale', locale.value);
@@ -58,7 +61,10 @@
   }
 </style> -->
 <style lang="scss">
-  @import '~github-markdown-css/github-markdown.css';
+  // @import '~github-markdown-css/github-markdown-dark.css';
+  @import './common/assets/theme/github-markdown-light.css';
+  @import './common/assets/theme/splendor.css';
+  @import './common/assets/theme/wysiwyg.css';
 
   #app {
     height: 100%;

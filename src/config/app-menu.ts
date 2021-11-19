@@ -143,6 +143,7 @@ export function init(mainWindow: BrowserWindow) {
         }
       ]
     },
+    // 窗口菜单
     {
       label: l.window,
       role: 'window',
@@ -200,6 +201,37 @@ export function init(mainWindow: BrowserWindow) {
         }
       ]
     },
+
+
+
+    // 主题菜单
+    {
+      label: l.theme,
+      role: 'theme',
+      submenu: [
+        {
+          label: l.light,
+          click: function () {
+            webContents.send('menu.theme', 'light');
+          }
+        },
+        {
+          label: l.splendor,
+          click: function () {
+            webContents.send('menu.theme', 'splendor');
+          }
+        },
+        {
+          label: l.wysiwyg,
+          click: function () {
+            webContents.send('menu.theme', 'wysiwyg');
+          }
+        },
+      ]
+    },
+
+
+    // 帮助菜单
     {
       label: l.help,
       role: 'help',

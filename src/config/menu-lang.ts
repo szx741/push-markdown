@@ -43,7 +43,12 @@ export const en = {
   hideOthers: 'Hide Others',
   showAll: 'Show All',
   quit: 'Quit',
-  bringAllToFront: 'Bring All to Front'
+  bringAllToFront: 'Bring All to Front',
+
+  theme: 'Theme',
+  light: 'github',
+  splendor: 'splendor',
+  wysiwyg: 'wysiwyg',
 };
 
 export const zh = {
@@ -81,5 +86,10 @@ export const zh = {
   hideOthers: '隐藏其他',
   showAll: '显示全部',
   quit: '退出',
-  bringAllToFront: '前置全部窗口'
+  bringAllToFront: '前置全部窗口',
+
+  theme: '主题',
+  light: 'github',
+  splendor: '异彩',
+  wysiwyg: '所见即所得',
 };

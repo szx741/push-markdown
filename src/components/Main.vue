@@ -68,6 +68,7 @@
   import * as utils from '@/logic/utils';
   import * as statusBar from '@/logic/statusBar';
   import { getShowFile, saveShowFile } from '@/logic/showFile';
+  import store from '../store/index'
 
   // import FileTree from '@/logic/fileManager/fileFree';
 
@@ -79,10 +80,13 @@
       return { tabs };
     },
     data() {
+      console.log(useRecord.getCurrentTab(), useRecord.getTabs())
+      // useRecord.getTabs()[useRecord.getCurrentTab() - 1].file
       return {
         // tabs: useRecord.getTabs(),
-        file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()].file),
         current: useRecord.getCurrentTab(),
+        file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()]?.file || window.api.syncMsg('__static')),        // file:  '',
+        
         statusText: null,
         MAX_FILE_SIZE: 1000 * 1000,
         showfile: getShowFile()
@@ -251,6 +255,12 @@
       window.api.receive('menu.sample', () => {
         this.openFile(utils.getSampleFile());
       });
+
+      window.api.receive('menu.theme', (theme: any) => {
+        console.log(theme)
+        store.commit('setTheme', theme)
+      });
+    
     }
   });
 </script>

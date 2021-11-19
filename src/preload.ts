@@ -32,7 +32,9 @@ const validChannels = [
   'menu.publish',
   'menu.showfile',
   'process.versions',
-  '__static'
+  '__static',
+
+  'menu.theme',
 ];
 
 contextBridge.exposeInMainWorld('api', {

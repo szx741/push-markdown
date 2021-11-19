@@ -1,7 +1,7 @@
 <!-- Markdown预览页面 -->
 
 <template>
-  <div class="wrapper">
+  <div class="wrapper" :class="{markdownBodyLight: lightActive, splendor: splendorActive, wysiwyg: wysiwygActive}">
     <div class="container">
       <div class="left">
         <textarea ref="textarea" class="content" v-model="src" @input="update" title="text"></textarea>
@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, reactive, watch as watchSetup, toRefs } from 'vue';
 
   import dateFormat from 'dateformat';
   import * as utils from '../logic/utils';
@@ -73,6 +73,9 @@
   import * as statusBar from '../logic/statusBar';
   import i18n from '@/common/lib/language';
   import dayjs from 'dayjs';
+
+  import store from '../store/index';
+import { watch } from 'fs';
 
   interface data {
     modified: any;
@@ -158,6 +161,28 @@
     async updated() {
       const markdown: any = this.$refs['markdown'];
       utils.setLinks(markdown);
+    },
+
+    setup() {
+      
+      const theme: any = reactive({
+        lightActive: true,
+        splendorActive: false,
+        wysiwygActive: false
+      });
+
+      watchSetup(
+        () => store.state.theme,
+        (newVal: any, oldVal: any) => {
+          console.log(newVal)
+          theme[oldVal + 'Active'] = false;
+          theme[newVal + 'Active'] = true;
+      })
+
+      return {
+        ...toRefs(theme)
+      } 
+      
     }
   });
 </script>
@@ -170,6 +195,7 @@
     width: 100%;
     height: 100%;
     position: relative;
+
 
     // > * {
     // position: absolute;
