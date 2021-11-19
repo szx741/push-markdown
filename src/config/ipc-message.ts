@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2021-11-18 22:18:30
+ * @LastEditTime: 2021-11-19 13:07:06
  * @Description:
  * @FilePath: \push-markdown\src\config\ipc-message.ts
  */
@@ -86,10 +86,6 @@ ipcMain.on('ondragstart', (event, filePath) => {
   });
 });
 
-<<<<<<< HEAD
-
-import Store from 'electron-store';
-=======
 // 中转消息，渲染进程发给主进程，主进程再发给渲染进程
 // ipcMain.on('new-media-object', async function (event, meta: any, blogId: string, username: string, password: string, mediaObject: any) {
 ipcMain.on('new-media-object', async function (event, arg) {
@@ -122,7 +118,6 @@ ipcMain.on('new-metaweblog', function (event, arg) {
 //   console.log('new-media-object:', result);
 //   event.reply('new-media-object', result);
 // });
->>>>>>> 9316041fe64baed1def953a0abf72207362c14e7
 
 Store.initRenderer();
 
