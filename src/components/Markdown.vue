@@ -177,6 +177,9 @@
         (newVal: any, oldVal: any) => {
           theme[oldVal + 'Active'] = false;
           theme[newVal + 'Active'] = true;
+        },
+        {
+          immediate: true
         }
       );
 
