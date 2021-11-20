@@ -5,7 +5,7 @@
     <div class="container" :class="{ 'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive }">
       <!-- 编辑器  -->
       <div class="left">
-        <textarea ref="textarea" class="content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" v-model="src" @input="update" title="text"></textarea>
+        <textarea ref="textarea" class="left-content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" v-model="src" @input="update" title="text"></textarea>
       </div>
 
       <div class="right" :class="{ 'right-light': !darkActive, 'right-dark': darkActive }">
@@ -221,19 +221,17 @@
     align-items: stretch;
   }
 
-  .left,
-  .right {
-    width: 0;
-    flex-grow: 1;
-  }
-
   .left {
+    width: 47%;
+    // flex-grow: 1;
     display: flex;
     overflow: hidden;
     border-right: 1px solid #eeeeee;
   }
 
   .right {
+    width: 53%;
+    flex-grow: 1;
     overflow-y: scroll;
   }
 
@@ -300,8 +298,12 @@
     background: transparent;
   }
 
+  .left-content {
+    padding: 35px;
+    box-sizing: border-box;
+  }
   .content {
-    padding: 40px;
+    padding: 37px;
     box-sizing: border-box;
   }
 

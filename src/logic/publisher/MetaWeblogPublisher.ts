@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-11-19 20:14:02
+ * @LastEditTime: 2021-11-20 17:35:32
  * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -102,13 +102,16 @@ export class MetaWeblogPublisher extends BasePublisher {
   // noinspection JSMethodCanBeStatic
   toMetaWeblogPost(post: any) {
     // await this.checkCategoryExists(post)
+    if (post.tags) {
+      post.tags = post.tags.toString();
+    }
     return {
       title: post.title,
       description: post.html,
       post_type: 'post',
       dateCreated: post.date,
       categories: post.categories,
-      mt_keywords: post.tags.toString(),
+      mt_keywords: post.tags,
       mt_excerpt: post.abstract,
       wp_slug: post.url,
       post_status: 'publish'

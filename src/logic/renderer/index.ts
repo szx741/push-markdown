@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-11-19 17:47:07
+ * @LastEditTime: 2021-11-20 18:01:29
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\src\logic\renderer\index.ts
  */
@@ -197,8 +197,8 @@ function extractAbstract(html: string) {
     singleNewLineParagraphs: true
   });
 
-  if (string.length > 100) {
-    string = string.substr(0, 100) + '...';
+  if (string.length > 120) {
+    string = string.substr(0, 120) + '...';
   }
   return string;
 }

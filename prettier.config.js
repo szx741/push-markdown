@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 16:34:18
- * @LastEditTime: 2021-07-13 20:59:51
+ * @LastEditTime: 2021-11-20 18:47:45
  * @Description:
  * @FilePath: \push-markdown\prettier.config.js
  */
@@ -15,7 +15,7 @@ module.exports = {
   quoteProps: 'as-needed',
   bracketSpacing: true,
   trailingComma: 'none', // 末尾逗号
-  jsxBracketSameLine: false,
+  bracketSameLine: false,
   jsxSingleQuote: false,
   arrowParens: 'always',
   insertPragma: false,

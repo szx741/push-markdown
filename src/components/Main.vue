@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-11-19 22:00:20
+ * @LastEditTime: 2021-11-20 18:02:29
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -79,13 +79,9 @@
       return { tabs };
     },
     data() {
-      console.log(useRecord.getCurrentTab(), useRecord.getTabs());
-      // useRecord.getTabs()[useRecord.getCurrentTab() - 1].file
       return {
-        // tabs: useRecord.getTabs(),
         current: useRecord.getCurrentTab(),
-        file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()]?.file || window.api.syncMsg('__static')), // file:  '',
-
+        file: window.api.pathDirname(useRecord.getTabs()[useRecord.getCurrentTab()]?.file || window.api.syncMsg('__static')),
         statusText: null,
         MAX_FILE_SIZE: 1000 * 1000,
         showfile: window.api.getShowFile()
@@ -235,7 +231,6 @@
         }
       });
       window.api.receive('menu.showfile', () => {
-        console.log(this.showfile);
         this.showfile = !this.showfile;
         window.api.setShowFile(this.showfile);
       });
@@ -254,7 +249,6 @@
       });
 
       window.api.receive('menu.theme', (theme: any) => {
-        console.log(theme);
         store.commit('setTheme', theme);
       });
     }
