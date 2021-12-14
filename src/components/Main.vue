@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-11-20 18:02:29
+ * @LastEditTime: 2021-12-14 20:39:01
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -186,9 +186,18 @@
         this.current = pos;
       },
       async refreshTab(index: any) {
-        const file = this.tabs[index].file;
-        await this.closeTab(index);
-        await this.openFile(file);
+        const tab = this.tabs[index];
+        const file = tab.file;
+        if (tab.type === 'markdown' && tab.modified && !utils.isSampleFile(tab.file)) {
+          if (!window.confirm(i18n.global.t('closeModifiedFile'))) {
+            return;
+          }
+        }
+        await this.fileEmpty(index);
+        this.tabs[index].file = file;
+      },
+      async fileEmpty(index: any) {
+        this.tabs[index].file = 'tmpClose';
       },
       async closeTab(index: any) {
         const tab = this.tabs[index];
@@ -198,7 +207,7 @@
           }
         }
         if (this.tabs.length <= 1) {
-          this.tabs = [{ type: 'welcome' }];
+          this.tabs[0] = { type: 'welcome' };
           this.current = 0;
           return;
         }

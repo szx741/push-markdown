@@ -106,17 +106,19 @@
         }
       },
       readFile() {
-        window.api.fsReadFile(this.file, { encoding: 'utf-8' }, (err: any, data: string) => {
-          if (err) {
-            console.error(err);
-            const text = i18n.global.t('readFileError') + err.message;
-            statusBar.show(text);
-            this.src = text;
-          } else {
-            //   const result = data.replace(/\t/g, '&emsp;');
-            this.src = data;
-          }
-        });
+        if (this.file != 'tmpClose') {
+          window.api.fsReadFile(this.file, { encoding: 'utf-8' }, (err: any, data: string) => {
+            if (err) {
+              console.error(err);
+              const text = i18n.global.t('readFileError') + err.message;
+              statusBar.show(text);
+              this.src = text;
+            } else {
+              //   const result = data.replace(/\t/g, '&emsp;');
+              this.src = data;
+            }
+          });
+        }
       },
       writeFile() {
         if (utils.isSampleFile(this.file)) {

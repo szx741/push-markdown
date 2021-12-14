@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-11-20 18:01:29
+ * @LastEditTime: 2021-12-14 18:46:00
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\src\logic\renderer\index.ts
  */
@@ -78,7 +78,11 @@ function init() {
       // 将全角空格转换为-
       const decodedUrl = decodeURI(tokens[idx].attrs[hIndex][1].replace(/%E3%80%80/g, '-'));
       // 将锚点中所有的标点符号去除
-      tokens[idx].attrs[hIndex][1] = decodedUrl.replace(/[ |~|`|!|@|$|%|^|&|*|(|)|-|_|+|=||||[|\]|{|}|;|:|"|'|,|<|.|>|/|?|、|，|。|！|？|—|【|】|｛|｝|（|）|；|：|‘|’|“|”|《|》|￥]/g, '');
+      if (decodedUrl.indexOf('#') == 0) {
+        tokens[idx].attrs[hIndex][1] = decodedUrl
+          .replace(/[ |~|`|!|@|$|%|^|&|*|(|)|-|_|+|=||||[|\]|{|}|;|:|"|'|,|<|.|>|/|?|、|，|。|！|？|—|【|】|｛|｝|（|）|；|：|‘|’|“|”|《|》|￥]/g, '')
+          .toLowerCase();
+      }
     }
     if (aIndex < 0 && tokens[idx].attrs[hIndex][1].indexOf('#') != 0) {
       tokens[idx].attrPush(['target', '_blank']); // add new attribute
