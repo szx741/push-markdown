@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2021-09-01 17:27:55
+ * @LastEditTime: 2021-12-18 19:09:04
  * @Description:文章发布工具。根据type调用不同的实现。目前支持MetaWeblog。
  * @FilePath: \push-markdown\src\logic\publisher\index.ts
  */
@@ -27,7 +27,7 @@ export class Publisher {
     }
   }
 
-  async publish(post: any, blogID: number, stateHandler: any, publishMode: any, mediaMode: any, editHandler: any) {
-    return this.publisher.publish(post, blogID, stateHandler, publishMode, mediaMode, editHandler);
+  async publish(post: any, blogID: number, stateHandler: any, publishMode: any, mediaMode: any, getNetPic: boolean, notCheck: boolean, editHandler: any) {
+    return this.publisher.publish(post, blogID, stateHandler, publishMode, mediaMode, getNetPic, notCheck, editHandler);
   }
 }

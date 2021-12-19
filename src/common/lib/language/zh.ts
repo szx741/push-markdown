@@ -73,6 +73,10 @@ const zh = {
     publishModeManualHint: '手动确认：先模式一；若ID为0，则模式二；若模式二失败，则模式三；若模式三失败，则模式四；',
     publishModeAutoHint: '自动判断：先模式二；若模式二失败，则模式三；若模式三失败，则为模式四；',
     publishModeCreateHint: '创建新文章：直接模式四',
+    enterArticleID: '输入文章ID',
+    getRemoteImages: '获取远程图片',
+    forcedImageUpdate: '强制更新图片',
+    notCheckingRemoteImages: '不检查远程图片',
     publishModeHint: `
     模式一：更新指定文章ID（0为不指定文章ID，会转到模式二） <br/>
     模式二：更新本地缓存获取的文章ID（相同的URL） <br/>

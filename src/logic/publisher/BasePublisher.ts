@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2021-11-19 15:42:31
+ * @LastEditTime: 2021-12-18 19:28:44
  * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -64,7 +64,7 @@ export class BasePublisher {
    *                    return Promise<false>: create new post.
    * @return {Promise<boolean>} true: published, false: cancelled
    */
-  async publish(post: any, blogID: number, stateHandler: any, publishMode: any, mediaMode: any, editHandler: any) {
+  async publish(post: any, blogID: number, stateHandler: any, publishMode: any, mediaMode: any, getNetPic: boolean, notCheck: boolean, editHandler: any) {
     const _stateHandler = stateHandler;
     stateHandler = (state: any) => {
       _stateHandler && _stateHandler(state);
@@ -76,7 +76,7 @@ export class BasePublisher {
     post = await renderer.render(post.src, post.file, false);
 
     stateHandler(publisher.STATE_READ_POST);
-
+    const map = new Map<string, string>();
     let oldPost = null;
     switch (publishMode) {
       case 'auto':
@@ -86,10 +86,14 @@ export class BasePublisher {
       // 手动模式
       case 'manual':
         if (editHandler) {
-          console.log('editHandler', editHandler);
+          // console.log('editHandler', editHandler);
           const _oldPost = await this.getOldPost(post, blogID);
+          if (_oldPost && getNetPic == true) {
+            this.getNetworkImage(_oldPost, map);
+            console.log('获取到的所有图片', map);
+          }
           if (await editHandler(_oldPost)) {
-            console.log('await editHandler(_oldPost)');
+            // console.log('await editHandler(_oldPost)');
             oldPost = _oldPost;
           }
         }
@@ -111,13 +115,15 @@ export class BasePublisher {
 
       async (img) => {
         const src = img.getAttribute('src');
-        console.log(src);
-
         if (src && src.startsWith('atom://')) {
           const file = decodeURI(src.substr('atom://'.length));
           if (window.api.fsExistsSync(file)) {
-            const url: any = await this.uploadMedia(file, mediaMode);
-
+            let url;
+            if (getNetPic && map.size > 0) {
+              url = await this.changeLocalMedia(file, map);
+            } else {
+              url = await this.uploadMedia(file, mediaMode, notCheck);
+            }
             if (url) {
               img.setAttribute('src', url);
             } else {
@@ -169,5 +175,9 @@ export class BasePublisher {
    * @param mediaMode
    * @return Promise<string> url
    */
-  uploadMedia(file: any, mediaMode: any): any {}
+  uploadMedia(file: any, mediaMode: any, notCheck: boolean): any {}
+
+  getNetworkImage(_oldPost: string, map: Map<string, string>) {}
+
+  changeLocalMedia(file: string, map: Map<string, string>) {}
 }

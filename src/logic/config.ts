@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-09-02 12:42:57
+ * @LastEditTime: 2021-12-18 19:14:38
  * @Description: user settings
  * @FilePath: \push-markdown\src\logic\config.ts
  */
@@ -58,6 +58,14 @@ export function getPublishMode(defaultValue = 'manual') {
 
 export function savePublishMode(publishMode: any) {
   return window.api.storeSettingsSet('publish.mode', publishMode);
+}
+
+export function saveNotCheck(notcheck: boolean) {
+  return window.api.storeSettingsSet('notcheck', notcheck);
+}
+
+export function getNotCheck(defaultValue = true) {
+  return window.api.storeSettingsGet('notcheck', defaultValue);
 }
 
 export function getRenderConfig() {

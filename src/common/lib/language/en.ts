@@ -75,6 +75,10 @@ const en = {
     publishModeManualHint: 'Manual confirmation: mode one first; if ID is 0, then mode two; if mode two fails, then mode three; if mode three fails, then mode four;',
     publishModeAutoHint: 'Auto-judge: mode two first; if mode two fails, then mode three; if mode three fails, then mode four;',
     publishModeCreateHint: 'Create new article: direct mode four',
+    enterArticleID: 'Enter article ID',
+    getRemoteImages: 'Get remote images',
+    forcedImageUpdate: 'Forced image update',
+    notCheckingRemoteImages: 'Not checking remote images',
     publishModeHint: `
     Mode I: Update the specified article ID (0 is not specified article ID, will go to mode two) <br/>
     Mode 2: Update locally cached fetched article ID (same URL) <br/>

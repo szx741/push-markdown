@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-11-19 19:41:29
+ * @LastEditTime: 2021-12-18 17:10:02
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -93,7 +93,7 @@ contextBridge.exposeInMainWorld('api', {
   bufReadFileSync(file: string) {
     try {
       const pic = fs.readFileSync(file, { encoding: 'base64' });
-      console.log(Buffer.from(pic, 'base64'));
+      // console.log(Buffer.from(pic, 'base64'));
       return Buffer.from(pic, 'base64');
     } catch {
       return false;
@@ -149,7 +149,7 @@ contextBridge.exposeInMainWorld('api', {
       url &&
       new Promise((resolve, reject) => {
         request.head(encodeURI(url), function (error: any, response: any, body: any) {
-          console.log(error, response, body);
+          // console.log(error, response, body);
           resolve(!error && response && response.statusCode === 200);
         });
       })

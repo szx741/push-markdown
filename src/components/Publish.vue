@@ -45,10 +45,16 @@
               <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
             </select>
             <div v-if="publishMode == 'manual'">
-              <label class="publish-mode-label">输入文章ID</label>
-              <input class="publish-article-id" type="number" placeholder="输入文章ID" v-model="blogID" />
-              <label class="publish-mode-label">强制更新图片</label>
-              <input type="checkbox" v-model="forcedUpdate" />
+              <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
+              <input class="publish-article-id" type="number" placeholder="ID" v-model="blogID" />
+              <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
+              <input type="checkbox" v-model="getNetPic" :disabled="forcedUpdate" />
+              <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>
+              <input type="checkbox" v-model="forcedUpdate" :disabled="getNetPic" />
+            </div>
+            <div v-else-if="publishMode == 'auto'">
+              <label class="publish-mode-label">{{ $t('publish.notCheckingRemoteImages') }}</label>
+              <input type="checkbox" v-model="notCheck" />
             </div>
           </div>
 
@@ -107,7 +113,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, ref } from 'vue';
+  import { defineComponent, ref } from 'vue';
 
   import * as publisher from '../logic/publisher';
   import { Publisher } from '../logic/publisher';
@@ -127,6 +133,8 @@
     confirm: any;
     blogID: number;
     forcedUpdate: boolean;
+    getNetPic: boolean;
+    notCheck: boolean;
   }
   function siteToString(site: any) {
     return `${site.name} [${site.username}] [${site.url}]`;
@@ -149,7 +157,9 @@
           neutral: {}
         },
         blogID: 0,
-        forcedUpdate: false
+        forcedUpdate: false,
+        getNetPic: true,
+        notCheck: config.getNotCheck()
       };
     },
     watch: {
@@ -248,6 +258,8 @@
                 },
                 this.publishMode,
                 this.forcedUpdate ? 'force' : 'cache',
+                this.getNetPic,
+                this.notCheck,
                 (post: any) => this.editHandler(site, post)
               )
               .then((published) => {
@@ -279,8 +291,8 @@
                 // edit: boolean
                 // remove item from editList and then resolve
                 const index: any = this.editList.indexOf(item);
-                console.log('index,', index);
-                console.log('edit;', edit);
+                // console.log('index,', index);
+                // console.log('edit;', edit);
                 this.editList.splice(index, 1);
                 resolve(edit);
               }
@@ -366,7 +378,7 @@
     align-items: center;
   }
   .publish-mode-label {
-    margin-left: 50px;
+    margin-left: 20px;
   }
 
   .publish-article-id {

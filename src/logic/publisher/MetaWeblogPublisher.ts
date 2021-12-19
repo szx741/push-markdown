@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-11-20 17:35:32
+ * @LastEditTime: 2021-12-18 19:11:34
  * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -51,9 +51,9 @@ export class MetaWeblogPublisher extends BasePublisher {
     const oldPostId = await this.postCache.get(post);
     console.log('getOldPost', oldPostId);
     if (oldPostId) {
-      console.log('metaweblog old post id', oldPostId);
+      // console.log('metaweblog old post id', oldPostId);
       const oldPost = await this.metaWeblog.getPost(oldPostId, this.username, this.password).catch(() => null);
-      console.log('metaweblog old post', oldPost);
+      // console.log('metaweblog old post', oldPost);
       // noinspection EqualityComparisonWithCoercionJS
       if (oldPost && oldPost.postid == oldPostId) {
         return this.toPost(oldPost);
@@ -131,12 +131,40 @@ export class MetaWeblogPublisher extends BasePublisher {
     return true;
   }
 
+  // 获取远程图片
+  async getNetworkImage(_oldPost: any, map: Map<string, string>) {
+    const reg = /<img.+?src=('|")?([^'"]+)('|")?(?:\s+|>)/gim;
+    let tem;
+    const url = new URL(this.url);
+    while ((tem = reg.exec(_oldPost.html))) {
+      if (tem[2].indexOf(url.hostname) != -1) {
+        const imgName = tem[2].substring(tem[2].lastIndexOf('/') + 1);
+        map.set(imgName, tem[2]);
+      }
+    }
+  }
+
+  async changeLocalMedia(file: string, map: Map<string, string>) {
+    const imgName = file.substring(file.lastIndexOf('\\') + 1);
+    const url = map.get(imgName);
+    if (url) {
+      map.delete(imgName);
+      await this.mediaCache.put(file, url);
+      console.log(`本地缓存记录${file}，更新为远程图片的url：${url}`);
+    }
+    return url;
+  }
+
   // 上传媒体文件
-  async uploadMedia(file: any, mediaMode: any) {
+  async uploadMedia(file: any, mediaMode: any, notCheck: boolean) {
     // 上传模式为从cache中获取
     if (mediaMode === 'cache') {
       const url = await this.mediaCache.get(file);
       if (url) {
+        if (notCheck) {
+          console.log('本地有缓存记录，不检查网络图片，直接返回');
+          return url;
+        }
         if (await window.api.checkUrlValid(url)) {
           console.log('本地有缓存记录，且网络检测成功，将使用网络已有的图片');
           return url;
