@@ -11,6 +11,7 @@ const en = {
 
   publishSuccess: 'Publish Success',
   publishError: 'Publish Failed',
+  refreshSuccess: 'Refresh Success',
 
   setting: {
     saveSettings: 'Settings are automatically saved',

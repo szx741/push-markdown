@@ -11,6 +11,7 @@ const zh = {
 
   publishSuccess: '发布成功',
   publishError: '发布失败',
+  refreshSuccess: '重新加载成功',
 
   setting: {
     saveSettings: '设置已自动保存',

@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-12-14 20:39:01
+ * @LastEditTime: 2021-12-22 16:58:38
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -64,6 +64,7 @@
   import Settings from './Settings.vue';
 
   import i18n from '@/common/lib/language/index';
+  import naturalCompare from 'natural-compare-lite';
   import * as useRecord from '@/logic/useRecord';
   import * as utils from '@/logic/utils';
   import * as statusBar from '@/logic/statusBar';
@@ -125,7 +126,8 @@
 
         return allMD.sort((a: any, b: any) => {
           if (a.directory === b.directory) {
-            return a.name.localeCompare(b.name);
+            // return a.name.localeCompare(b.name);
+            return naturalCompare(a.name, b.name);
           }
           return a.directory ? -1 : 1;
         });
@@ -194,6 +196,7 @@
           }
         }
         await this.fileEmpty(index);
+        statusBar.show(i18n.global.t('重新加载成功'));
         this.tabs[index].file = file;
       },
       async fileEmpty(index: any) {
