@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-08 13:09:13
- * @LastEditTime: 2021-09-01 14:49:11
+ * @LastEditTime: 2022-01-14 13:14:27
  * @Description: 单个标签，含标题和关闭按钮
  * @FilePath: \push-markdown\src\components\TabTitle.vue
 -->
@@ -14,10 +14,12 @@
 </template>
 
 <script lang="ts">
-  export default {
+  import { defineComponent } from 'vue';
+
+  export default defineComponent({
     name: 'TabTitle',
     props: ['tabType', 'tabTitle', 'selected', 'modified', 'tabClick', 'tabRefresh', 'tabClose']
-  };
+  });
 </script>
 
 <style lang="scss" scoped>

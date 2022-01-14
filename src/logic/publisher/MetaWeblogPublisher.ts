@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2021-12-22 17:13:44
+ * @LastEditTime: 2022-01-13 23:42:29
  * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html

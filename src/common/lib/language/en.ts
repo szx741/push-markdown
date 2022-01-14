@@ -67,6 +67,7 @@ const en = {
 
   publish: {
     title: 'Publish To Blog',
+    articleID: 'article ID',
     selectSites: 'Select Sites To Publish',
     settings: 'Settings',
     publishMode: 'Publish Mode',

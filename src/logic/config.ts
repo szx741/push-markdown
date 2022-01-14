@@ -1,12 +1,13 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2021-12-18 19:14:38
+ * @LastEditTime: 2022-01-14 13:01:07
  * @Description: user settings
  * @FilePath: \push-markdown\src\logic\config.ts
  */
 'use strict';
 
+import filenamifyUrl from 'filenamify-url';
 import * as Base64 from 'js-base64/base64';
 
 export function clear() {
@@ -84,4 +85,10 @@ export function getRenderConfig() {
 
 export function saveRenderConfig(render: any) {
   return window.api.storeSettingsSet('render', JSON.parse(JSON.stringify(render)));
+}
+
+export function getArticleID(url: string, siteUrl: string, username: string) {
+  console.log(url, username, siteUrl, '???')
+  const storeName = ['cache', 'post', filenamifyUrl(siteUrl), filenamifyUrl(username)].join('-').toString();
+  return window.api.storeGet(storeName, url);
 }

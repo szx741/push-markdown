@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2021-09-21 16:37:22
+ * @LastEditTime: 2022-01-13 23:53:53
  * @Description: 文章、图片发布缓存，避免文章、图片重复发布
  * @FilePath: \push-markdown\src\logic\publisher\PublishCache.ts
  */
@@ -38,6 +38,7 @@ class Cache {
       const key = this.key(object);
       // console.log(key);
       if (key) {
+        console.log(this.storeName, key, window.api.storeGet(this.storeName, key));
         return window.api.storeGet(this.storeName, key);
       }
     }

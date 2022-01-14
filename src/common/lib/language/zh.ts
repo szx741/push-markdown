@@ -65,6 +65,7 @@ const zh = {
 
   publish: {
     title: '发布到博客',
+    articleID: '文章ID',
     selectSites: '选择要发布到的博客',
     settings: '博客配置',
     publishMode: '发布模式',

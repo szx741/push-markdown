@@ -32,6 +32,10 @@
                   </span>
                 </div>
               </div>
+              <div>
+                <span>{{ $t('publish.articleID') }}</span>:
+                {{ aritclesID[site.url + site.username] }}
+              </div>
             </div>
           </div>
         </div>
@@ -131,6 +135,7 @@
     editList: any;
     publishing: any;
     confirm: any;
+    aritclesID: any;
     blogID: number;
     forcedUpdate: boolean;
     getNetPic: boolean;
@@ -156,6 +161,7 @@
           no: {},
           neutral: {}
         },
+        aritclesID: {},
         blogID: 0,
         forcedUpdate: false,
         getNetPic: true,
@@ -208,6 +214,12 @@
                 }
               }
             };
+          } else {
+            for (let site of this.sites) {
+              const key = site.url + site.username;
+              console.log(config.getArticleID(this.post?.url, site?.url, site?.username));
+              this.aritclesID[key] = config.getArticleID(this.post?.url, site?.url, site?.username) || -1;
+            }
           }
         }
       });
@@ -453,11 +465,13 @@
     flex-grow: 1;
     margin-top: 10px;
 
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 10px;
     border: 1px solid #ccc;
     box-sizing: border-box;
-
+    &::-webkit-scrollbar {
+      display: none;
+    }
     > *:not(:first-child) {
       margin-top: 15px;
     }
@@ -466,7 +480,6 @@
   .site {
     background-color: #f0f0f0;
     padding: 15px;
-
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -484,7 +497,7 @@
   .site-detail {
     width: 100%;
     margin-top: 5px;
-    overflow-x: scroll;
+    overflow-x: hidden;
     white-space: nowrap;
 
     &::-webkit-scrollbar {

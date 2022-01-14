@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-07 17:32:39
- * @LastEditTime: 2021-07-11 18:31:59
+ * @LastEditTime: 2022-01-13 23:04:21
  * @Description: 
  * @FilePath: \push-markdown\src\components\Welcome.vue
 -->
@@ -59,8 +59,11 @@
   .container {
     width: 100%;
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 50px;
     box-sizing: border-box;
+  }
+  ::-webkit-scrollbar {
+    display: none;
   }
 </style>

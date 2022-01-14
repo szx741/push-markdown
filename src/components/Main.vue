@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-12-22 16:58:38
+ * @LastEditTime: 2022-01-14 13:39:46
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -30,7 +30,6 @@
           :modified="tab.modified"
         >
         </TabTitle>
-        <!-- <TabTitle></TabTitle> -->
       </div>
 
       <div class="tab-contents">
@@ -283,6 +282,21 @@
     margin: 5px 0;
     padding: 0px 12px 10px;
     border-right: 2px solid #f1f1f1;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 1px;
+    }
+    /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background: #d4d4d4;
+    }
+    /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
+    &::-webkit-scrollbar-track {
+      border-radius: 4px;
+      background: #f1f1f1;
+    }
   }
   .file-box-header {
     background-color: white;
@@ -308,26 +322,24 @@
     height: 30px;
     display: flex;
     flex-direction: row;
-    overflow-x: scroll;
+    overflow-y: hidden;
+    overflow-x: auto;
 
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
+    &::-webkit-scrollbar-track {
+      border-radius: 5px;
+    }
     &::-webkit-scrollbar {
-      display: none;
+      height: 3px; /*设置滚动条样式*/
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background-color: rgb(175, 175, 175);
     }
   }
-  .file-box::-webkit-scrollbar {
-    width: 4px;
-    height: 1px;
-  }
-  /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
-  .file-box::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background: #d4d4d4;
-  }
-  /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
-  .file-box::-webkit-scrollbar-track {
-    border-radius: 4px;
-    background: #f1f1f1;
-  }
+
   .tab-contents {
     height: calc(100% - 32px);
     flex-grow: 1;

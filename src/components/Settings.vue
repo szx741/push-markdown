@@ -93,10 +93,7 @@
   import { defineComponent } from 'vue';
   import * as config from '../logic/config';
   import * as renderer from '../logic/renderer';
-  // WordPress
-  // http://82.157.179.143/xmlrpc.php
-  // xaotuman
-  // ZkWZafsZJZqMFa8Kt7
+
   export default defineComponent({
     name: 'Settings',
     props: ['active'],
@@ -162,8 +159,23 @@
   .container {
     width: 100%;
     height: 100%;
-    overflow: scroll;
+    overflow: auto;
     box-sizing: border-box;
+
+    &::-webkit-scrollbar {
+      width: 7px;
+      height: 1px;
+    }
+    /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background: #d4d4d4;
+    }
+    /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
+    &::-webkit-scrollbar-track {
+      border-radius: 4px;
+      background: #f1f1f1;
+    }
   }
 
   .settings {
