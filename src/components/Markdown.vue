@@ -66,7 +66,6 @@
 <script lang="ts">
   import { defineComponent, reactive, watch as watchSetup, toRefs } from 'vue';
 
-  import dateFormat from 'dateformat';
   import * as utils from '../logic/utils';
   // import { djfj } from '@/logic/test';
   // import { djfj } from '@/logic/renderer';
@@ -129,7 +128,6 @@
           // do nothing
           if (!err) {
             this.modified = false;
-            // console.log('write file success', this.file);
             statusBar.show(i18n.global.t('saveFileSuccess'));
           } else {
             console.error(err);

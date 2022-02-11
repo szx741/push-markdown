@@ -33,7 +33,7 @@
                 </div>
               </div>
               <div>
-                <span>{{ $t('publish.articleID') }}</span>:
+                <span> {{ $t('publish.articleID') }}: </span>
                 {{ aritclesID[site.url + site.username] }}
               </div>
             </div>
@@ -168,11 +168,6 @@
         notCheck: config.getNotCheck()
       };
     },
-    watch: {
-      publishMode() {
-        // console.log('publishMode', this.publishMode);
-      }
-    },
     mounted() {
       // console.log(i18n.global.t('publish.publishModeHint'));
 
@@ -180,7 +175,6 @@
       window.api.receive('menu.publish', () => {
         if (this.active && this.post) {
           this.sites = config.getSites();
-          this.publishMode = config.getPublishMode('manual');
           // 展现Publish的面板
           this.showPublish = true;
           // 如果没有设置URL，就会弹出窗口提醒
@@ -219,6 +213,11 @@
               const key = site.url + site.username;
               console.log(config.getArticleID(this.post?.url, site?.url, site?.username));
               this.aritclesID[key] = config.getArticleID(this.post?.url, site?.url, site?.username) || -1;
+              if (this.aritclesID[key] == -1) {
+                this.publishMode = 'create';
+              } else {
+                this.publishMode = 'auto';
+              }
             }
           }
         }
@@ -233,8 +232,6 @@
         this.publishing = true;
         // save sites selection
         config.saveSites(this.sites);
-        // save publish mode
-        config.savePublishMode(this.publishMode);
         // publish
         const selectedSites = this.sites.filter((site: any) => site.selected);
         let success = 0;
@@ -303,8 +300,6 @@
                 // edit: boolean
                 // remove item from editList and then resolve
                 const index: any = this.editList.indexOf(item);
-                // console.log('index,', index);
-                // console.log('edit;', edit);
                 this.editList.splice(index, 1);
                 resolve(edit);
               }

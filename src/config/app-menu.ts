@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:42:15
- * @LastEditTime: 2021-11-19 17:06:31
+ * @LastEditTime: 2022-02-11 16:27:15
  * @Description: 菜单栏设置
  * @FilePath: \push-markdown\src\config\app-menu.ts
  */
@@ -14,7 +14,7 @@ import { Menu, app, dialog, shell, BrowserWindow } from 'electron';
 import * as langConfig from '@/common/api/lang-config';
 import * as language from '@/config/menu-lang';
 
-import * as themeConfig from '@/common/api/theme-config'
+import * as themeConfig from '@/common/api/theme-config';
 
 // 加载菜单栏
 export function init(mainWindow: BrowserWindow) {
@@ -31,7 +31,7 @@ export function init(mainWindow: BrowserWindow) {
   }
 
   function setTheme(theme: string) {
-    themeConfig.setTheme(theme)
+    themeConfig.setTheme(theme);
     webContents.send('menu.theme', theme);
     init(mainWindow);
   }
@@ -40,8 +40,7 @@ export function init(mainWindow: BrowserWindow) {
   const lang = langConfig.getLanguage();
   const l = lang === 'zh' ? language.zh : language.en;
 
-  const t = themeConfig.getTheme()
-
+  const t = themeConfig.getTheme();
 
   // 菜单栏模板
   const template: any[] = [
@@ -184,6 +183,22 @@ export function init(mainWindow: BrowserWindow) {
           role: 'minimize'
         },
         {
+          label: l.reloadFile,
+          accelerator: 'F5',
+          click: function () {
+            webContents.send('menu.reloadfile');
+          }
+        },
+        {
+          label: l.closeTab,
+          accelerator: (function () {
+            return 'Ctrl+F4';
+          })(),
+          click: function () {
+            webContents.send('menu.closetab');
+          }
+        },
+        {
           type: 'separator'
         },
         {
@@ -223,7 +238,7 @@ export function init(mainWindow: BrowserWindow) {
           type: 'checkbox',
           checked: t === 'github',
           click: function () {
-            setTheme('github')
+            setTheme('github');
           }
         },
         {
@@ -231,7 +246,7 @@ export function init(mainWindow: BrowserWindow) {
           type: 'checkbox',
           checked: t === 'dark',
           click: function () {
-            setTheme('dark')
+            setTheme('dark');
           }
         },
         {
@@ -239,7 +254,7 @@ export function init(mainWindow: BrowserWindow) {
           type: 'checkbox',
           checked: t === 'splendor',
           click: function () {
-            setTheme('splendor')
+            setTheme('splendor');
           }
         },
         {
@@ -247,7 +262,7 @@ export function init(mainWindow: BrowserWindow) {
           type: 'checkbox',
           checked: t === 'wysiwyg',
           click: function () {
-            setTheme('wysiwyg')
+            setTheme('wysiwyg');
           }
         }
       ]

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:00:58
- * @LastEditTime: 2021-11-16 20:33:26
+ * @LastEditTime: 2022-02-11 16:27:24
  * @Description: 窗口的多语言支持
  * @FilePath: \push-markdown\src\config\menu-lang.ts
  */
@@ -27,6 +27,8 @@ export const en = {
   // view: 'View',
   reload: 'Reload',
   fileTree: 'File tree',
+  closeTab: 'Close Current File',
+  reloadFile: 'Reload File',
   toggleFullScreen: 'Toggle Full Screen',
   toggleDevTools: 'Toggle Developer Tools',
   window: 'Window',
@@ -49,7 +51,7 @@ export const en = {
   light: 'Github',
   dark: 'Dark',
   splendor: 'Splendor',
-  wysiwyg: 'Wysiwyg',
+  wysiwyg: 'Wysiwyg'
 };
 
 export const zh = {
@@ -71,6 +73,8 @@ export const zh = {
   // view: '显示',
   reload: '重新加载',
   fileTree: '文件列表',
+  closeTab: '关闭当前文件',
+  reloadFile: '重新载入文件',
   toggleFullScreen: '切换全屏',
   toggleDevTools: '切换开发者工具',
   window: '窗口',
@@ -93,5 +97,5 @@ export const zh = {
   light: 'Github',
   dark: 'Night',
   splendor: 'Splendor',
-  wysiwyg: 'Wysiwyg',
+  wysiwyg: 'Wysiwyg'
 };

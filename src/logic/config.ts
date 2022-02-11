@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-01-14 13:01:07
+ * @LastEditTime: 2022-02-11 16:12:12
  * @Description: user settings
  * @FilePath: \push-markdown\src\logic\config.ts
  */
@@ -50,15 +50,6 @@ export function saveSites(sites: any) {
       };
     });
   return window.api.storeSettingsSet('sites', sites);
-}
-
-// 给个获取的默认值，就是手动，但如果有值的话就会用那个值
-export function getPublishMode(defaultValue = 'manual') {
-  return window.api.storeSettingsGet('publish.mode', defaultValue);
-}
-
-export function savePublishMode(publishMode: any) {
-  return window.api.storeSettingsSet('publish.mode', publishMode);
 }
 
 export function saveNotCheck(notcheck: boolean) {

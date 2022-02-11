@@ -2,6 +2,7 @@ const en = {
   welcome: 'Welcome',
   settings: 'Settings',
 
+  reloadNeedSaveFirst: 'File has been modified, please save it first',
   closeModifiedFile: 'File has been modified, confirm to close?',
   cannotWriteSampleFile: 'Cannot write sample file',
   readFileNotExists: 'File not exists: ',

@@ -2,6 +2,7 @@ const zh = {
   welcome: '欢迎',
   settings: '设置',
 
+  reloadNeedSaveFirst: '文件已经修改，请先保存',
   closeModifiedFile: '文件已修改，确认关闭？',
   cannotWriteSampleFile: '示例文件不可修改',
   readFileNotExists: '文件不存在：',

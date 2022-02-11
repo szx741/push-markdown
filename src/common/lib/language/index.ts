@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 17:24:11
- * @LastEditTime: 2021-07-07 20:08:16
+ * @LastEditTime: 2022-02-11 16:14:07
  * @Description: language文件夹下的index.js zh, en分别为三种语言文件
  * @FilePath: \push-markdown\src\common\lib\language\index.ts
  */

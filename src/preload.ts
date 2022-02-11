@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2021-12-18 17:10:02
+ * @LastEditTime: 2022-02-11 16:28:34
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -30,9 +30,10 @@ const validChannels = [
   'menu.open',
   'menu.publish',
   'menu.showfile',
+  'menu.closetab',
+  'menu.reloadfile',
   'process.versions',
   'menu.theme',
-
   'new-media-object',
   'new-metaweblog',
   '__static'

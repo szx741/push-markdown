@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-01-14 13:39:46
+ * @LastEditTime: 2022-02-11 17:26:50
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -190,12 +190,11 @@
         const tab = this.tabs[index];
         const file = tab.file;
         if (tab.type === 'markdown' && tab.modified && !utils.isSampleFile(tab.file)) {
-          if (!window.confirm(i18n.global.t('closeModifiedFile'))) {
-            return;
-          }
+          statusBar.show(i18n.global.t('reloadNeedSaveFirst'));
+          return;
         }
         await this.fileEmpty(index);
-        statusBar.show(i18n.global.t('重新加载成功'));
+        statusBar.show(i18n.global.t('refreshSuccess'));
         this.tabs[index].file = file;
       },
       async fileEmpty(index: any) {
@@ -244,6 +243,12 @@
       window.api.receive('menu.showfile', () => {
         this.showfile = !this.showfile;
         window.api.setShowFile(this.showfile);
+      });
+      window.api.receive('menu.closetab', () => {
+        this.closeTab(this.current);
+      });
+      window.api.receive('menu.reloadfile', () => {
+        this.refreshTab(this.current);
       });
 
       window.api.receive('menu.welcome', () => {

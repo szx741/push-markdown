@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:47:44
- * @LastEditTime: 2021-07-05 21:02:48
+ * @LastEditTime: 2022-02-11 16:14:22
  * @Description: electron-sotre存储语言值
  * @FilePath: \push-markdown\src\common\api\lang-config.ts
  */
