@@ -383,6 +383,7 @@
   .publish-mode-select {
     display: flex;
     align-items: center;
+    height: 30px;
   }
   .publish-mode-label {
     margin-left: 20px;

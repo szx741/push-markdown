@@ -38,7 +38,8 @@ const zh = {
         article: '从正文提取',
         title: '使用标题'
       },
-      notes: '当Meta中没有指定摘要时，摘要自动提取方式'
+      notes: '当Meta中没有指定摘要时，摘要自动提取方式',
+      abstractNum: '提取摘要的字数'
     },
 
     renderFeature: {

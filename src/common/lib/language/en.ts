@@ -38,7 +38,8 @@ const en = {
         article: 'Extract from Article',
         title: 'Use Title'
       },
-      notes: 'Abstract extraction when abstract is not configured in meta.'
+      notes: 'Abstract extraction when abstract is not configured in meta.',
+      abstractNum: 'Number of words extracted'
     },
     renderFeature: {
       highlight: 'Code Highlight',

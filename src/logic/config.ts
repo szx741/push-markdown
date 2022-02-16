@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-02-11 16:12:12
+ * @LastEditTime: 2022-02-16 16:41:38
  * @Description: user settings
  * @FilePath: \push-markdown\src\logic\config.ts
  */
@@ -73,13 +73,19 @@ export function getRenderConfig() {
     ...config
   };
 }
-
 export function saveRenderConfig(render: any) {
   return window.api.storeSettingsSet('render', JSON.parse(JSON.stringify(render)));
 }
 
+export function saveAbstractNumber(abstractNum: any) {
+  return window.api.storeSettingsSet('abstractnumber', abstractNum);
+}
+
+export function getAbstractNumber() {
+  return window.api.storeSettingsGet('abstractnumber', 120);
+}
+
 export function getArticleID(url: string, siteUrl: string, username: string) {
-  console.log(url, username, siteUrl, '???')
   const storeName = ['cache', 'post', filenamifyUrl(siteUrl), filenamifyUrl(username)].join('-').toString();
   return window.api.storeGet(storeName, url);
 }

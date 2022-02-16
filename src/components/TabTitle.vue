@@ -1,12 +1,12 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-08 13:09:13
- * @LastEditTime: 2022-01-14 13:14:27
+ * @LastEditTime: 2022-02-16 15:55:24
  * @Description: 单个标签，含标题和关闭按钮
  * @FilePath: \push-markdown\src\components\TabTitle.vue
 -->
 <template>
-  <div class="tab" :class="{ selected: selected }" @click="tabClick">
+  <div class="tab" :class="{ selected: selected }" @click="tabClick" @click.middle="tabClose" @click.right="tabClose">
     <span>{{ modified ? '* ' : '' }}{{ tabTitle || '' }}</span>
     <img src="../common/assets/refresh.png" v-if="tabType === 'markdown'" @click.stop="tabRefresh" />
     <img src="../common/assets/close.png" @click.stop="tabClose" />

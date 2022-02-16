@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-02-11 17:26:50
+ * @LastEditTime: 2022-02-16 15:49:15
  * @Description: 
  * @FilePath: \push-markdown\src\components\Main.vue
 -->
@@ -147,7 +147,6 @@
       async openFile(file: any) {
         console.log('openFile', file);
         const index = this.tabs.findIndex((tab: any) => tab.file === file);
-
         if (index === -1) {
           if (window.api.fsExistsSync(file)) {
             window.api.syncMsg('addRecentDocument', file);
@@ -210,6 +209,7 @@
         if (this.tabs.length <= 1) {
           this.tabs[0] = { type: 'welcome' };
           this.current = 0;
+          this.file = window.api.pathDirname(window.api.syncMsg('__static'));
           return;
         }
         if (index === this.current) {
@@ -218,6 +218,11 @@
           this.current = this.current - 1;
         }
         this.tabs.splice(index, 1);
+        if (index == 0) {
+          const file = this.tabs[this.current].file;
+          this.file = file ? window.api.pathDirname(file) : window.api.pathDirname(window.api.syncMsg('__static'));
+          useRecord.saveCurrentTab(this.current);
+        }
       }
     },
 

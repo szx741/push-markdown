@@ -48,14 +48,20 @@
 
       <h3>{{ $t('setting.renderSettings') }}</h3>
 
-      <p>
+      <div class="abstract-select">
         <label for="abstract">{{ $t('setting.abstract.name') }}</label>
         <select id="abstract" v-model="render.abstract">
           <option value="empty">{{ $t('setting.abstract.options.empty') }}</option>
           <option value="article">{{ $t('setting.abstract.options.article') }}</option>
           <option value="title">{{ $t('setting.abstract.options.title') }}</option>
         </select>
-      </p>
+        <div class="abstract-article" v-if="render.abstract == 'article'">
+          <label>{{ $t('setting.abstract.abstractNum') }}</label>
+
+          <input class="abstract-article-input" type="number" v-model="abstractNum" />
+        </div>
+      </div>
+
       <blockquote class="small">{{ $t('setting.abstract.notes') }}</blockquote>
 
       <p>
@@ -100,7 +106,8 @@
     data() {
       return {
         sites: config.getSites(),
-        render: config.getRenderConfig()
+        render: config.getRenderConfig(),
+        abstractNum: config.getAbstractNumber()
       };
     },
     async mounted() {
@@ -114,7 +121,6 @@
     watch: {
       sites: {
         handler() {
-          // console.log('sites')
           this.debounceSaveSites();
         },
         deep: true
@@ -126,6 +132,9 @@
           console.log('render settings saved');
         },
         deep: true
+      },
+      abstractNum() {
+        config.saveAbstractNumber(this.abstractNum);
       }
     },
     methods: {
@@ -176,6 +185,21 @@
       border-radius: 4px;
       background: #f1f1f1;
     }
+  }
+  .abstract-select {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    height: 30px;
+  }
+
+  .abstract-article {
+    margin-left: 20px;
+  }
+
+  .abstract-article-input {
+    margin-left: 10px;
+    width: 60px;
   }
 
   .settings {
