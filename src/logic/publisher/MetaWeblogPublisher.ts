@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-01-13 23:42:29
+ * @LastEditTime: 2022-03-07 20:42:21
  * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -59,6 +59,9 @@ export class MetaWeblogPublisher extends BasePublisher {
       if (oldPost && oldPost.postid == oldPostId) {
         return this.toPost(oldPost);
       }
+      console.log('本地与网络不一致');
+      console.log('本地缓存的postID', oldPostId);
+      console.log('网络获取的文章', oldPost);
     }
     // 3、如果在本地缓存也找不到的话，说明第一次用这个软件，那么就从博客获取所有的文章匹配相同的标题
     if (blogID == 0) {
