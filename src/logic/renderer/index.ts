@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-02-16 16:46:40
+ * @LastEditTime: 2022-03-13 20:49:08
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\src\logic\renderer\index.ts
  */
@@ -17,6 +17,7 @@ import { htmlToText } from 'html-to-text';
 import markdownItTitle from 'markdown-it-title';
 import markdownItUnderline from 'markdown-it-underline';
 import * as markdownItAnchor from 'markdown-it-anchor';
+import * as taskLists from 'markdown-it-task-lists';
 import * as markdownItTableOfContents from 'markdown-it-table-of-contents';
 import { markdownItMermaid } from './markdown-it-mermaid';
 import mathjax3 from 'markdown-it-mathjax3';
@@ -63,7 +64,7 @@ function init() {
   if (isFeatureEnabled(renderConfig.mathjax)) {
     md.use(mathjax3);
   }
-
+  md.use(taskLists);
   const defaultRender =
     md.renderer.rules.link_open ||
     function (tokens: any, idx: any, options: any, env: any, self: any) {

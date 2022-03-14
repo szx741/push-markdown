@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-09-01 15:37:05
+ * @LastEditTime: 2022-03-13 20:43:47
  * @Description:
  * @FilePath: \push-markdown\src\shims-vue.d.ts
  */
@@ -23,3 +23,4 @@ declare module 'markdown-it-mathjax3';
 declare module 'markdown-it-table-of-contents';
 declare module 'markdown-it-underline';
 declare module 'markdown-it-title';
+declare module 'markdown-it-task-lists';

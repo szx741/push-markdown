@@ -8364,6 +8364,11 @@ markdown-it-table-of-contents@^0.6.0:
   resolved "https://registry.npmmirror.com/markdown-it-table-of-contents/download/markdown-it-table-of-contents-0.6.0.tgz?cache=0&sync_timestamp=1636714562364&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fmarkdown-it-table-of-contents%2Fdownload%2Fmarkdown-it-table-of-contents-0.6.0.tgz#7c9e8d619fb12f88c9fb05a7b32b2fe932b9c541"
   integrity sha512-jHvEjZVEibyW97zEYg19mZCIXO16lHbvRaPDkEuOfMPBmzlI7cYczMZLMfUvwkhdOVQpIxu3gx6mgaw46KsNsQ==
 
+markdown-it-task-lists@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmmirror.com/markdown-it-task-lists/-/markdown-it-task-lists-2.1.1.tgz#f68f4d2ac2bad5a2c373ba93081a1a6848417088"
+  integrity sha512-TxFAc76Jnhb2OUu+n3yz9RMu4CwGfaT788br6HhEDlvWfdeJcLUsxk1Hgw2yJio0OXsxv7pyIPmvECY7bMbluA==
+
 markdown-it-title@^4.0.0:
   version "4.0.0"
   resolved "https://registry.nlark.com/markdown-it-title/download/markdown-it-title-4.0.0.tgz#7d584fe1709e358edc6835b1693c25f78353ba71"
