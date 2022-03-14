@@ -67,8 +67,6 @@
   import { defineComponent, reactive, watch as watchSetup, toRefs } from 'vue';
 
   import * as utils from '../logic/utils';
-  // import { djfj } from '@/logic/test';
-  // import { djfj } from '@/logic/renderer';
   import * as renderer from '@/logic/renderer';
   import Publish from '@/components/Publish.vue';
   import * as statusBar from '../logic/statusBar';
@@ -96,8 +94,7 @@
     },
     methods: {
       async debounceUpdate() {
-        const _this = this;
-        this.post = await renderer.render(_this.src, _this.file, true);
+        this.post = await renderer.render(this.src, this.file, true);
       },
       onSave() {
         if (this.active && this.modified) {

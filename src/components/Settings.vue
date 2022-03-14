@@ -57,7 +57,6 @@
         </select>
         <div class="abstract-article" v-if="render.abstract == 'article'">
           <label>{{ $t('setting.abstract.abstractNum') }}</label>
-
           <input class="abstract-article-input" type="number" v-model="abstractNum" />
         </div>
       </div>
@@ -99,6 +98,7 @@
   import { defineComponent } from 'vue';
   import * as config from '../logic/config';
   import * as renderer from '../logic/renderer';
+  import debounce from 'lodash.debounce';
 
   export default defineComponent({
     name: 'Settings',
@@ -112,10 +112,12 @@
     },
     async mounted() {
       window.api.receive('menu.save', () => {
-        if (this.active) {
-          console.log('active');
-          statusBar.show(i18n.global.t('setting.saveSettings'));
-        }
+        debounce(() => {
+          if (this.active) {
+            console.log('active');
+            statusBar.show(i18n.global.t('setting.saveSettings'));
+          }
+        }, 500)();
       });
     },
     watch: {
@@ -134,14 +136,18 @@
         deep: true
       },
       abstractNum() {
-        config.saveAbstractNumber(this.abstractNum);
+        debounce(() => {
+          console.log('保存字数');
+          config.saveAbstractNumber(this.abstractNum);
+        }, 500)();
       }
     },
     methods: {
       debounceSaveSites() {
-        console.log(this.sites);
-        config.saveSites(this.sites);
-        console.log('sites settings saved');
+        debounce(() => {
+          config.saveSites(this.sites);
+          console.log('sites settings saved');
+        }, 500)();
       },
       addSite() {
         this.sites.push(config.newSite());
