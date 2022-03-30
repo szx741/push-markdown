@@ -111,7 +111,9 @@ Anchor references (note that all lowercase English, between the spaces need to b
 
 Web images will not be uploaded when publish.
 
-![网络图片](https://gitee.com/xaotuman/push-markdown/raw/master/images/sample-web-image.png)
+（图片地址本来在gitee上，突然被ban，不能用作外链图片了，转到github上，加载可能比较缓慢）
+
+![网络图片](https://raw.githubusercontent.com/szx741/push-markdown/master/images/sample-web-image.png)
 
 
 ### 本地图片 Local Images
