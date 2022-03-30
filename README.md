@@ -230,12 +230,13 @@
 - [x] 适配cnblogs~~，oschina（没文档，不行）~~
 - [x] 可选markdown的渲染样式
 
-## 其他人的项目
+## 其他人类似的项目
 
-推送到其他博客的：
+发布本地文章到各种平台——[写作助手](https://github.com/onblog/BlogHelper)
 
-写作助手：[BlogHelper](https://github.com/onblog/BlogHelper)
+命令行方式上传markdown到博客园——[pycnblog](https://github.com/dongfanger/pycnblog)
 
-博客园上传markdown文件：[pycnblog](https://github.com/dongfanger/pycnblog)
+苹果用户非常棒的Markdown写作软件——[MWeb](https://zh.mweb.im/)
 
-苹果用户非常棒的Markdown写作软件——MWeb：https://zh.mweb.im/
+能够发布到微信公众号的markdown编辑器——[微信 Markdown 编辑器](https://github.com/doocs/md)
+
