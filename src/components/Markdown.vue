@@ -5,7 +5,9 @@
     <div class="container" :class="{ 'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive }">
       <!-- 编辑器  -->
       <div class="left">
-        <textarea ref="textarea" class="left-content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" v-model="src" @input="update" title="text"></textarea>
+        <!-- <textarea ref="textarea" class="left-content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" v-model="src" @input="update" title="text"></textarea> -->
+        <!-- <textarea ref="textarea" class="left-content" title="text"></textarea> -->
+        <Codemirror v-model:value="src" :options="cmOptions" border @change="onChange" @ready="onReady"> </Codemirror>
       </div>
 
       <div class="right" :class="{ 'right-light': !darkActive, 'right-dark': darkActive }">
@@ -65,30 +67,38 @@
 
 <script lang="ts">
   import { defineComponent, reactive, watch as watchSetup, toRefs } from 'vue';
-
   import * as utils from '../logic/utils';
   import * as renderer from '@/logic/renderer';
   import Publish from '@/components/Publish.vue';
   import * as statusBar from '../logic/statusBar';
   import i18n from '@/common/lib/language';
   import dayjs from 'dayjs';
+  import Codemirror from 'codemirror-editor-vue3';
+  // @types/codemirror
+  import { Editor, EditorConfiguration } from 'codemirror';
+  // language
+  import 'codemirror/theme/mdn-like.css';
+  import 'codemirror/mode/javascript/javascript.js';
 
   import store from '../store/index';
+  import { ref } from 'vue';
+  import 'codemirror/lib/codemirror.css';
+  import 'codemirror/mode/css/css.js';
 
   interface data {
-    modified: any;
-    src: any;
+    // modified: any;
+    // src: any;
     post: any;
   }
   export default defineComponent({
     name: 'Markdown',
-    components: { Publish },
+    components: { Publish, Codemirror },
     props: ['file', 'active', 'num', 'modifiedHandler'],
 
     data(): data {
       return {
-        modified: false,
-        src: {},
+        // modified: false,
+        // src: {},
         post: {}
       };
     },
@@ -141,7 +151,7 @@
     },
     async mounted() {
       utils.setTextareaTabKey(this.$refs['textarea']);
-      this.readFile();
+      // this.readFile();
       window.api.receive('menu.save', this.onSave);
     },
     watch: {
@@ -161,7 +171,7 @@
       utils.setLinks(markdown);
     },
 
-    setup() {
+    setup(props) {
       const theme: any = reactive({
         githubActive: true,
         darkActive: false,
@@ -180,7 +190,47 @@
         }
       );
 
+      let src = ref<string>();
+      if (props.file != 'tmpClose') {
+        window.api.fsReadFile(props.file, { encoding: 'utf-8' }, (err: any, data: string) => {
+          if (err) {
+            console.error(err);
+            const text = i18n.global.t('readFileError') + err.message;
+            statusBar.show(text);
+            src.value = text;
+          } else {
+            src.value = data;
+          }
+        });
+      }
+      const cminstance = ref<Editor>();
+
+      const cmOptions = {
+        mode: 'text/x-markdown',
+        theme: 'mdn-like',
+        highlightFormatting: true,
+        // mode: 'markdown',
+        lineWrapping: false,
+        dragDrop: false,
+        scrollbarStyle: 'null'
+        // theme: 'midnight'
+      };
+      let modified = ref<boolean>(false);
+      let first = false;
       return {
+        src,
+        cmOptions,
+        onReady(cm: Editor) {
+          cminstance.value = cm;
+        },
+        modified,
+        onChange(value: string, cm: Editor) {
+          if (!first) first = true;
+          else {
+            // console.log(value, cm);
+            modified.value = true;
+          }
+        },
         ...toRefs(theme)
       };
     }
@@ -249,22 +299,22 @@
     background: transparent;
   }
 
-  textarea {
-    width: 100%;
-    height: 100%;
-    // overflow: hidden;
-    margin: 0;
-    border: none;
-    outline: none;
-    resize: none;
-    background-color: rgb(255, 255, 255);
-    color: rgb(77, 77, 77);
-  }
+  // textarea {
+  //   width: 100%;
+  //   height: 100%;
+  //   // overflow: hidden;
+  //   margin: 0;
+  //   border: none;
+  //   outline: none;
+  //   resize: none;
+  //   background-color: rgb(255, 255, 255);
+  //   color: rgb(77, 77, 77);
+  // }
 
-  textarea::-webkit-scrollbar {
-    width: 10px;
-    height: 1px;
-  }
+  // textarea::-webkit-scrollbar {
+  //   width: 10px;
+  //   height: 1px;
+  // }
   // /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
   .left-light::-webkit-scrollbar-thumb {
     border-radius: 10px;
@@ -287,6 +337,8 @@
   }
 
   .left-content {
+    width: 100%;
+    height: 100%;
     padding: 35px;
     box-sizing: border-box;
   }
