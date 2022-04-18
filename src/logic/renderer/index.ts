@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-03-14 17:12:35
+ * @LastEditTime: 2022-04-18 21:00:07
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\src\logic\renderer\index.ts
  */
@@ -124,22 +124,6 @@ function replaceLocalImages(div: HTMLElement, dir: any) {
   const elements = div.getElementsByTagName('img');
 
   for (const img of elements) {
-    const pImg = img.parentElement;
-    // console.log('tagName:', pImg?.tagName);
-    if (pImg) {
-      if (pImg.tagName == 'P') {
-        // 如果有个父标签p，并且没有内置文本，那么就是一张单独的大图，就可以居中显示
-        if (!pImg.innerText) {
-          pImg.setAttribute('align', 'center');
-        }
-      } else {
-        // 这种情况对应markdown使用img标签，由于markdown-it渲染的时候不考虑img这种标签，不会套一个p标签，因此需要手动套一个
-        const ele = document.createElement('p');
-        ele.setAttribute('align', 'center');
-        pImg.replaceChild(ele, img);
-        ele.appendChild(img);
-      }
-    }
     let src = img.getAttribute('src');
     if (!src) continue;
     src = decodeURI(src);
@@ -150,6 +134,27 @@ function replaceLocalImages(div: HTMLElement, dir: any) {
       img.setAttribute('src', 'atom://' + src);
     } else {
       img.setAttribute('src', 'atom://' + window.api.pathJoin(dir, src));
+    }
+    const pImg = img.parentElement;
+    // console.log('tagName:', pImg?.tagName);
+    if (pImg) {
+      if (pImg.tagName == 'P') {
+        // 如果有个父标签p，并且没有内置文本，那么就是一张单独的大图，就可以居中显示
+        if (!pImg.innerText) {
+          pImg.setAttribute('align', 'center');
+          pImg.classList.add('fancybox-wrapper', 'lazyload-container-unload');
+          pImg.setAttribute('data-fancybox', 'post-images');
+          // pImg.setAttribute('href',img.getAttribute())
+        }
+      } else {
+        // 这种情况对应markdown使用img标签，由于markdown-it渲染的时候不考虑img这种标签，不会套一个p标签，因此需要手动套一个
+        const ele = document.createElement('p');
+        ele.setAttribute('align', 'center');
+        ele.classList.add('fancybox-wrapper', 'lazyload-container-unload');
+        ele.setAttribute('data-fancybox', 'post-images');
+        pImg.replaceChild(ele, img);
+        ele.appendChild(img);
+      }
     }
   }
 }

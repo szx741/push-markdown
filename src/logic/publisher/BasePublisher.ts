@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2022-03-07 16:23:50
+ * @LastEditTime: 2022-04-18 20:52:52
  * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -114,22 +114,31 @@ export class BasePublisher {
 
       async (img) => {
         const src = img.getAttribute('src');
-        if (src && src.startsWith('atom://')) {
-          const file = decodeURI(src.substr('atom://'.length));
-          if (window.api.fsExistsSync(file)) {
-            let url;
-            if (getNetPic && map.size > 0) {
-              url = await this.changeLocalMedia(file, map);
+        if (src) {
+          if (src.startsWith('atom://')) {
+            const file = decodeURI(src.substr('atom://'.length));
+            if (window.api.fsExistsSync(file)) {
+              let url;
+              if (getNetPic && map.size > 0) {
+                url = await this.changeLocalMedia(file, map);
+              } else {
+                url = await this.uploadMedia(file, mediaMode, notCheck);
+              }
+              if (url) {
+                img.setAttribute('src', url);
+                img.parentElement?.setAttribute('href', url);
+              } else {
+                console.error('media process failure', file);
+              }
             } else {
-              url = await this.uploadMedia(file, mediaMode, notCheck);
-            }
-            if (url) {
-              img.setAttribute('src', url);
-            } else {
-              console.error('media process failure', file);
+              console.error('错误，本地不存在这张图片！', file);
             }
           } else {
-            console.error('错误，本地不存在这张图片！', file);
+            const pImg = img.parentElement;
+            pImg?.setAttribute('href', src);
+            pImg?.setAttribute('align', 'center');
+            pImg?.classList.add('fancybox-wrapper', 'lazyload-container-unload');
+            pImg?.setAttribute('data-fancybox', 'post-images');
           }
         }
       },

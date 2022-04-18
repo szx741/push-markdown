@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-10 15:38:00
- * @LastEditTime: 2021-07-11 17:12:28
+ * @LastEditTime: 2022-04-18 21:28:56
  * @Description:
  * @FilePath: \push-markdown\src\logic\renderer\mermaid-front-renderer.ts
  */
@@ -17,7 +17,6 @@ import he from 'he';
 
 mermaid.initialize({
   startOnLoad: false,
-  theme: 'neutral',
   gantt: { axisFormat: '%Y-%m-%d' }
 });
 

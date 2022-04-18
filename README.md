@@ -1,3 +1,10 @@
+<!--
+ * @Author: szx
+ * @Date: 2022-04-18 21:36:49
+ * @LastEditTime: 2022-04-18 21:36:50
+ * @Description: 
+ * @FilePath: \push-markdown\README.md
+-->
 # Push Markdown
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://raw.githubusercontent.com/meituan/WMRouter/master/LICENSE)
@@ -84,6 +91,12 @@
 [push-markdown 示例文档 – 巷子深的生活 (szx.life)](https://szx.life/sample-docs-1/)
 
 ## 重要版本
+
+**v1.2.8**
+
+- 图片恢复能够预览放大（需要搭配argon主题的fancybox）
+- sample文档图片换源到github（gitee不允许外链了）
+- electron更新到18
 
 **v1.2.7**
 
