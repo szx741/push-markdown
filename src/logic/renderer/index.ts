@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-04-18 21:00:07
+ * @LastEditTime: 2022-06-12 13:39:37
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\src\logic\renderer\index.ts
  */
@@ -130,11 +130,11 @@ function replaceLocalImages(div: HTMLElement, dir: any) {
     if (!src || src.match(/^((https?|file):\/\/|data:)/)) {
       continue;
     }
-    if (window.api.pathIsAbsolute(src)) {
-      img.setAttribute('src', 'atom://' + src);
-    } else {
-      img.setAttribute('src', 'atom://' + window.api.pathJoin(dir, src));
+    if (!window.api.pathIsAbsolute(src)) {
+      src = window.api.pathJoin(dir, src);
     }
+    img.setAttribute('src', 'atom://' + src);
+
     const pImg = img.parentElement;
     // console.log('tagName:', pImg?.tagName);
     if (pImg) {
@@ -168,8 +168,7 @@ function createInvisibleDiv(document: any, src: any) {
   div.style.left = '0';
   div.style.top = '0';
   div.innerHTML = src;
-  // console.log(div.innerHTML);
-  // console.log(div);
+  console.log('图片使用绝对路径这里会报错，但不影响使用');
   return div;
 }
 
@@ -187,7 +186,7 @@ function highlightCode(div: any) {
   if (elements) {
     for (let i = 0; i < elements.length; i++) {
       const code = elements[i];
-      highlight.highlightBlock(code);
+      highlight.highlightElement(code);
     }
   }
 }
@@ -242,7 +241,7 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
   const content = fm(src);
 
   const markdown = content.body;
-  // 文件前面yaml的文件内容
+  // // 文件前面yaml的文件内容
   const attr: any = content.attributes || {};
   attr.title = utils.toStr(attr.title);
   attr.abstract = utils.toStr(attr.abstract);
@@ -306,6 +305,5 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
     }
   }
   console.log(`render post cost ${getTime() - startTime} ms`);
-  // console.log(post)
   return post;
 }

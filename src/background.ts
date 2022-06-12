@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2022-01-14 12:14:02
+ * @LastEditTime: 2022-06-12 12:35:38
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */

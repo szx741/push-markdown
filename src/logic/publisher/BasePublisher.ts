@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2022-04-18 20:52:52
+ * @LastEditTime: 2022-06-12 13:25:29
  * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
@@ -111,7 +111,6 @@ export class BasePublisher {
     // 上传图片的逻辑代码
     await _Promise.map(
       Array.from(div.getElementsByTagName('img')),
-
       async (img) => {
         const src = img.getAttribute('src');
         if (src) {
@@ -162,20 +161,20 @@ export class BasePublisher {
    * get old post by url
    * @param post post to publish
    */
-  getOldPost(post: any, blogID: number): any { }
+  getOldPost(post: any, blogID: number): any {}
 
   /**
    * create new post & cache post info if necessary
    * @param post
    */
-  newPost(post: any): any { }
+  newPost(post: any): any {}
 
   /**
    * edit post
    * @param oldPost
    * @param post
    */
-  editPost(oldPost: any, post: any): any { }
+  editPost(oldPost: any, post: any): any {}
 
   /**
    * upload media or reuse from cache
@@ -183,9 +182,9 @@ export class BasePublisher {
    * @param mediaMode
    * @return Promise<string> url
    */
-  uploadMedia(file: any, mediaMode: any, notCheck: boolean): any { }
+  uploadMedia(file: any, mediaMode: any, notCheck: boolean): any {}
 
-  getNetworkImage(_oldPost: string, map: Map<string, string>) { }
+  getNetworkImage(_oldPost: string, map: Map<string, string>) {}
 
-  changeLocalMedia(file: string, map: Map<string, string>) { }
+  changeLocalMedia(file: string, map: Map<string, string>) {}
 }

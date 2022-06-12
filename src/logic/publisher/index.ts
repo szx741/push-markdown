@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2021-12-18 19:09:04
+ * @LastEditTime: 2022-06-12 11:02:15
  * @Description:文章发布工具。根据type调用不同的实现。目前支持MetaWeblog。
  * @FilePath: \push-markdown\src\logic\publisher\index.ts
  */
