@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:00:50
- * @LastEditTime: 2022-06-12 12:35:38
+ * @LastEditTime: 2022-07-21 22:14:37
  * @Description:
  * @FilePath: \push-markdown\src\background.ts
  */
@@ -10,12 +10,13 @@
 import { app, protocol, BrowserWindow } from 'electron';
 import log from 'electron-log';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
 import * as AppMenu from '@/config/app-menu';
 import path from 'path';
 import { ipcMainCollection } from '@/config/ipc-message';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+app.commandLine.appendSwitch('force_high_performance_gpu');
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
@@ -89,7 +90,7 @@ app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
-      await installExtension(VUEJS_DEVTOOLS);
+      await installExtension(VUEJS3_DEVTOOLS);
     } catch (e: any) {
       console.error('Vue Devtools failed to install:', e.toString());
     }
@@ -114,6 +115,7 @@ app.whenReady().then(() => {
     // const url = decodeURI(request.url).substr(7);
     // callback({ path: path.normalize(url) });
   });
+  // installExtension(VUEJS3_DEVTOOLS);
 });
 
 // 在开发模式下应父进程的要求干净地退出。

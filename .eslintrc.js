@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-07-12 14:54:49
+ * @LastEditTime: 2022-07-21 22:43:41
  * @Description:
  * @FilePath: \push-markdown\.eslintrc.js
  */
@@ -11,7 +11,9 @@ module.exports = {
     node: true
   },
   plugins: [
-    'html' // 此插件用来识别.html 和 .vue文件中的js代码
+    'html', // 此插件用来识别.html 和 .vue文件中的js代码
+    'vue',
+    'prettier'
   ],
   extends: ['plugin:vue/vue3-essential', 'eslint:recommended', '@vue/typescript/recommended', '@vue/prettier', '@vue/prettier/@typescript-eslint'],
   parserOptions: {
@@ -26,11 +28,16 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'off',
     'no-unused-vars': 'warn',
     'vue/no-unused-vars': 'off',
+    'no-useless-backreference': 'off',
+    'no-nonoctal-decimal-escape': 'off',
+    'no-loss-of-precision': 'off',
+    'no-unsafe-optional-chaining': 'off',
     'space-before-function-paren': 'off',
     'comma-dangle': ['error', 'never'],
     quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: false }],
     semi: 0, //关闭结尾不能有分号
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'vue/multi-word-component-names': 'off'
   }
 };

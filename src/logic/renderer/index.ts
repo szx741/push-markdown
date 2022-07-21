@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-06-12 13:39:37
+ * @LastEditTime: 2022-07-21 22:17:23
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\src\logic\renderer\index.ts
  */
@@ -21,7 +21,7 @@ import * as markdownItTableOfContents from 'markdown-it-table-of-contents';
 import { markdownItMermaid } from './markdown-it-mermaid';
 import mathjax3 from 'markdown-it-mathjax3';
 import uslug from 'uslug';
-import slug from 'limax';
+import { slugify as slug } from 'transliteration';
 const blank = decodeURI('%E3%80%80');
 let renderConfig: any;
 let md: any;
@@ -287,7 +287,8 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
   post.abstract = attr.abstract;
   // 如果post的url为空，那么就就title转换成拼音
   if (post.url == null) {
-    post.url = slug(post.title, { tone: false });
+    post.url = slug(post.title);
+    // post.url = window.api.slug(post.title);
     console.log('post.url:', post.url);
   }
 

@@ -1,9 +1,9 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-02-16 15:49:15
+ * @LastEditTime: 2022-07-21 23:11:00
  * @Description: 
- * @FilePath: \push-markdown\src\components\Main.vue
+ * @FilePath: \push-markdown\src\components\MainComponent.vue
 -->
 <template>
   <div class="out-root" id="drag" @dragover="fileDragover" @drop="fileDrop">
@@ -72,7 +72,7 @@
   // import FileTree from '@/logic/fileManager/fileFree';·
 
   export default defineComponent({
-    name: 'Main',
+    name: 'MainComponent',
     components: { FilesViewer, TabTitle, Welcome, Markdown, Settings },
     setup() {
       const tabs = reactive(useRecord.getTabs());
@@ -89,7 +89,7 @@
     },
     watch: {
       tabs: {
-        handler(val, oldVal) {
+        handler(val) {
           useRecord.saveTabs(val);
           // this.file = val[this.current].file;
         },

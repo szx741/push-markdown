@@ -1,14 +1,13 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2022-06-12 13:25:29
+ * @LastEditTime: 2022-07-21 23:10:16
  * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\src\logic\publisher\BasePublisher.ts
  */
 'use strict';
 
 import { Promise as _Promise } from 'bluebird';
-import { JSDOM } from 'jsdom';
 import * as renderer from '../renderer';
 import * as publisher from './index';
 
@@ -27,7 +26,6 @@ export const MEDIA_MIME_TYPES: any = {
   ico: 'image/x-icon',
   webp: 'image/webp'
 };
-
 export function getMimeType(file: any) {
   let ext: string = window.api.pathExtname(file);
   ext = (ext && ext.length > 1 && ext.substr(1)) || ''; // jpg
@@ -49,7 +47,7 @@ export function getMimeType(file: any) {
 /**
  * 博客发布基类
  */
-export class BasePublisher {
+export abstract class BasePublisher {
   /**
    * publish post
    *
@@ -104,14 +102,17 @@ export class BasePublisher {
 
     stateHandler(publisher.STATE_UPLOAD_MEDIA);
 
-    const jsdom = new JSDOM();
-    const div = jsdom.window.document.createElement('div');
+    // const div: any = {};
+    // const jsdom = window.api.jsdom;
+    // const jsdom = new JSDOM();
+    // const div = jsdom.window.document.createElement('div');
+    const div = document.createElement('div');
     div.innerHTML = post.html;
 
     // 上传图片的逻辑代码
     await _Promise.map(
       Array.from(div.getElementsByTagName('img')),
-      async (img) => {
+      async (img: any) => {
         const src = img.getAttribute('src');
         if (src) {
           if (src.startsWith('atom://')) {
@@ -161,20 +162,20 @@ export class BasePublisher {
    * get old post by url
    * @param post post to publish
    */
-  getOldPost(post: any, blogID: number): any {}
+  abstract getOldPost(post: any, blogID: number): any;
 
   /**
    * create new post & cache post info if necessary
    * @param post
    */
-  newPost(post: any): any {}
+  abstract newPost(post: any): any;
 
   /**
    * edit post
    * @param oldPost
    * @param post
    */
-  editPost(oldPost: any, post: any): any {}
+  abstract editPost(oldPost: any, post: any): any;
 
   /**
    * upload media or reuse from cache
@@ -182,9 +183,9 @@ export class BasePublisher {
    * @param mediaMode
    * @return Promise<string> url
    */
-  uploadMedia(file: any, mediaMode: any, notCheck: boolean): any {}
+  abstract uploadMedia(file: any, mediaMode: any, notCheck: boolean): any;
 
-  getNetworkImage(_oldPost: string, map: Map<string, string>) {}
+  abstract getNetworkImage(_oldPost: string, map: Map<string, string>): any;
 
-  changeLocalMedia(file: string, map: Map<string, string>) {}
+  abstract changeLocalMedia(file: string, map: Map<string, string>): any;
 }

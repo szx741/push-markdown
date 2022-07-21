@@ -1,15 +1,14 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-02-16 16:41:38
+ * @LastEditTime: 2022-07-21 22:26:12
  * @Description: user settings
  * @FilePath: \push-markdown\src\logic\config.ts
  */
 'use strict';
 
 import filenamifyUrl from 'filenamify-url';
-import * as Base64 from 'js-base64/base64';
-
+import { Base64 } from 'js-base64';
 export function clear() {
   window.api.getStoreSettingsClear();
 }

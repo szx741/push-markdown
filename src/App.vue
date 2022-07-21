@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2021-11-19 17:47:43
+ * @LastEditTime: 2022-07-21 18:52:44
  * @Description: 
  * @FilePath: \push-markdown\src\App.vue
 -->
@@ -21,13 +21,11 @@
 
 <script lang="ts">
   import { useI18n } from 'vue-i18n';
-  import store from './store/index';
+  // import store from './store/index';
   export default {
     name: 'PublishMarkdown',
     setup() {
-
-      const theme = 'markdown-body-light';
-
+      // const theme = 'markdown-body-light';
 
       const { t, locale } = useI18n();
       window.api.receive('menu.language', (data: any) => {
@@ -35,7 +33,7 @@
         locale.value = data; // change!
       });
       locale.value = window.api.getLanguage() === 'en' ? 'en' : 'zh';
-      
+
       console.log('初始化的locale', locale.value, window.api.getTheme());
       return { t, locale };
     }

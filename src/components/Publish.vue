@@ -209,7 +209,7 @@
               }
             };
           } else {
-            for (let site of this.sites) {
+            for (const site of this.sites) {
               const key = site.url + site.username;
               console.log(config.getArticleID(this.post?.url, site?.url, site?.username));
               this.aritclesID[key] = config.getArticleID(this.post?.url, site?.url, site?.username) || -1;
@@ -292,7 +292,7 @@
       },
       editHandler(site: any, post: any) {
         if (site && post) {
-          return new Promise((resolve: any, reject: any) => {
+          return new Promise((resolve: any) => {
             const item: any = {
               site,
               post,
@@ -375,9 +375,6 @@
     > :not(:first-child) {
       margin-left: 10px;
     }
-  }
-
-  .publish-container {
   }
 
   .publish-mode-select {

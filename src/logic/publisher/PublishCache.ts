@@ -46,7 +46,7 @@ class Cache {
   }
 
   key(object: any) {
-    return null;
+    return object || null;
   }
 }
 

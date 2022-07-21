@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:54:12
- * @LastEditTime: 2022-06-12 13:24:55
+ * @LastEditTime: 2022-07-21 21:29:42
  * @Description:
  * @FilePath: \push-markdown\src\preload.ts
  */
@@ -13,6 +13,8 @@ import path from 'path';
 import request from 'request';
 import md5File from 'md5-file';
 import MetaWeblog from 'metaweblog-api';
+// import slug from 'limax';
+// import { JSDOM } from 'jsdom';
 // 存储的文件名为settings
 const storeSettings = new Store({ name: 'settings' });
 const storeRecord = new Store({ name: 'use-record' });
@@ -158,5 +160,11 @@ contextBridge.exposeInMainWorld('api', {
   },
   metaWeblog(url: string) {
     return new MetaWeblog(url);
-  }
+  },
+  // slug(text: string) {
+  //   return slug(text, { tone: false });
+  // }
+  // jsdom() {
+  //   return new JSDOM();
+  // }
 });

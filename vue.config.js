@@ -2,12 +2,13 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 14:14:13
- * @LastEditTime: 2021-11-19 18:53:33
+ * @LastEditTime: 2022-07-21 22:45:55
  * @Description:
  * @FilePath: \push-markdown\vue.config.js
  */
 
 const path = require('path');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -18,6 +19,15 @@ module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: 8080
+  },
+  configureWebpack: {
+    plugins: [new NodePolyfillPlugin()],
+    externals: {
+      fs: require('fs-extra'),
+      tls: require('tls'),
+      net: require('net'),
+      child_process: require('child_process')
+    }
   },
   chainWebpack: (config) => {
     config.resolve.alias.set('@', resolve('src')).set('src', resolve('src')).set('common', resolve('src/common')).set('components', resolve('src/components'));
@@ -53,12 +63,6 @@ module.exports = {
           ]
         }
       }
-    },
-    'style-resources-loader': {
-      preProcessor: 'scss',
-      patterns: [path.resolve(__dirname, 'common/assets/style.scss')]
-      // preProcessor: '',
-      // patterns: []
     }
   }
 };
