@@ -3,13 +3,33 @@
   "version": "2.0.0",
   "private": true,
   "description": "将本地markdown推送到WordPress",
-  "author": "szx",
+  "engines": {
+    "node": ">=v16.13",
+    "npm": ">=8.1"
+  },
+  "author": {
+    "name": "szx",
+    "email": "szy110110@qq.com",
+    "url": "https://szx.life"
+  },
+  "main": "packages/main/dist/index.cjs",
   "scripts": {
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
-    "electron:build-mac": "vue-cli-service electron:build --macos"
+    "build": "pnpm build:main && pnpm build:preload && pnpm build:renderer",
+    "build:main": "cd ./packages/main && vite build",
+    "build:preload": "cd ./packages/preload && vite build",
+    "build:renderer": "cd ./packages/renderer && vite build",
+    "compile": "cross-env MODE=production pnpm build && electron-builder build --config .electron-builder.config.js --dir --config.asar=false",
+    "win:compile": "cross-env MODE=production pnpm build && electron-builder build --config .electron-builder.config.js --win",
+    "watch": "node scripts/watch.js",
+    "lint": "eslint . --ext js,ts,vue",
+    "typecheck:main": "tsc --noEmit -p packages/main/tsconfig.json",
+    "typecheck:preload": "tsc --noEmit -p packages/preload/tsconfig.json",
+    "typecheck:renderer": "vue-tsc --noEmit -p packages/renderer/tsconfig.json",
+    "typecheck": "pnpm typecheck:main && pnpm typecheck:preload && pnpm typecheck:renderer",
+    "postinstall": "cross-env ELECTRON_RUN_AS_NODE=1 npx --no-install electron ./scripts/update-electron-vendors.js "
   },
   "dependencies": {
+    "electron-updater": "5.0.5",
     "bluebird": "^3.7.2",
     "core-js": "^3.23.5",
     "dayjs": "^1.11.4",
@@ -43,6 +63,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "3.0.0",
     "@types/bluebird": "^3.5.36",
     "@types/electron-devtools-installer": "^2.2.2",
     "@types/he": "^1.1.2",
@@ -57,27 +78,27 @@
     "@types/uslug": "^1.0.1",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "@typescript-eslint/parser": "^5.30.7",
-    "@vue/cli-plugin-babel": "^5.0.8",
-    "@vue/cli-plugin-eslint": "^5.0.8",
-    "@vue/cli-plugin-router": "^5.0.8",
-    "@vue/cli-plugin-typescript": "^5.0.8",
-    "@vue/cli-plugin-vuex": "^5.0.8",
-    "@vue/cli-service": "^5.0.8",
-    "@vue/compiler-sfc": "^3.2.37",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
-    "electron": "^19.0.8",
-    "electron-devtools-installer": "^3.2.0",
     "eslint": "^8.20.0",
     "eslint-plugin-html": "^7.0.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^9.2.0",
-    "node-polyfill-webpack-plugin": "^2.0.0",
-    "prettier": "^2.6.2",
-    "sass": "^1.53.0",
+    "electron": "^19.0.8",
+    "electron-devtools-installer": "^3.2.0",
+    "electron-builder": "23.1.0",
+    "prettier": "^2.7.1",
+    "sass": "^1.54.0",
     "sass-loader": "^13.0.2",
-    "typescript": "^4.7.3",
-    "vue-cli-plugin-electron-builder": "^3.0.0-alpha.4"
+    "typescript": "^4.7.4",
+    "vite": "3.0.2",
+    "vue-tsc": "0.39.0",
+    "unplugin-auto-expose": "0.0.1",
+    "simple-git-hooks": "2.8.0",
+    "playwright": "1.23.4",
+    "nano-staged": "0.8.0",
+    "happy-dom": "6.0.4",
+    "cross-env": "7.0.3"
   },
   "license": "Apache-2.0"
 }
