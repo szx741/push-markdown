@@ -1,17 +1,10 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-08 13:09:13
- * @LastEditTime: 2022-02-16 15:55:24
+ * @LastEditTime: 2022-07-26 19:35:28
  * @Description: 单个标签，含标题和关闭按钮
- * @FilePath: \push-markdown\src\components\TabTitle.vue
+ * @FilePath: \push-markdown\packages\renderer\src\components\TabTitle.vue
 -->
-<template>
-  <div class="tab" :class="{ selected: selected }" @click="tabClick" @click.middle="tabClose" @click.right="tabClose">
-    <span>{{ modified ? '* ' : '' }}{{ tabTitle || '' }}</span>
-    <img src="../common/assets/refresh.png" v-if="tabType === 'markdown'" @click.stop="tabRefresh" />
-    <img src="../common/assets/close.png" @click.stop="tabClose" />
-  </div>
-</template>
 
 <script lang="ts">
   import { defineComponent } from 'vue';
@@ -21,6 +14,13 @@
     props: ['tabType', 'tabTitle', 'selected', 'modified', 'tabClick', 'tabRefresh', 'tabClose']
   });
 </script>
+<template>
+  <div class="tab" :class="{ selected: selected }" @click="tabClick" @click.middle="tabClose" @click.right="tabClose">
+    <span>{{ modified ? '* ' : '' }}{{ tabTitle || '' }}</span>
+    <img v-if="tabType === 'markdown'" src="../common/assets/refresh.png" @click.stop="tabRefresh" />
+    <img src="../common/assets/close.png" @click.stop="tabClose" />
+  </div>
+</template>
 
 <style lang="scss" scoped>
   // @import '/@/common/assets/style.scss';

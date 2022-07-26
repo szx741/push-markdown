@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-07-23 22:01:05
+ * @LastEditTime: 2022-07-26 19:33:25
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\logic\utils.ts
  */
@@ -27,8 +27,10 @@ export function toStrArr(src: any) {
   return null;
 }
 
-// const sampleFile = nodePath.pathJoin(ipc.syncMsg('__static'), 'static/sample.md');
-const sampleFile = 'D:/code/gitee/push-markdown/public/static/sample.md';
+// console.log(import.meta.url);
+// import sampleUrl from '/public/sample.md';
+// console.log(sampleUrl, import.meta.url);
+const sampleFile = nodePath.pathJoin(ipc.syncMsg('__static'), '/sample.md');
 
 export function isSampleFile(file: any) {
   return file === sampleFile;
@@ -73,7 +75,7 @@ function linkListener(this: HTMLAnchorElement, e: MouseEvent) {
 }
 
 //设置链接
-export function setLinks(node: any) {
+export function setLinks(node: HTMLDivElement) {
   if (node) {
     const elements = node.getElementsByTagName('a');
     if (elements) {

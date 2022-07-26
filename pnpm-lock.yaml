@@ -5,7 +5,7 @@ specifiers:
   '@types/electron-devtools-installer': ^2.2.2
   '@types/he': ^1.1.2
   '@types/html-to-text': ^8.1.0
-  '@types/lodash.debounce': ^4.0.7
+  '@types/lodash-es': ^4.17.6
   '@types/markdown-it': ^12.2.3
   '@types/markdown-it-anchor': ^7.0.0
   '@types/mermaid': ^8.2.9
@@ -40,7 +40,7 @@ specifiers:
   highlight.js: ^11.6.0
   html-to-text: 8.2.0
   js-base64: ^3.7.2
-  lodash.debounce: ^4.0.8
+  lodash-es: ^4.17.21
   markdown-it: ^13.0.1
   markdown-it-anchor: 8.6.4
   markdown-it-mathjax3: ^4.3.1
@@ -66,7 +66,6 @@ specifiers:
   vite: 3.0.2
   vue: ^3.2.37
   vue-i18n: ^9.1.10
-  vue-router: ^4.1.2
   vue-tsc: 0.39.0
   vuex: ^4.0.2
 
@@ -84,7 +83,7 @@ dependencies:
   highlight.js: registry.npmmirror.com/highlight.js/11.6.0
   html-to-text: registry.npmmirror.com/html-to-text/8.2.0
   js-base64: registry.npmmirror.com/js-base64/3.7.2
-  lodash.debounce: registry.npmmirror.com/lodash.debounce/4.0.8
+  lodash-es: registry.npmmirror.com/lodash-es/4.17.21
   markdown-it: registry.npmmirror.com/markdown-it/13.0.1
   markdown-it-anchor: registry.npmmirror.com/markdown-it-anchor/8.6.4_ea7kj7wzjkld5jo2noyjqxi764
   markdown-it-mathjax3: registry.npmmirror.com/markdown-it-mathjax3/4.3.1
@@ -101,7 +100,6 @@ dependencies:
   uslug: registry.npmmirror.com/uslug/1.0.4
   vue: registry.npmmirror.com/vue/3.2.37
   vue-i18n: registry.npmmirror.com/vue-i18n/9.1.10_vue@3.2.37
-  vue-router: registry.npmmirror.com/vue-router/4.1.2_vue@3.2.37
   vuex: registry.npmmirror.com/vuex/4.0.2_vue@3.2.37
 
 devDependencies:
@@ -109,7 +107,7 @@ devDependencies:
   '@types/electron-devtools-installer': registry.npmmirror.com/@types/electron-devtools-installer/2.2.2
   '@types/he': registry.npmmirror.com/@types/he/1.1.2
   '@types/html-to-text': registry.npmmirror.com/@types/html-to-text/8.1.0
-  '@types/lodash.debounce': registry.npmmirror.com/@types/lodash.debounce/4.0.7
+  '@types/lodash-es': registry.npmmirror.com/@types/lodash-es/4.17.6
   '@types/markdown-it': registry.npmmirror.com/@types/markdown-it/12.2.3
   '@types/markdown-it-anchor': registry.npmmirror.com/@types/markdown-it-anchor/7.0.0_ea7kj7wzjkld5jo2noyjqxi764
   '@types/mermaid': registry.npmmirror.com/@types/mermaid/8.2.9
@@ -515,10 +513,10 @@ packages:
     name: '@types/linkify-it'
     version: 3.0.2
 
-  registry.npmmirror.com/@types/lodash.debounce/4.0.7:
-    resolution: {integrity: sha512-X1T4wMZ+gT000M2/91SYj0d/7JfeNZ9PeeOldSNoE/lunLeQXKvkmIumI29IaKMotU/ln/McOIvgzZcQ/3TrSA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/lodash.debounce/-/lodash.debounce-4.0.7.tgz}
-    name: '@types/lodash.debounce'
-    version: 4.0.7
+  registry.npmmirror.com/@types/lodash-es/4.17.6:
+    resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/lodash-es/-/lodash-es-4.17.6.tgz}
+    name: '@types/lodash-es'
+    version: 4.17.6
     dependencies:
       '@types/lodash': registry.npmmirror.com/@types/lodash/4.14.182
     dev: true
@@ -4665,10 +4663,10 @@ packages:
       path-exists: registry.npmmirror.com/path-exists/3.0.0
     dev: false
 
-  registry.npmmirror.com/lodash.debounce/4.0.8:
-    resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz}
-    name: lodash.debounce
-    version: 4.0.8
+  registry.npmmirror.com/lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lodash-es/-/lodash-es-4.17.21.tgz}
+    name: lodash-es
+    version: 4.17.21
     dev: false
 
   registry.npmmirror.com/lodash.escaperegexp/4.1.2:
@@ -6635,18 +6633,6 @@ packages:
       '@intlify/core-base': registry.npmmirror.com/@intlify/core-base/9.1.10
       '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.1.10
       '@intlify/vue-devtools': registry.npmmirror.com/@intlify/vue-devtools/9.1.10
-      '@vue/devtools-api': registry.npmmirror.com/@vue/devtools-api/6.2.1
-      vue: registry.npmmirror.com/vue/3.2.37
-    dev: false
-
-  registry.npmmirror.com/vue-router/4.1.2_vue@3.2.37:
-    resolution: {integrity: sha512-5BP1qXFncVRwgV/XnqzsKApdMjQPqWIpoUBdL1ynz8HyLxIX/UDAx7Ql2BjmA5CXT/p61JfZvkpiFWFpaqcfag==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-router/-/vue-router-4.1.2.tgz}
-    id: registry.npmmirror.com/vue-router/4.1.2
-    name: vue-router
-    version: 4.1.2
-    peerDependencies:
-      vue: ^3.2.0
-    dependencies:
       '@vue/devtools-api': registry.npmmirror.com/@vue/devtools-api/6.2.1
       vue: registry.npmmirror.com/vue/3.2.37
     dev: false

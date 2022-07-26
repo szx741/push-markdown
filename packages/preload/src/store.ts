@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:09:35
- * @LastEditTime: 2022-07-23 21:20:18
+ * @LastEditTime: 2022-07-26 22:01:02
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\store.ts
  */
@@ -34,8 +34,10 @@ export const store = {
   setShowFile(value: any) {
     return storeSettings.set('show-file', value);
   },
-  getShowFile() {
-    return storeSettings.get('show-file', true);
+  getShowFile(): boolean {
+    const res = storeSettings.get('show-file', true);
+    if (typeof res === 'boolean') return res;
+    else return true;
   },
   newStore(name: string) {
     return new Store({ name }).path;

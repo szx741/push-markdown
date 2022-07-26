@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-07-23 21:20:08
+ * @LastEditTime: 2022-07-26 20:45:06
  * @Description: user settings
  * @FilePath: \push-markdown\packages\renderer\src\logic\config.ts
  */
@@ -26,7 +26,7 @@ export function newSite() {
 
 const defaultSites = [newSite()];
 
-export function getSites() {
+export function getSites(): Array<any> {
   const sites = store.storeSettingsGet('sites', defaultSites);
   return (
     sites &&
@@ -81,7 +81,7 @@ export function saveAbstractNumber(abstractNum: any) {
   return store.storeSettingsSet('abstractnumber', abstractNum);
 }
 
-export function getAbstractNumber() {
+export function getAbstractNumber(): number {
   return store.storeSettingsGet('abstractnumber', 120);
 }
 

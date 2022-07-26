@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2022-07-23 22:07:26
+ * @LastEditTime: 2022-07-26 15:12:19
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\ipc-message.ts
  */
@@ -64,7 +64,7 @@ ipcMain.on('__static', function (event, arg) {
   // event.reply('exePath', path.dirname(app.getPath('exe')));
   // event.returnValue = __static;
   // event.returnValue = './';
-  event.returnValue = './';
+  event.returnValue = __dirname;
 });
 
 // 中转消息，渲染进程发给主进程，主进程再发给渲染进程

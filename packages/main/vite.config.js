@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-07-23 17:20:38
+ * @LastEditTime: 2022-07-26 15:49:48
  * @Description:
  * @FilePath: \push-markdown\packages\main\vite.config.js
  */
@@ -30,6 +30,7 @@ const config = {
     target: `node${node}`,
     outDir: 'dist',
     assetsDir: '.',
+    publicDir: 'public',
     minify: process.env.MODE !== 'development',
     lib: {
       entry: 'src/index.ts',

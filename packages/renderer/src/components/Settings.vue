@@ -1,4 +1,61 @@
 <!-- 设置页面 -->
+<script setup lang="ts">
+  import { ref, watch } from 'vue';
+  import debounce from 'lodash-es/debounce';
+  import { useI18n } from 'vue-i18n';
+
+  import * as config from '../logic/config';
+  import * as renderer from '../logic/renderer';
+  import * as statusBar from '../logic/statusBar';
+
+  const sites = ref(config.getSites()),
+    render = ref(config.getRenderConfig()),
+    abstractNum = ref(config.getAbstractNumber()),
+    { t } = useI18n();
+
+  /* 监听变化，保存到本地 */
+  watch(
+    sites,
+    debounce((value) => {
+      config.saveSites(value);
+      statusBar.show(t('setting.saveSettings'));
+    }, 500),
+    { deep: true }
+  );
+  watch(
+    render,
+    () => {
+      config.saveRenderConfig(render.value);
+      renderer.notifyConfigChanged();
+      statusBar.show(t('setting.saveSettings'));
+    },
+    { deep: true }
+  );
+  watch(
+    abstractNum,
+    debounce((value) => {
+      config.saveAbstractNumber(value);
+      statusBar.show(t('setting.saveSettings'));
+    }, 1000)
+  );
+
+  function addSite() {
+    sites.value.push(config.newSite());
+    console.log('add site', config.newSite());
+  }
+  function deleteSite(index: any) {
+    if (window.confirm(t('setting.confirmDelete'))) {
+      sites.value.splice(index, 1);
+    }
+  }
+  function resetSettings() {
+    if (window.confirm(t('setting.resetConfirm'))) {
+      config.clear();
+      sites.value = config.getSites();
+      render.value = config.getRenderConfig();
+    }
+  }
+</script>
 
 <template>
   <div class="container">
@@ -13,7 +70,7 @@
         <div v-for="(site, i) in sites" :key="site" class="site">
           <div>
             <label for="name">{{ $t('setting.name') }}</label>
-            <input id="name" type="text" v-model="site.name" />
+            <input id="name" v-model="site.name" type="text" />
           </div>
 
           <div>
@@ -25,20 +82,20 @@
 
           <div>
             <label for="url">{{ $t('setting.url') }}</label>
-            <input id="url" type="url" v-model="site.url" />
+            <input id="url" v-model="site.url" type="url" />
           </div>
 
           <div>
             <label for="username">{{ $t('setting.username') }}</label>
-            <input id="username" type="text" v-model="site.username" />
+            <input id="username" v-model="site.username" type="text" />
           </div>
 
           <div>
             <label for="password">{{ $t('setting.password') }}</label>
-            <input id="password" type="password" v-model="site.password" />
+            <input id="password" v-model="site.password" type="password" />
           </div>
 
-          <img @click="deleteSite(i)" src="../common/assets/close.png" class="delete" />
+          <img src="../common/assets/close.png" class="delete" @click="deleteSite(i)" />
         </div>
       </template>
 
@@ -55,9 +112,9 @@
           <option value="article">{{ $t('setting.abstract.options.article') }}</option>
           <option value="title">{{ $t('setting.abstract.options.title') }}</option>
         </select>
-        <div class="abstract-article" v-if="render.abstract == 'article'">
+        <div v-if="render.abstract == 'article'" class="abstract-article">
           <label>{{ $t('setting.abstract.abstractNum') }}</label>
-          <input class="abstract-article-input" type="number" v-model="abstractNum" />
+          <input v-model="abstractNum" class="abstract-article-input" type="number" />
         </div>
       </div>
 
@@ -90,86 +147,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-  import * as statusBar from '../logic/statusBar';
-  import i18n from '/@/common/language';
-
-  import { defineComponent } from 'vue';
-  import * as config from '../logic/config';
-  import * as renderer from '../logic/renderer';
-  import debounce from 'lodash.debounce';
-  import { ipc } from '#preload';
-  export default defineComponent({
-    name: 'Settings',
-    props: ['active'],
-    data() {
-      return {
-        sites: config.getSites(),
-        render: config.getRenderConfig(),
-        abstractNum: config.getAbstractNumber()
-      };
-    },
-    watch: {
-      sites: {
-        handler() {
-          this.debounceSaveSites();
-        },
-        deep: true
-      },
-      render: {
-        handler() {
-          config.saveRenderConfig(this.render);
-          renderer.notifyConfigChanged();
-          console.log('render settings saved');
-        },
-        deep: true
-      },
-      abstractNum() {
-        debounce(() => {
-          console.log('保存字数');
-          config.saveAbstractNumber(this.abstractNum);
-        }, 500)();
-      }
-    },
-    async mounted() {
-      ipc.receive('menu.save', () => {
-        debounce(() => {
-          if (this.active) {
-            console.log('active');
-            statusBar.show(i18n.global.t('setting.saveSettings'));
-          }
-        }, 500)();
-      });
-    },
-
-    methods: {
-      debounceSaveSites() {
-        debounce(() => {
-          config.saveSites(this.sites);
-          console.log('sites settings saved');
-        }, 500)();
-      },
-      addSite() {
-        this.sites.push(config.newSite());
-        console.log('add site', config.newSite());
-      },
-      deleteSite(index: any) {
-        if (window.confirm('确认删除？')) {
-          this.sites.splice(index, 1);
-          // console.log('delete site', this.sites)
-        }
-      },
-      resetSettings() {
-        if (window.confirm(this.$t('setting.resetConfirm'))) {
-          config.clear();
-          this.sites = config.getSites();
-          this.render = config.getRenderConfig();
-        }
-      }
-    }
-  });
-</script>
 
 <style lang="scss" scoped>
   .container {

@@ -1,68 +1,3 @@
-<!-- Markdown预览页面 -->
-
-<template>
-  <div class="wrapper">
-    <div class="container" :class="{ 'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive }">
-      <!-- 编辑器  -->
-      <div class="left">
-        <textarea ref="textarea" class="left-content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" v-model="src" @input="update" title="text"></textarea>
-      </div>
-
-      <div class="right" :class="{ 'right-light': !darkActive, 'right-dark': darkActive }">
-        <div class="content">
-          <h1 v-if="post.title" class="title">{{ post.title }}</h1>
-
-          <blockquote class="abstract">
-            <span class="meta-name">{{ $t('meta.abstract') }}</span
-            >{{ post.abstract || $t('meta.empty') }}
-          </blockquote>
-
-          <div class="meta">
-            <table>
-              <tr class="meta-item">
-                <td class="meta-name">{{ $t('meta.file') }}</td>
-                <td class="meta-value">{{ post.file }}</td>
-              </tr>
-
-              <tr class="meta-item">
-                <td class="meta-name">{{ $t('meta.url') }}</td>
-                <td class="meta-value url" v-if="post.url">{{ post.url }}</td>
-                <td class="meta-value empty url" v-else>{{ $t('meta.empty') }}</td>
-              </tr>
-
-              <tr class="meta-item">
-                <td class="meta-name">{{ $t('meta.time') }}</td>
-                <td class="meta-value date" v-if="post.date">{{ formatDate(post.date) }}</td>
-                <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
-              </tr>
-
-              <tr class="meta-item">
-                <td class="meta-name">{{ $t('meta.categories') }}</td>
-                <td class="meta-value list" v-if="post.categories">
-                  <span v-for="category in post.categories" :key="category" class="category">{{ category }}</span>
-                </td>
-                <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
-              </tr>
-
-              <tr class="meta-item">
-                <td class="meta-name">{{ $t('meta.tags') }}</td>
-                <td class="meta-value list" v-if="post.tags">
-                  <span v-for="tag in post.tags" :key="tag" class="tag">{{ tag }}</span>
-                </td>
-                <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
-              </tr>
-            </table>
-          </div>
-
-          <div class="markdown" ref="markdown" v-html="post.html"></div>
-        </div>
-      </div>
-    </div>
-
-    <Publish class="markdown-body" :post="post" :active="active"></Publish>
-  </div>
-</template>
-
 <script lang="ts">
   import { defineComponent, reactive, watch as watchSetup, toRefs } from 'vue';
 
@@ -70,7 +5,7 @@
   import * as renderer from '/@/logic/renderer';
   import Publish from '/@/components/Publish.vue';
   import * as statusBar from '../logic/statusBar';
-  import i18n from '/@/common/language';
+  import i18n from '/@/common/i18n';
   import dayjs from 'dayjs';
 
   import store from '../store/index';
@@ -187,13 +122,78 @@
   });
 </script>
 
+<template>
+  <div class="wrapper">
+    <div class="container" :class="{ 'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive }">
+      <!-- 编辑器  -->
+      <div class="left">
+        <textarea ref="textarea" class="left-content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" v-model="src" @input="update" title="text"></textarea>
+      </div>
+
+      <div class="right" :class="{ 'right-light': !darkActive, 'right-dark': darkActive }">
+        <div class="content">
+          <h1 v-if="post.title" class="title">{{ post.title }}</h1>
+
+          <blockquote class="abstract">
+            <span class="meta-name">{{ $t('meta.abstract') }}</span
+            >{{ post.abstract || $t('meta.empty') }}
+          </blockquote>
+
+          <div class="meta">
+            <table>
+              <tr class="meta-item">
+                <td class="meta-name">{{ $t('meta.file') }}</td>
+                <td class="meta-value">{{ post.file }}</td>
+              </tr>
+
+              <tr class="meta-item">
+                <td class="meta-name">{{ $t('meta.url') }}</td>
+                <td class="meta-value url" v-if="post.url">{{ post.url }}</td>
+                <td class="meta-value empty url" v-else>{{ $t('meta.empty') }}</td>
+              </tr>
+
+              <tr class="meta-item">
+                <td class="meta-name">{{ $t('meta.time') }}</td>
+                <td class="meta-value date" v-if="post.date">{{ formatDate(post.date) }}</td>
+                <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
+              </tr>
+
+              <tr class="meta-item">
+                <td class="meta-name">{{ $t('meta.categories') }}</td>
+                <td class="meta-value list" v-if="post.categories">
+                  <span v-for="category in post.categories" :key="category" class="category">{{ category }}</span>
+                </td>
+                <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
+              </tr>
+
+              <tr class="meta-item">
+                <td class="meta-name">{{ $t('meta.tags') }}</td>
+                <td class="meta-value list" v-if="post.tags">
+                  <span v-for="tag in post.tags" :key="tag" class="tag">{{ tag }}</span>
+                </td>
+                <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="markdown" ref="markdown" v-html="post.html"></div>
+        </div>
+      </div>
+    </div>
+
+    <Publish class="markdown-body" :post="post" :active="active"></Publish>
+  </div>
+</template>
+
 <style lang="scss" scoped>
   /*@import "../assets/MathJax.css";*/
-  @import 'highlight.js/styles/github.css';
+  // @import 'highlight.js/styles/github.css';
+  // @import 'github-markdown-css/github-markdown-light.css';
   @import '../common/assets/theme/github-markdown-light.css';
   @import '../common/assets/theme/github-markdown-dark.css';
-  @import '../common/assets/theme/splendor.css';
-  @import '../common/assets/theme/wysiwyg.css';
+  // @import 'github-markdown-css/github-markdown-dark.css';
+  // @import '../common/assets/theme/splendor.css';
+  // @import '../common/assets/theme/wysiwyg.css';
 
   .wrapper {
     width: 100%;

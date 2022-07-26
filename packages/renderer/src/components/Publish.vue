@@ -1,121 +1,15 @@
 <!-- 发布窗口 -->
+<!-- <script setup lang="ts">
+  import * as publisher from '../logic/publisher';
+  import { Publisher } from '../logic/publisher';
+  import { openSampleFile } from '../logic/utils';
+  import * as statusBar from '../logic/statusBar';
+  import Promise from 'bluebird';
+  import * as config from '../logic/config';
+  import i18n from '/@/common/i18n';
+  import { ipc } from '#preload';
 
-<template>
-  <div class="publish-wrapper" v-if="showPublish">
-    <div class="overlay"></div>
-
-    <div class="dialog publish-container">
-      <div class="dialog-title">
-        <h4>{{ $t('publish.title') }}</h4>
-        <img @click="closePublish" src="../common/assets/close.png" />
-      </div>
-
-      <div class="dialog-body">
-        <div class="publish-sites">
-          <div class="publish-site-text">
-            <span>{{ $t('publish.selectSites') }}</span>
-            <a class="publish-site-edit" href="#" @click="showSettings()">{{ $t('publish.settings') }}</a>
-          </div>
-          <div class="sites">
-            <div v-for="site in sites" :key="site" class="site" @click="() => select(site)">
-              <input title="select" type="checkbox" v-model="site.selected" />
-              <div class="site-info">
-                <div class="site-name">
-                  <h4>{{ site.name }}</h4>
-                </div>
-                <div class="site-detail">
-                  <span>
-                    <small>{{ site.username }} </small>
-                  </span>
-                  <span>
-                    <small>{{ site.url }}</small>
-                  </span>
-                </div>
-              </div>
-              <div>
-                <span> {{ $t('publish.articleID') }}: </span>
-                {{ aritclesID[site.url + site.username] }}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="publish-mode">
-          <div class="publish-mode-select">
-            <label style="margin-right: 10px" for="publish-mode-select">{{ $t('publish.publishMode') }} </label>
-            <select id="publish-mode-select" v-model="publishMode">
-              <option value="manual">{{ $t('publish.publishModeManual') }}</option>
-              <option value="create">{{ $t('publish.publishModeCreate') }}</option>
-              <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
-            </select>
-            <div v-if="publishMode == 'manual'">
-              <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
-              <input class="publish-article-id" type="number" placeholder="ID" v-model="blogID" />
-              <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
-              <input type="checkbox" v-model="getNetPic" :disabled="forcedUpdate" />
-              <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>
-              <input type="checkbox" v-model="forcedUpdate" :disabled="getNetPic" />
-            </div>
-            <div v-else-if="publishMode == 'auto'">
-              <label class="publish-mode-label">{{ $t('publish.notCheckingRemoteImages') }}</label>
-              <input type="checkbox" v-model="notCheck" />
-            </div>
-          </div>
-
-          <div class="publish-modeXXX-hint" v-if="publishMode == 'manual'">{{ $t('publish.publishModeManualHint') }} </div>
-          <div class="publish-modeXXX-hint" v-if="publishMode == 'auto'">{{ $t('publish.publishModeAutoHint') }} </div>
-          <div class="publish-modeXXX-hint" v-if="publishMode == 'create'">{{ $t('publish.publishModeCreateHint') }} </div>
-          <div class="publish-mode-hint" v-html="$t('publish.publishModeHint')"> </div>
-        </div>
-
-        <div class="buttons">
-          <button @click="publish" :disabled="publishing">
-            {{ publishing ? $t('publish.publishing') : $t('publish.publish') }}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <template v-if="editList && editList.length > 0">
-      <div class="dialog publish-edit" v-for="edit in editList" :key="edit">
-        <div class="dialog-title" v-if="edit">
-          <h4>{{ $t('publish.publishModeConfirm') }}</h4>
-        </div>
-        <div class="dialog-body">
-          <div class="site-detail" v-if="edit.site">
-            <span>{{ edit.site.name }}</span>
-            <span>{{ edit.site.username }}</span>
-            <span>{{ edit.site.url }}</span>
-          </div>
-          <div>{{ $t('publish.publishModeOldPost') }}</div>
-          <div class="post-preview markdown-body" v-if="edit.post">
-            <h1 class="post-preview-title">{{ edit.post.title }}</h1>
-            <div class="post-preview-content" v-html="edit.post.html"></div>
-          </div>
-          <div class="buttons">
-            <button @click="() => edit.callback(true)">{{ $t('publish.publishModeEditPost') }}</button>
-            <button @click="() => edit.callback(false)">{{ $t('publish.publishModeCreatePost') }}</button>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <div class="dialog publish-confirm" v-if="confirm && confirm.title">
-      <div class="dialog-title">
-        <h4>{{ confirm.title }}</h4>
-      </div>
-      <div class="dialog-body">
-        <div class="publish-confirm-message weighted">{{ confirm.message }}</div>
-        <div class="buttons">
-          <button v-if="confirm.no" @click="confirm.no.callback">{{ confirm.no.message }}</button>
-          <button v-if="confirm.neutral" @click="confirm.neutral.callback">{{ confirm.neutral.message }}</button>
-          <button v-if="confirm.yes" @click="confirm.yes.callback">{{ confirm.yes.message }}</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
+</script> -->
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
 
@@ -126,7 +20,7 @@
 
   import Promise from 'bluebird';
   import * as config from '../logic/config';
-  import i18n from '/@/common/language';
+  import i18n from '/@/common/i18n';
   import { ipc } from '#preload';
   interface data {
     publishMode: string;
@@ -320,6 +214,122 @@
     }
   });
 </script>
+
+<template>
+  <div class="publish-wrapper" v-if="showPublish">
+    <div class="overlay"></div>
+
+    <div class="dialog publish-container">
+      <div class="dialog-title">
+        <h4>{{ $t('publish.title') }}</h4>
+        <img @click="closePublish" src="../common/assets/close.png" />
+      </div>
+
+      <div class="dialog-body">
+        <div class="publish-sites">
+          <div class="publish-site-text">
+            <span>{{ $t('publish.selectSites') }}</span>
+            <a class="publish-site-edit" href="#" @click="showSettings()">{{ $t('publish.settings') }}</a>
+          </div>
+          <div class="sites">
+            <div v-for="site in sites" :key="site" class="site" @click="() => select(site)">
+              <input title="select" type="checkbox" v-model="site.selected" />
+              <div class="site-info">
+                <div class="site-name">
+                  <h4>{{ site.name }}</h4>
+                </div>
+                <div class="site-detail">
+                  <span>
+                    <small>{{ site.username }} </small>
+                  </span>
+                  <span>
+                    <small>{{ site.url }}</small>
+                  </span>
+                </div>
+              </div>
+              <div>
+                <span> {{ $t('publish.articleID') }}: </span>
+                {{ aritclesID[site.url + site.username] }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="publish-mode">
+          <div class="publish-mode-select">
+            <label style="margin-right: 10px" for="publish-mode-select">{{ $t('publish.publishMode') }} </label>
+            <select id="publish-mode-select" v-model="publishMode">
+              <option value="manual">{{ $t('publish.publishModeManual') }}</option>
+              <option value="create">{{ $t('publish.publishModeCreate') }}</option>
+              <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
+            </select>
+            <div v-if="publishMode == 'manual'">
+              <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
+              <input class="publish-article-id" type="number" placeholder="ID" v-model="blogID" />
+              <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
+              <input type="checkbox" v-model="getNetPic" :disabled="forcedUpdate" />
+              <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>
+              <input type="checkbox" v-model="forcedUpdate" :disabled="getNetPic" />
+            </div>
+            <div v-else-if="publishMode == 'auto'">
+              <label class="publish-mode-label">{{ $t('publish.notCheckingRemoteImages') }}</label>
+              <input type="checkbox" v-model="notCheck" />
+            </div>
+          </div>
+
+          <div class="publish-modeXXX-hint" v-if="publishMode == 'manual'">{{ $t('publish.publishModeManualHint') }} </div>
+          <div class="publish-modeXXX-hint" v-if="publishMode == 'auto'">{{ $t('publish.publishModeAutoHint') }} </div>
+          <div class="publish-modeXXX-hint" v-if="publishMode == 'create'">{{ $t('publish.publishModeCreateHint') }} </div>
+          <div class="publish-mode-hint" v-html="$t('publish.publishModeHint')"> </div>
+        </div>
+
+        <div class="buttons">
+          <button @click="publish" :disabled="publishing">
+            {{ publishing ? $t('publish.publishing') : $t('publish.publish') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <template v-if="editList && editList.length > 0">
+      <div class="dialog publish-edit" v-for="edit in editList" :key="edit">
+        <div class="dialog-title" v-if="edit">
+          <h4>{{ $t('publish.publishModeConfirm') }}</h4>
+        </div>
+        <div class="dialog-body">
+          <div class="site-detail" v-if="edit.site">
+            <span>{{ edit.site.name }}</span>
+            <span>{{ edit.site.username }}</span>
+            <span>{{ edit.site.url }}</span>
+          </div>
+          <div>{{ $t('publish.publishModeOldPost') }}</div>
+          <div class="post-preview markdown-body" v-if="edit.post">
+            <h1 class="post-preview-title">{{ edit.post.title }}</h1>
+            <div class="post-preview-content" v-html="edit.post.html"></div>
+          </div>
+          <div class="buttons">
+            <button @click="() => edit.callback(true)">{{ $t('publish.publishModeEditPost') }}</button>
+            <button @click="() => edit.callback(false)">{{ $t('publish.publishModeCreatePost') }}</button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <div class="dialog publish-confirm" v-if="confirm && confirm.title">
+      <div class="dialog-title">
+        <h4>{{ confirm.title }}</h4>
+      </div>
+      <div class="dialog-body">
+        <div class="publish-confirm-message weighted">{{ confirm.message }}</div>
+        <div class="buttons">
+          <button v-if="confirm.no" @click="confirm.no.callback">{{ confirm.no.message }}</button>
+          <button v-if="confirm.neutral" @click="confirm.neutral.callback">{{ confirm.neutral.message }}</button>
+          <button v-if="confirm.yes" @click="confirm.yes.callback">{{ confirm.yes.message }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
   .dialog {
