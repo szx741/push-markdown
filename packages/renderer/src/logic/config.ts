@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-07-26 20:45:06
+ * @LastEditTime: 2022-07-27 22:53:34
  * @Description: user settings
  * @FilePath: \push-markdown\packages\renderer\src\logic\config.ts
  */
@@ -10,11 +10,25 @@
 import filenamifyUrl from 'filenamify-url';
 import { Base64 } from 'js-base64';
 import { store } from '#preload';
+
+interface SiteConfig {
+  type: string;
+  name: string;
+  url: string;
+  username: string;
+  password: string;
+}
+export interface RenderConfig {
+  abstract: string;
+  highlight: string;
+  mathjax: string;
+  mermaid: string;
+}
 export function clear() {
   store.getStoreSettingsClear();
 }
 
-export function newSite() {
+export function newSite(): SiteConfig {
   return {
     type: 'MetaWeblog',
     name: 'Sample Site Config',
@@ -26,30 +40,27 @@ export function newSite() {
 
 const defaultSites = [newSite()];
 
-export function getSites(): Array<any> {
-  const sites = store.storeSettingsGet('sites', defaultSites);
-  return (
-    sites &&
-    sites.map((site: any) => {
-      return {
-        ...site,
-        password: site.password && Base64.decode(site.password)
-      };
-    })
-  );
+/**
+ * 获得网站的配置信息，密码需要用Base64解码
+ * @returns SiteConfig[]
+ */
+export function getSites(): SiteConfig[] {
+  const sites: SiteConfig[] = store.storeSettingsGet('sites', defaultSites);
+  sites.forEach((site) => {
+    site.password = site.password && Base64.decode(site.password);
+  });
+  return sites;
 }
 
-export function saveSites(sites: any) {
-  // encode
-  sites =
-    sites &&
-    sites.map((site: any) => {
-      return {
-        ...site,
-        password: site.password && Base64.encode(site.password)
-      };
-    });
-  return store.storeSettingsSet('sites', sites);
+/**
+ * 保存网站配置信息，密码以Base64的方式保存
+ * @param sites
+ */
+export function saveSites(sites: SiteConfig[]) {
+  sites.forEach((site) => {
+    site.password = site.password && Base64.encode(site.password);
+  });
+  store.storeSettingsSet('sites', sites);
 }
 
 export function saveNotCheck(notcheck: boolean) {
@@ -61,19 +72,20 @@ export function getNotCheck(defaultValue = true) {
 }
 
 export function getRenderConfig() {
-  const defaultValue = {
+  const defaultValue: RenderConfig = {
     abstract: 'article',
     highlight: 'preview',
     mathjax: 'publish',
     mermaid: 'preview'
   };
-  const config = store.storeSettingsGet('render', {});
+  const config: RenderConfig = store.storeSettingsGet('render', {});
   return {
     ...defaultValue,
     ...config
   };
 }
 export function saveRenderConfig(render: any) {
+  console.log(render);
   return store.storeSettingsSet('render', JSON.parse(JSON.stringify(render)));
 }
 

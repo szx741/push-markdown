@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:09:35
- * @LastEditTime: 2022-07-26 22:01:02
+ * @LastEditTime: 2022-07-27 11:51:43
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\store.ts
  */
@@ -19,8 +19,8 @@ export const store = {
   getStoreSettingsClear() {
     return storeSettings.clear();
   },
-  storeSettingsSet(key: any, value: any) {
-    return storeSettings.set(key, value);
+  storeSettingsSet(key: any, value: any): void {
+    storeSettings.set(key, value);
   },
   storeSettingsGet(key: any, value: any): any {
     return storeSettings.get(key, value);

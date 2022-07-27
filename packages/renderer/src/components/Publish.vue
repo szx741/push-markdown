@@ -1,14 +1,16 @@
 <!-- 发布窗口 -->
 <!-- <script setup lang="ts">
+  import { defineComponent, ref } from 'vue';
+  import Promise from 'bluebird';
+
   import * as publisher from '../logic/publisher';
   import { Publisher } from '../logic/publisher';
   import { openSampleFile } from '../logic/utils';
   import * as statusBar from '../logic/statusBar';
-  import Promise from 'bluebird';
+
   import * as config from '../logic/config';
   import i18n from '/@/common/i18n';
   import { ipc } from '#preload';
-
 </script> -->
 <script lang="ts">
   import { defineComponent, ref } from 'vue';

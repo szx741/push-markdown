@@ -1,6 +1,6 @@
 <!-- 设置页面 -->
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { reactive, ref, toRaw, watch } from 'vue';
   import debounce from 'lodash-es/debounce';
   import { useI18n } from 'vue-i18n';
 
@@ -8,7 +8,7 @@
   import * as renderer from '../logic/renderer';
   import * as statusBar from '../logic/statusBar';
 
-  const sites = ref(config.getSites()),
+  const sites = reactive(config.getSites()),
     render = ref(config.getRenderConfig()),
     abstractNum = ref(config.getAbstractNumber()),
     { t } = useI18n();
@@ -17,15 +17,16 @@
   watch(
     sites,
     debounce((value) => {
-      config.saveSites(value);
+      // console.log('sites', toRaw(value));
+      config.saveSites(toRaw(value));
       statusBar.show(t('setting.saveSettings'));
-    }, 500),
-    { deep: true }
+    }, 500)
   );
   watch(
     render,
-    () => {
-      config.saveRenderConfig(render.value);
+    (value) => {
+      console.log(value);
+      config.saveRenderConfig(value);
       renderer.notifyConfigChanged();
       statusBar.show(t('setting.saveSettings'));
     },
@@ -40,18 +41,20 @@
   );
 
   function addSite() {
-    sites.value.push(config.newSite());
-    console.log('add site', config.newSite());
+    sites.push(config.newSite());
+    console.log('add site');
   }
+
   function deleteSite(index: any) {
     if (window.confirm(t('setting.confirmDelete'))) {
-      sites.value.splice(index, 1);
+      sites.splice(index, 1);
     }
   }
+
   function resetSettings() {
     if (window.confirm(t('setting.resetConfirm'))) {
       config.clear();
-      sites.value = config.getSites();
+      // sites = config.getSites();
       render.value = config.getRenderConfig();
     }
   }
@@ -67,7 +70,7 @@
       <blockquote class="small" v-html="$t('setting.siteSettingsNote')"></blockquote>
 
       <template v-if="sites">
-        <div v-for="(site, i) in sites" :key="site" class="site">
+        <div v-for="(site, i) in sites" :key="site.url" class="site">
           <div>
             <label for="name">{{ $t('setting.name') }}</label>
             <input id="name" v-model="site.name" type="text" />

@@ -1,136 +1,115 @@
-<script lang="ts">
-  import { defineComponent, reactive, watch as watchSetup, toRefs } from 'vue';
+<script setup lang="ts">
+  import { reactive, watch, toRefs, ref, onUpdated, onMounted, toRef, Ref } from 'vue';
+  import dayjs from 'dayjs';
+  import { useI18n } from 'vue-i18n';
 
+  import Publish from '/@/components/Publish.vue';
   import * as utils from '../logic/utils';
   import * as renderer from '/@/logic/renderer';
-  import Publish from '/@/components/Publish.vue';
   import * as statusBar from '../logic/statusBar';
-  import i18n from '/@/common/i18n';
-  import dayjs from 'dayjs';
-
-  import store from '../store/index';
   import { nodeFs, ipc } from '#preload';
-  interface data {
-    modified: any;
-    src: any;
-    post: any;
-  }
-  export default defineComponent({
-    name: 'Markdown',
-    components: { Publish },
-    props: ['file', 'active', 'num', 'modifiedHandler'],
+  const props = defineProps<{
+      filePath: string;
+      active: boolean;
+      num: number;
+    }>(),
+    emit = defineEmits<{
+      (e: 'setModified', i: number, modified: boolean): void;
+    }>(),
+    filePath = toRef(props, 'filePath'),
+    modified = ref(false),
+    fileText: Ref<string> = ref(''),
+    post: Ref<any> = ref({}),
+    refMarkdown = ref(),
+    refTextarea = ref(),
+    { t } = useI18n();
 
-    setup() {
-      const theme: any = reactive({
-        githubActive: true,
-        darkActive: false,
-        splendorActive: false,
-        wysiwygActive: false
-      });
-
-      watchSetup(
-        () => store.state.theme,
-        (newVal: any, oldVal: any) => {
-          theme[oldVal + 'Active'] = false;
-          theme[newVal + 'Active'] = true;
-        },
-        {
-          immediate: true
-        }
-      );
-
-      return {
-        ...toRefs(theme)
-      };
-    },
-
-    data(): data {
-      return {
-        modified: false,
-        src: {},
-        post: {}
-      };
-    },
-    watch: {
-      file() {
-        this.readFile();
-      },
-      async src() {
-        await this.debounceUpdate();
-      },
-      modified() {
-        console.log('this.num', this.num);
-        this.$emit('setModified', this.num, this.modified);
-      }
-    },
-    async updated() {
-      const markdown: any = this.$refs['markdown'];
-      utils.setLinks(markdown);
-    },
-    async mounted() {
-      utils.setTextareaTabKey(this.$refs['textarea']);
-      this.readFile();
-      ipc.receive('menu.save', this.onSave);
-    },
-    methods: {
-      async debounceUpdate() {
-        this.post = await renderer.render(this.src, this.file, true);
-      },
-      onSave() {
-        if (this.active && this.modified) {
-          this.writeFile();
-        }
-      },
-      readFile() {
-        if (this.file != 'tmpClose') {
-          nodeFs.fsReadFile(this.file, { encoding: 'utf-8' }, (err: any, data: string) => {
-            if (err) {
-              console.error(err);
-              const text = i18n.global.t('readFileError') + err.message;
-              statusBar.show(text);
-              this.src = text;
-            } else {
-              //   const result = data.replace(/\t/g, '&emsp;');
-              this.src = data;
-            }
-          });
-        }
-      },
-      writeFile() {
-        if (utils.isSampleFile(this.file)) {
-          statusBar.show(i18n.global.t('cannotWriteSampleFile'));
-          return;
-        }
-        nodeFs.fsWriteFile(this.file, this.src, { encoding: 'utf-8' }, (err: any) => {
-          // do nothing
-          if (!err) {
-            this.modified = false;
-            statusBar.show(i18n.global.t('saveFileSuccess'));
-          } else {
-            console.error(err);
-            statusBar.show(i18n.global.t('saveFileError') + err.message);
-          }
-        });
-      },
-      update() {
-        this.modified = true;
-      },
-      formatDate(date: any) {
-        return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
-      }
-    }
+  // 监听
+  watch(filePath, () => {
+    readFile();
   });
+  watch(fileText, async () => await debounceUpdate());
+  watch(modified, (value) => {
+    emit('setModified', props.num, value);
+  });
+
+  const theme: any = reactive({
+    githubActive: true,
+    darkActive: false,
+    splendorActive: false,
+    wysiwygActive: false
+  });
+
+  onUpdated(() => {
+    const markdown: any = refMarkdown.value;
+    utils.setLinks(markdown);
+  });
+  onMounted(() => {
+    utils.setTextareaTabKey(refTextarea.value);
+    readFile();
+    ipc.receive('menu.save', onSave);
+  });
+
+  async function debounceUpdate() {
+    post.value = await renderer.render(fileText.value, filePath.value, true);
+  }
+  function onSave() {
+    if (props.active && modified.value) {
+      writeFile();
+    }
+  }
+  function readFile() {
+    if (filePath.value != 'tmpClose') {
+      nodeFs.fsReadFile(filePath.value, { encoding: 'utf-8' }, (err: any, data: string) => {
+        if (err) {
+          console.error(err);
+          const text = t('readFileError') + err.message;
+          statusBar.show(text);
+          console.log(fileText.value);
+          fileText.value = text;
+        } else {
+          //   const result = data.replace(/\t/g, '&emsp;');
+          fileText.value = data;
+        }
+      });
+    }
+  }
+  function writeFile() {
+    if (utils.isSampleFile(filePath.value)) {
+      statusBar.show(t('cannotWriteSampleFile'));
+      return;
+    }
+    nodeFs.fsWriteFile(filePath.value, fileText.value, { encoding: 'utf-8' }, (err: any) => {
+      // do nothing
+      if (!err) {
+        modified.value = false;
+        statusBar.show(t('saveFileSuccess'));
+      } else {
+        console.error(err);
+        statusBar.show(t('saveFileError') + err.message);
+      }
+    });
+  }
+  function update() {
+    modified.value = true;
+  }
+  function formatDate(date: any) {
+    return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+  }
 </script>
 
 <template>
   <div class="wrapper">
-    <div class="container" :class="{ 'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive }">
+    <!-- <div class="container" :class="{ 'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive }"> -->
+    <div class="container">
       <!-- 编辑器  -->
       <div class="left">
-        <textarea ref="textarea" class="left-content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" v-model="src" @input="update" title="text"></textarea>
+        <textarea ref="textarea" v-model="fileText" class="left-content" title="text" @input="update"></textarea>
+        <!-- <textarea ref="textarea" v-model="fileText" class="left-content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" title="text" @input="update"></textarea> -->
       </div>
 
-      <div class="right" :class="{ 'right-light': !darkActive, 'right-dark': darkActive }">
+      <div class="right">
+        <!-- <div class="right" :class="{ 'right-light': !darkActive, 'right-dark': darkActive }"> -->
         <div class="content">
           <h1 v-if="post.title" class="title">{{ post.title }}</h1>
 
@@ -148,35 +127,35 @@
 
               <tr class="meta-item">
                 <td class="meta-name">{{ $t('meta.url') }}</td>
-                <td class="meta-value url" v-if="post.url">{{ post.url }}</td>
-                <td class="meta-value empty url" v-else>{{ $t('meta.empty') }}</td>
+                <td v-if="post.url" class="meta-value url">{{ post.url }}</td>
+                <td v-else class="meta-value empty url">{{ $t('meta.empty') }}</td>
               </tr>
 
               <tr class="meta-item">
                 <td class="meta-name">{{ $t('meta.time') }}</td>
-                <td class="meta-value date" v-if="post.date">{{ formatDate(post.date) }}</td>
-                <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
+                <td v-if="post.date" class="meta-value date">{{ formatDate(post.date) }}</td>
+                <td v-else class="meta-value empty">{{ $t('meta.empty') }}</td>
               </tr>
 
               <tr class="meta-item">
                 <td class="meta-name">{{ $t('meta.categories') }}</td>
-                <td class="meta-value list" v-if="post.categories">
+                <td v-if="post.categories" class="meta-value list">
                   <span v-for="category in post.categories" :key="category" class="category">{{ category }}</span>
                 </td>
-                <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
+                <td v-else class="meta-value empty">{{ $t('meta.empty') }}</td>
               </tr>
 
               <tr class="meta-item">
                 <td class="meta-name">{{ $t('meta.tags') }}</td>
-                <td class="meta-value list" v-if="post.tags">
+                <td v-if="post.tags" class="meta-value list">
                   <span v-for="tag in post.tags" :key="tag" class="tag">{{ tag }}</span>
                 </td>
-                <td class="meta-value empty" v-else>{{ $t('meta.empty') }}</td>
+                <td v-else class="meta-value empty">{{ $t('meta.empty') }}</td>
               </tr>
             </table>
           </div>
 
-          <div class="markdown" ref="markdown" v-html="post.html"></div>
+          <div ref="markdown" class="markdown" v-html="post.html"></div>
         </div>
       </div>
     </div>
@@ -330,9 +309,6 @@
         text-align: left;
       }
     }
-  }
-
-  .meta-item {
   }
 
   .meta-name {

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-07-26 19:33:25
+ * @LastEditTime: 2022-07-27 21:53:21
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\logic\utils.ts
  */
@@ -16,13 +16,11 @@ export function toStr(src: any) {
   return (src && typeof src === 'string' && src) || null;
 }
 
-export function toStrArr(src: any) {
-  if (src) {
-    if (typeof src === 'string') {
-      return [src];
-    } else if (src instanceof Array) {
-      return src.map((s) => toStr(s)).filter((s) => s);
-    }
+export function toStrArr(src: string | string[] | null | undefined): string[] | null {
+  if (typeof src === 'string') {
+    return [src];
+  } else if (src instanceof Array) {
+    return src.map((s) => toStr(s)).filter((s) => s);
   }
   return null;
 }

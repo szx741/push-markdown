@@ -30,7 +30,7 @@ const store = {
     return storeSettings.clear();
   },
   storeSettingsSet(key, value) {
-    return storeSettings.set(key, value);
+    storeSettings.set(key, value);
   },
   storeSettingsGet(key, value) {
     return storeSettings.get(key, value);
@@ -89,9 +89,9 @@ const nodeFs = {
   isFileOrDir(_path, file) {
     try {
       const stat = fs__default.default.lstatSync(path__default.default.join(_path, file));
-      return [stat.isFile(), stat.isDirectory()];
+      return stat.isDirectory();
     } catch (e) {
-      return [false, false];
+      return false;
     }
   },
   isDir(path2) {

@@ -1,13 +1,13 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-07-23 22:04:53
+ * @LastEditTime: 2022-07-27 22:51:33
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\packages\renderer\src\logic\renderer\index.ts
  */
 'use strict';
 // import path from 'path';
-import fm from 'front-matter';
+import frontMatter from 'front-matter';
 import highlight from 'highlight.js';
 import MarkdownIt from 'markdown-it';
 import * as utils from '../utils';
@@ -24,11 +24,26 @@ import mathjax3 from 'markdown-it-mathjax3';
 import uslug from 'uslug';
 import { slugify as slug } from 'transliteration';
 import { nodePath } from '#preload';
+import { RenderConfig } from '../config';
 const blank = decodeURI('%E3%80%80');
-let renderConfig: any;
-let md: any;
+let renderConfig: RenderConfig;
+let md: MarkdownIt;
 
 init();
+
+interface Post {
+  file: string | null;
+  src: string | null;
+  markdown: string | null;
+  title: string;
+  html: string | null;
+  url: string | null;
+  tags: string[] | null;
+  categories: string[] | null;
+  authors: string[] | null;
+  date: Date | null;
+  abstract: string | null;
+}
 
 function init() {
   renderConfig = config.getRenderConfig();
@@ -121,7 +136,7 @@ function tab2Emsp(div: HTMLElement) {
 }
 
 //找到markdown原来的图片路径，替换成atom路径
-function replaceLocalImages(div: HTMLElement, dir: any) {
+function replaceLocalImages(div: HTMLElement, filePath: string) {
   // HTMLElement
   const elements = div.getElementsByTagName('img');
 
@@ -133,7 +148,7 @@ function replaceLocalImages(div: HTMLElement, dir: any) {
       continue;
     }
     if (!nodePath.pathIsAbsolute(src)) {
-      src = nodePath.pathJoin(dir, src);
+      src = nodePath.pathJoin(filePath, src);
     }
     img.setAttribute('src', 'atom://' + src);
 
@@ -161,7 +176,7 @@ function replaceLocalImages(div: HTMLElement, dir: any) {
   }
 }
 
-function createInvisibleDiv(document: any, src: any) {
+function createInvisibleDiv(document: Document, htmlText: string) {
   const div = document.createElement('div');
   div.style.position = 'fixed';
   div.style.height = '0';
@@ -169,8 +184,8 @@ function createInvisibleDiv(document: any, src: any) {
   div.style.overflowY = 'hidden';
   div.style.left = '0';
   div.style.top = '0';
-  div.innerHTML = src;
-  console.log('图片使用绝对路径这里会报错，但不影响使用');
+  div.innerHTML = htmlText;
+  // console.log('图片使用绝对路径这里会报错，但不影响使用');
   return div;
 }
 
@@ -193,7 +208,7 @@ function highlightCode(div: any) {
   }
 }
 
-function toSystemTimezone(date: any) {
+function toSystemTimezone(date: Date) {
   const timezoneOffset = new Date().getTimezoneOffset();
   const time = date.getTime();
   date.setTime(time + timezoneOffset * 60 * 1000);
@@ -201,9 +216,9 @@ function toSystemTimezone(date: any) {
   return date;
 }
 
-function extractAbstract(html: string) {
-  // https://www.npmjs.com/package/html-to-text
-  let string = htmlToText(html, {
+// 从html正文里面提取出摘要，一般是120字，去除标题
+function extractAbstract(title: string, html: string) {
+  let text = htmlToText(html, {
     wordwrap: false,
     ignoreHref: true,
     ignoreImage: true,
@@ -211,11 +226,12 @@ function extractAbstract(html: string) {
     uppercaseHeadings: false,
     singleNewLineParagraphs: true
   });
+  //这块可以优化
   const abstractNum = config.getAbstractNumber();
-  if (string.length > abstractNum) {
-    string = string.substring(0, abstractNum) + '...';
-  }
-  return string;
+  let startIndex = 0;
+  if (text.startsWith(title)) startIndex = title.length;
+  if (text.length > abstractNum + startIndex) text = text.substring(startIndex, abstractNum + startIndex).trim() + '...';
+  return text;
 }
 
 function isFeatureEnabled(config: any) {
@@ -231,39 +247,55 @@ function shouldRenderFeature(isPreview: any, config: any) {
 }
 
 /**
- * @param src markdown的文本内容
- * @param file 文件路径
+ * @param fileText markdown的文本内容
+ * @param filePath 文件路径
  * @param isPreview true: preview, false: publish
  * @return {Promise<*>}
  */
-export async function render(src: any, file: any, isPreview = true): Promise<any> {
+export async function render(fileText: string, filePath: string, isPreview = true): Promise<any> {
   const startTime = getTime();
-  src = (src && src.trim()) || '';
-  // 解析文件内容，body为markdown正文内容
-  const content = fm(src);
+  fileText = (fileText && fileText.trim()) || '';
+  // 解析markdown，content包含yaml和markdown正文两部分
+  const content = frontMatter(fileText);
+  // 文件前面yaml的文件内容
+  interface Attr {
+    title: string | null;
+    abstract: string | null;
+    url: string | null;
+    tags: string[] | null;
+    categories: string[] | null;
+    authors: string[] | null;
+    date: Date | null;
+  }
+  const attr: Attr = {
+    title: null,
+    abstract: null,
+    url: null,
+    tags: null,
+    categories: null,
+    authors: null,
+    date: null
+  };
+  const contentAttr: any = content.attributes;
+  attr.title = utils.toStr(contentAttr.title);
+  attr.abstract = utils.toStr(contentAttr.abstract);
+  attr.url = contentAttr.url && uslug(utils.toStr(contentAttr.url));
+  attr.tags = utils.toStrArr(contentAttr.tags || contentAttr.tag);
+  attr.categories = utils.toStrArr(contentAttr.categories || contentAttr.category);
+  attr.authors = utils.toStrArr(contentAttr.authors || contentAttr.author);
+  attr.date = contentAttr.date && toSystemTimezone(contentAttr.date);
 
+  // body是markdown正文
   const markdown = content.body;
-  // // 文件前面yaml的文件内容
-  const attr: any = content.attributes || {};
-  attr.title = utils.toStr(attr.title);
-  attr.abstract = utils.toStr(attr.abstract);
-  attr.url = attr.url && uslug(utils.toStr(attr.url));
-  attr.tags = utils.toStrArr(attr.tags || attr.tag);
-  attr.categories = utils.toStrArr(attr.categories || attr.category);
-  attr.authors = utils.toStrArr(attr.authors || attr.author);
-  attr.date = attr.date && toSystemTimezone(attr.date);
-  // markdown: html, title
   const env = { title: attr.title, hasMath: false };
-  // 将markdown格式渲染成HTML格式
-  let html = md.render(markdown, env);
-  // console.log(html);
-  // 创建一个不可见的div，并把html插入进入
-  const div = createInvisibleDiv(document, html);
-  // console.log(html);
-  // console.log(div);
+  // 将markdown格式渲染成HTML纯文本格式
+  const htmlText = md.render(markdown, env);
+  // 创建HTML样式（非文本格式）
+  const div = createInvisibleDiv(document, htmlText);
+  // 把tab键转换成Emsp，（因为tab在网页里面只是一个半角空格，这里转换成全角空格）
   tab2Emsp(div);
   // 替换本地文件URL
-  replaceLocalImages(div, nodePath.pathDirname(file));
+  replaceLocalImages(div, nodePath.pathDirname(filePath));
   // 代码高亮
   if (shouldRenderFeature(isPreview, renderConfig.highlight)) {
     highlightCode(div);
@@ -272,35 +304,30 @@ export async function render(src: any, file: any, isPreview = true): Promise<any
   if (shouldRenderFeature(isPreview, renderConfig.mermaid)) {
     await mermaidRenderer.render(div);
   }
-  html = div.innerHTML;
+  // 获得HTML
+  const html = div.innerHTML;
   div.innerHTML = '';
-  // post
-  const post: any = {};
-  post.file = file;
-  post.src = src;
-  post.markdown = markdown;
-  post.title = env.title || utils.fileName(file) || 'Unnamed';
-  post.html = html;
-  post.url = attr.url; // || encodeURI(post.title)
-  post.tags = attr.tags;
-  post.categories = attr.categories;
-  post.authors = attr.authors;
-  post.date = attr.date;
-  post.abstract = attr.abstract;
-  // 如果post的url为空，那么就就title转换成拼音
-  if (post.url == null) {
-    post.url = slug(post.title);
-    // post.url = window.api.slug(post.title);
-    console.log('post.url:', post.url);
-  }
 
-  if (post.abstract == null) {
+  const post: Post = {
+    ...attr,
+    title: attr.title || utils.fileName(filePath) || 'Unnamed',
+    file: filePath,
+    src: fileText,
+    markdown,
+    html
+  };
+
+  // 如果post的url为空，那么就就title转换成拼音
+  if (post.url === null) post.url = slug(post.title);
+
+  // 判断摘要从哪里提取
+  if (post.abstract === null) {
     switch (renderConfig.abstract) {
       case 'title':
         post.abstract = post.title;
         break;
       case 'article':
-        post.abstract = extractAbstract(html);
+        post.abstract = extractAbstract(post.title, html);
         break;
       case 'empty':
       default:

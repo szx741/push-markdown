@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:17:07
- * @LastEditTime: 2022-07-23 20:18:51
+ * @LastEditTime: 2022-07-27 15:59:07
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\nodeFs.ts
  */
@@ -34,9 +34,9 @@ export const nodeFs = {
   isFileOrDir(_path: string, file: string) {
     try {
       const stat = fs.lstatSync(path.join(_path, file));
-      return [stat.isFile(), stat.isDirectory()];
+      return stat.isDirectory();
     } catch (e) {
-      return [false, false];
+      return false;
     }
   },
   isDir(path: string) {

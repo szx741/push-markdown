@@ -1,32 +1,41 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-07-26 21:51:26
+ * @LastEditTime: 2022-07-27 20:54:09
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\logic\useRecord.ts
  */
 'use strict';
 import { store, nodeFs } from '#preload';
-interface Tabs {
-  type: string;
-  modified?: boolean;
-  file?: string;
+export interface Tab {
+  type: 'welcome' | 'settings' | 'markdown'; //就这三种情况，welcome就是欢迎界面，settings就是设置界面，markdown就是markdown界面
+  title?: string;
+  modified?: boolean; // 文件是否修改
+  filePath: string;
 }
+const defaultRecord = {
+  type: 'welcom',
+  modified: false,
+  filePath: ''
+};
+
+/**
+ * 获取本地缓存的标签排布
+ */
 export function getTabs() {
-  const tabs: Array<Tabs> = store.storeRecordGet('tabs', [{ type: 'welcome' }]).filter((tab: any) => {
-    return tab.type !== 'markdown' || nodeFs.fsExistsSync(tab.file);
+  const record = store.storeRecordGet('tabs', [defaultRecord]);
+  const tabs: Tab[] = record.filter((tab: any) => {
+    return tab.type !== 'markdown' || nodeFs.fsExistsSync(tab.filePath);
   });
-  tabs.forEach((tab: any) => {
-    tab.modified = false;
-  });
+  tabs.forEach((tab: Tab) => (tab.modified = false));
   return tabs;
 }
 
-export function saveTabs(tabs: any) {
+export function saveTabs(tabs: Tab[]) {
   return store.storeRecordSet(
     'tabs',
     tabs.map((tab: any) => {
-      return { type: tab.type, title: tab.title, file: tab.file };
+      return { type: tab.type, title: tab.title, filePath: tab.filePath };
     })
   );
 }

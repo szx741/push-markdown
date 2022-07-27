@@ -1,10 +1,63 @@
 <!--
  * @Author: szx
  * @Date: 2021-11-14 19:41:30
- * @LastEditTime: 2022-07-23 21:43:56
+ * @LastEditTime: 2022-07-27 16:13:00
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\FilesViewer.vue
 -->
+<script setup lang="ts">
+  import { defineProps, watch, ref, toRef } from 'vue';
+  import naturalCompare from 'natural-compare-lite';
+  import { nodeFs, nodePath } from '#preload';
+
+  interface FolderFile {
+    name: string;
+    path: string;
+    directory: boolean;
+  }
+
+  const props = defineProps<{
+      pathDir: string;
+    }>(),
+    emit = defineEmits<{
+      (e: 'forward', file: string): void;
+      (e: 'back'): void;
+      (e: 'openFile', files: string): void;
+    }>(),
+    pathDir = toRef(props, 'pathDir'),
+    files = ref(filesOrDir());
+
+  watch(pathDir, () => {
+    files.value = filesOrDir();
+  });
+
+  function onFileClick(folderFile: FolderFile) {
+    if (folderFile.directory) emit('forward', folderFile.name);
+    else emit('openFile', nodePath.pathJoin(folderFile.path, folderFile.name));
+  }
+
+  function filesOrDir() {
+    if (pathDir.value == '') return [];
+    const path = pathDir.value,
+      fileNames = nodeFs.fsReaddirSync(path),
+      allMD: Array<FolderFile> = [];
+    fileNames.map((fileName: string) => {
+      const stats = nodeFs.isFileOrDir(path, fileName);
+      if (stats || nodePath.pathExtname(fileName) == '.md')
+        allMD.push({
+          name: fileName,
+          path: path,
+          directory: stats
+        });
+    });
+    return allMD.sort((a: any, b: any) => {
+      if (a.directory === b.directory) {
+        return naturalCompare(a.name, b.name);
+      }
+      return a.directory ? -1 : 1;
+    });
+  }
+</script>
 
 <template>
   <table>
@@ -44,26 +97,6 @@
     </tbody>
   </table>
 </template>
-
-<script lang="ts">
-  import { nodePath } from '#preload';
-  import { defineComponent } from 'vue';
-
-  export default defineComponent({
-    props: ['files'],
-    setup(_: any, { emit }: { emit: any }) {
-      const onFileClick = (file: any) => {
-        // console.log('onFileClick:', file);
-        if (file.directory) emit('folderclick', file);
-        else {
-          // console.log(nodePath.pathJoin(file.path, file.name));
-          emit('mdclick', nodePath.pathJoin(file.path, file.name));
-        }
-      };
-      return { onFileClick };
-    }
-  });
-</script>
 
 <style scoped>
   table {
