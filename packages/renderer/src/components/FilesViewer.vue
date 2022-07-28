@@ -1,12 +1,12 @@
 <!--
  * @Author: szx
  * @Date: 2021-11-14 19:41:30
- * @LastEditTime: 2022-07-27 16:13:00
+ * @LastEditTime: 2022-07-28 11:45:22
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\FilesViewer.vue
 -->
 <script setup lang="ts">
-  import { defineProps, watch, ref, toRef } from 'vue';
+  import { watch, ref, toRef } from 'vue';
   import naturalCompare from 'natural-compare-lite';
   import { nodeFs, nodePath } from '#preload';
 

@@ -58,8 +58,7 @@
     "transliteration": "^2.3.5",
     "uslug": "^1.0.4",
     "vue": "^3.2.37",
-    "vue-i18n": "^9.1.10",
-    "vuex": "^4.0.2"
+    "vue-i18n": "^9.1.10"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.36",
@@ -92,7 +91,6 @@
     "playwright": "1.23.4",
     "prettier": "^2.7.1",
     "sass": "^1.54.0",
-    "sass-loader": "^13.0.2",
     "simple-git-hooks": "2.8.0",
     "typescript": "^4.7.4",
     "unplugin-auto-expose": "0.0.1",

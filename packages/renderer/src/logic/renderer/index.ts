@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-07-27 22:51:33
+ * @LastEditTime: 2022-07-28 11:21:40
  * @Description: 渲染器，用于本地预览和远程发布
  * @FilePath: \push-markdown\packages\renderer\src\logic\renderer\index.ts
  */
@@ -31,7 +31,7 @@ let md: MarkdownIt;
 
 init();
 
-interface Post {
+export interface Post {
   file: string | null;
   src: string | null;
   markdown: string | null;

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:09:35
- * @LastEditTime: 2022-07-27 11:51:43
+ * @LastEditTime: 2022-07-28 20:23:32
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\store.ts
  */
@@ -13,7 +13,7 @@ export const store = {
   getLanguage() {
     return storeSettings.get('language', 'zh');
   },
-  getTheme() {
+  getTheme(): any {
     return storeSettings.get('theme', 'github');
   },
   getStoreSettingsClear() {

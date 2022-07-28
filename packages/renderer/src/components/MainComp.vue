@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-07-27 21:03:01
+ * @LastEditTime: 2022-07-28 19:55:03
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\MainComp.vue
 -->
@@ -26,7 +26,8 @@
     showFile = ref(store.getShowFile()),
     { t } = useI18n(),
     appDir = nodePath.pathDirname(ipc.syncMsg('__static')),
-    pathDir = ref(nodePath.pathDirname(tabs.value[currIndex.value]?.filePath || appDir));
+    pathDir = ref(nodePath.pathDirname(tabs.value[currIndex.value]?.filePath || appDir)),
+    currPost = ref();
   watch(tabs, (value) => saveTabs(toRaw(value)), { deep: true });
   watch(
     currIndex,

@@ -1,24 +1,23 @@
 <!-- 设置页面 -->
 <script setup lang="ts">
-  import { reactive, ref, toRaw, watch } from 'vue';
-  import debounce from 'lodash-es/debounce';
+  import { computed, reactive, ref, toRaw, watch } from 'vue';
+  import { useStore } from 'vuex';
   import { useI18n } from 'vue-i18n';
+  import debounce from 'lodash-es/debounce';
 
   import * as config from '../logic/config';
   import * as renderer from '../logic/renderer';
   import * as statusBar from '../logic/statusBar';
+  import { sites, addSite, delSite, saveSites } from './global/sites';
 
-  const sites = reactive(config.getSites()),
-    render = ref(config.getRenderConfig()),
+  const render = ref(config.getRenderConfig()),
     abstractNum = ref(config.getAbstractNumber()),
     { t } = useI18n();
 
-  /* 监听变化，保存到本地 */
   watch(
     sites,
     debounce((value) => {
-      // console.log('sites', toRaw(value));
-      config.saveSites(toRaw(value));
+      saveSites(toRaw(value));
       statusBar.show(t('setting.saveSettings'));
     }, 500)
   );
@@ -40,17 +39,6 @@
     }, 1000)
   );
 
-  function addSite() {
-    sites.push(config.newSite());
-    console.log('add site');
-  }
-
-  function deleteSite(index: any) {
-    if (window.confirm(t('setting.confirmDelete'))) {
-      sites.splice(index, 1);
-    }
-  }
-
   function resetSettings() {
     if (window.confirm(t('setting.resetConfirm'))) {
       config.clear();
@@ -70,7 +58,7 @@
       <blockquote class="small" v-html="$t('setting.siteSettingsNote')"></blockquote>
 
       <template v-if="sites">
-        <div v-for="(site, i) in sites" :key="site.url" class="site">
+        <div v-for="(site, i) in sites" :key="i" class="site">
           <div>
             <label for="name">{{ $t('setting.name') }}</label>
             <input id="name" v-model="site.name" type="text" />
@@ -98,7 +86,7 @@
             <input id="password" v-model="site.password" type="password" />
           </div>
 
-          <img src="../common/assets/close.png" class="delete" @click="deleteSite(i)" />
+          <img src="../common/assets/close.png" class="delete" @click="delSite(i)" />
         </div>
       </template>
 

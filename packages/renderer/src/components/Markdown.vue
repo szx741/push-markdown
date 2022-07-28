@@ -44,6 +44,7 @@
     const markdown: any = refMarkdown.value;
     utils.setLinks(markdown);
   });
+
   onMounted(() => {
     utils.setTextareaTabKey(refTextarea.value);
     readFile();

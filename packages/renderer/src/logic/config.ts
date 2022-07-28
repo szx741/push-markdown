@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-07-27 22:53:34
+ * @LastEditTime: 2022-07-28 11:31:12
  * @Description: user settings
  * @FilePath: \push-markdown\packages\renderer\src\logic\config.ts
  */
@@ -11,7 +11,7 @@ import filenamifyUrl from 'filenamify-url';
 import { Base64 } from 'js-base64';
 import { store } from '#preload';
 
-interface SiteConfig {
+export interface SiteConfig {
   type: string;
   name: string;
   url: string;
