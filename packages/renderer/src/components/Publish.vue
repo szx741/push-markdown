@@ -1,19 +1,16 @@
 <!-- 发布窗口 -->
 <script setup lang="ts">
-  import { computed, onMounted, Ref, ref, toRef } from 'vue';
-  import Promise from 'bluebird';
+  import { computed, isRef, onMounted, onUnmounted, reactive, Ref, ref, toRef } from 'vue';
 
-  import * as publisher from '../logic/publisher';
-  import { Publisher } from '../logic/publisher';
-  import { openSampleFile } from '../logic/utils';
+  import { Publisher, PublishParams, publishState } from '../logic/publisher';
+  import { openSampleFile, promiseConcurrencyLimit } from '../logic/utils';
   import * as statusBar from '../logic/statusBar';
 
   import * as config from '../logic/config';
-  import { SiteConfig } from '../logic/config';
-  import { Post } from '../logic/renderer';
   import { useI18n } from 'vue-i18n';
   import { ipc } from '#preload';
-  import { sites } from './global/sites';
+  import { sites, Site } from '../configuration/sites';
+  import { Post } from '../mdRenderer/markdown-text-to-html';
 
   const props = defineProps<{
       post: Post;
@@ -25,13 +22,7 @@
     showPublish = ref(false),
     editList: Ref<any> = ref([]),
     publishing = ref(false),
-    confirm = ref({
-      title: '',
-      message: '',
-      yes: {},
-      no: {},
-      neutral: {}
-    }),
+    confirm = ref(false),
     aritcleId: Ref<number> = ref(-1),
     blogID = ref(0),
     forcedUpdate = ref(false),
@@ -40,132 +31,93 @@
     { t } = useI18n();
 
   const siteToString = (site: any) => `${site.name} [${site.username}] [${site.url}]`;
-  const selectedSites = computed(() => sites.filter((site) => site.selected));
+  const selectedSites = computed(() => sites.value.filter((site) => site.selected));
 
-  for (const site of sites) {
-    if (post.value.url && site.articlesId.hasOwnProperty(post.value.url)) {
-      aritcleId.value = site.articlesId[post.value.url];
-      publishMode.value = 'auto';
-    } else {
-      publishMode.value = 'create';
-    }
-  }
-
-  onMounted(() => {
-    // 收到发布信息，然后读取之前的设置
-    ipc.receive('menu.publish', () => {
-      if (active.value && post.value) {
-        // 展现Publish的面板
-        showPublish.value = true;
-        // 如果没有设置URL，就会弹出窗口提醒
-        if (!post.value.url) {
-          confirm.value = {
-            title: t('publish.confirmUrlTitle'),
-            message: t('publish.confirmUrlMessage'),
-            yes: {
-              message: t('publish.confirmUrlContinue'),
-              callback: (): any => {
-                confirm.value = {
-                  title: '',
-                  message: '',
-                  yes: {},
-                  no: {},
-                  neutral: {}
-                };
-              }
-            },
-            neutral: {
-              message: t('publish.confirmUrlOpenSample'),
-              callback: (): any => {
-                openSampleFile();
-                showPublish.value = false;
-              }
-            },
-            no: {
-              message: t('publish.confirmUrlCancel'),
-              callback: () => {
-                showPublish.value = false;
-              }
-            }
-          };
-        } else {
-          console.log('?????sss');
-          for (const site of sites) {
-            if (site.articlesId.hasOwnProperty(post.value.url)) publishMode.value = 'auto';
-            else {
-              site.articlesId[post.value.url] = -1;
-              publishMode.value = 'create';
-            }
+  const menuPublishListen = (evnet: any, ...args: any[]) => {
+    // 如果是当前界面并且有文本数据
+    if (active.value && post.value) {
+      // 展现Publish的面板
+      showPublish.value = true;
+      // 如果没有设置URL，就会弹出窗口提醒
+      if (!post.value.url) confirm.value = true;
+      else {
+        // 根据 markdown发布的url和id来判断发布的模式是自动还是创建新的文章模式
+        for (const site of sites.value) {
+          if (post.value.url && site.articlesId.hasOwnProperty(post.value.url)) {
+            aritcleId.value = site.articlesId[post.value.url];
+            publishMode.value = 'auto';
+          } else {
+            publishMode.value = 'create';
           }
         }
       }
-    });
+    }
+  };
+  const destory = ipc.receive('menu.publish', menuPublishListen);
+
+  onUnmounted(() => {
+    destory();
   });
 
-  function select(site: any) {
-    ref(!site.selected);
+  function select(site: Site) {
+    site.selected = !site.selected;
+    // ref(!site.selected);
     // this.$set(site, 'selected', !Boolean(site.selected));
   }
+
+  const fn = async (site: Site) => {
+    console.log('site.url:', site.url);
+    try {
+      const published = new Publisher(site.url, site.username, site.password, site.type);
+      const publishParams: PublishParams = {
+        post: post.value,
+        blogID: blogID.value,
+        stateHandler: (state: any) => {
+          switch (state) {
+            case publishState.STATE_RENDER:
+              statusBar.show(t('publish.status.render'));
+              break;
+            case publishState.STATE_READ_POST:
+              statusBar.show(t('publish.status.read'));
+              break;
+            case publishState.STATE_UPLOAD_MEDIA:
+              statusBar.show(t('publish.status.upload'));
+              break;
+            case publishState.STATE_PUBLISH_POST:
+              statusBar.show(t('publish.status.publish'));
+              break;
+            case publishState.STATE_EDIT_POST:
+              statusBar.show(t('publish.status.edit'));
+              break;
+            case publishState.STATE_COMPLETE:
+              statusBar.show(t('publish.status.complete'));
+              break;
+          }
+        },
+        publishMode: publishMode.value,
+        mediaMode: forcedUpdate.value ? 'force' : 'cache',
+        getNetPic: getNetPic.value,
+        notCheck: notCheck.value,
+        editHandler: (post_1: any) => editHandler(site, post_1)
+      };
+      await published.publish(publishParams);
+      if (published) {
+        new Notification(t('publishSuccess'), { body: siteToString(site) });
+      }
+    } catch (e: any) {
+      new Notification(t('publishError'), { body: siteToString(site) + '\n' + e.message });
+      console.error(e);
+    }
+  };
+
   async function publish() {
     publishing.value = true;
-    // save sites selection
-    config.saveSites(sites);
-    // publish
-    let success = 0;
-    await Promise.map(
-      selectedSites.value,
-      async (site: SiteConfig) => {
-        console.log('site.url:', site.url);
-        try {
-          const published = await new Publisher(site.url, site.username, site.password, site.type).publish(
-            post.value,
-            blogID.value,
-            (state: any) => {
-              switch (state) {
-                case publisher.STATE_RENDER:
-                  statusBar.show(t('publish.status.render'));
-                  break;
-                case publisher.STATE_READ_POST:
-                  statusBar.show(t('publish.status.read'));
-                  break;
-                case publisher.STATE_UPLOAD_MEDIA:
-                  statusBar.show(t('publish.status.upload'));
-                  break;
-                case publisher.STATE_PUBLISH_POST:
-                  statusBar.show(t('publish.status.publish'));
-                  break;
-                case publisher.STATE_EDIT_POST:
-                  statusBar.show(t('publish.status.edit'));
-                  break;
-                case publisher.STATE_COMPLETE:
-                  statusBar.show(t('publish.status.complete'));
-                  break;
-              }
-            },
-            publishMode.value,
-            forcedUpdate.value ? 'force' : 'cache',
-            getNetPic.value,
-            notCheck.value,
-            (post_1: any) => editHandler(site, post_1)
-          );
-          if (published) {
-            success++;
-            new Notification(t('publishSuccess'), { body: siteToString(site) });
-          }
-        } catch (e: any) {
-          new Notification(t('publishError'), { body: siteToString(site) + '\n' + e.message });
-          console.error(e);
-        }
-      },
-      { concurrency: 3 }
-    );
+    await promiseConcurrencyLimit(3, selectedSites.value, fn);
     publishing.value = false;
-    // all success
-    if (success >= selectedSites.value.length) {
-      closePublish();
-    }
+    closePublish();
   }
-  function editHandler(site: any, post: any) {
+
+  function editHandler(site: Site, post: Post) {
     if (site && post) {
       return new Promise((resolve: any) => {
         const item: any = {
@@ -186,124 +138,138 @@
     }
   }
   function showSettings() {
-    console.log('show settings');
     ipc.send('menu.settings', '');
   }
+
   function closePublish() {
     showPublish.value = false;
+  }
+
+  function confirmNeutral() {
+    openSampleFile();
+    closePublish();
+  }
+
+  function confirmYes() {
+    confirm.value = false;
   }
 </script>
 
 <template>
-  <div v-if="showPublish" class="publish-wrapper">
-    <div class="overlay"></div>
+  <div>
+    <div style="width:100px hight:100px">ninini{{ showPublish }}</div>
+    <div v-if="showPublish" class="publish-wrapper">
+      <div class="overlay"></div>
 
-    <div class="dialog publish-container">
-      <div class="dialog-title">
-        <h4>{{ $t('publish.title') }}</h4>
-        <img src="../common/assets/close.png" @click="closePublish" />
-      </div>
+      <div class="dialog publish-container">
+        <div class="dialog-title">
+          <h4>{{ $t('publish.title') }}</h4>
+          <img src="../common/assets/close.png" @click="closePublish" />
+        </div>
 
-      <div class="dialog-body">
-        <div class="publish-sites">
-          <div class="publish-site-text">
-            <span>{{ $t('publish.selectSites') }}</span>
-            <a class="publish-site-edit" href="#" @click="showSettings()">{{ $t('publish.settings') }}</a>
-          </div>
-          <div class="sites">
-            <div v-for="(site, index) in sites" :key="index" class="site" @click="() => select(site)">
-              <input v-model="site.selected" title="select" type="checkbox" />
-              <div class="site-info">
-                <div class="site-name">
-                  <h4>{{ site.name }}</h4>
+        <div class="dialog-body">
+          <div class="publish-sites">
+            <div class="publish-site-text">
+              <span>{{ $t('publish.selectSites') }}</span>
+              <a class="publish-site-edit" href="#" @click="showSettings()">{{ $t('publish.settings') }}</a>
+            </div>
+            <div class="sites">
+              <div v-for="site in sites" :key="site.url" class="site" @click="select(site)">
+                <!-- <div v-for="(site, index) in sites" :key="index" class="site"> -->
+                <input v-model="site.selected" title="select" type="checkbox" />
+                <div class="site-info">
+                  <div class="site-name">
+                    <h4>{{ site.name }}</h4>
+                  </div>
+                  <div class="site-detail">
+                    <span>
+                      <small>{{ site.username }} </small>
+                    </span>
+                    <span>
+                      <small>{{ site.url }}</small>
+                    </span>
+                  </div>
                 </div>
-                <div class="site-detail">
-                  <span>
-                    <small>{{ site.username }} </small>
-                  </span>
-                  <span>
-                    <small>{{ site.url }}</small>
-                  </span>
+                <div>
+                  <span> {{ $t('publish.articleID') }}: </span>
+                  {{ aritcleId }}
                 </div>
               </div>
-              <div>
-                <span> {{ $t('publish.articleID') }}: </span>
-                {{ aritcleId }}
+            </div>
+          </div>
+
+          <div class="publish-mode">
+            <div class="publish-mode-select">
+              <label style="margin-right: 10px" for="publish-mode-select">{{ $t('publish.publishMode') }} </label>
+              <select id="publish-mode-select" v-model="publishMode">
+                <option value="manual">{{ $t('publish.publishModeManual') }}</option>
+                <option value="create">{{ $t('publish.publishModeCreate') }}</option>
+                <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
+              </select>
+              <div v-if="publishMode == 'manual'">
+                <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
+                <input v-model="blogID" class="publish-article-id" type="number" placeholder="ID" />
+                <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
+                <input v-model="getNetPic" type="checkbox" :disabled="forcedUpdate" />
+                <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>
+                <input v-model="forcedUpdate" type="checkbox" :disabled="getNetPic" />
+              </div>
+              <div v-else-if="publishMode == 'auto'">
+                <label class="publish-mode-label">{{ $t('publish.notCheckingRemoteImages') }}</label>
+                <input v-model="notCheck" type="checkbox" />
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="publish-mode">
-          <div class="publish-mode-select">
-            <label style="margin-right: 10px" for="publish-mode-select">{{ $t('publish.publishMode') }} </label>
-            <select id="publish-mode-select" v-model="publishMode">
-              <option value="manual">{{ $t('publish.publishModeManual') }}</option>
-              <option value="create">{{ $t('publish.publishModeCreate') }}</option>
-              <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
-            </select>
-            <div v-if="publishMode == 'manual'">
-              <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
-              <input v-model="blogID" class="publish-article-id" type="number" placeholder="ID" />
-              <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
-              <input v-model="getNetPic" type="checkbox" :disabled="forcedUpdate" />
-              <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>
-              <input v-model="forcedUpdate" type="checkbox" :disabled="getNetPic" />
-            </div>
-            <div v-else-if="publishMode == 'auto'">
-              <label class="publish-mode-label">{{ $t('publish.notCheckingRemoteImages') }}</label>
-              <input v-model="notCheck" type="checkbox" />
-            </div>
+            <div v-if="publishMode == 'manual'" class="publish-modeXXX-hint">{{ $t('publish.publishModeManualHint') }} </div>
+            <div v-if="publishMode == 'auto'" class="publish-modeXXX-hint">{{ $t('publish.publishModeAutoHint') }} </div>
+            <div v-if="publishMode == 'create'" class="publish-modeXXX-hint">{{ $t('publish.publishModeCreateHint') }} </div>
+            <div class="publish-mode-hint" v-html="$t('publish.publishModeHint')"> </div>
           </div>
 
-          <div v-if="publishMode == 'manual'" class="publish-modeXXX-hint">{{ $t('publish.publishModeManualHint') }} </div>
-          <div v-if="publishMode == 'auto'" class="publish-modeXXX-hint">{{ $t('publish.publishModeAutoHint') }} </div>
-          <div v-if="publishMode == 'create'" class="publish-modeXXX-hint">{{ $t('publish.publishModeCreateHint') }} </div>
-          <div class="publish-mode-hint" v-html="$t('publish.publishModeHint')"> </div>
-        </div>
-
-        <div class="buttons">
-          <button :disabled="publishing" @click="publish">
-            {{ publishing ? $t('publish.publishing') : $t('publish.publish') }}
-          </button>
+          <div class="buttons">
+            <button :disabled="publishing" @click="publish">
+              {{ publishing ? $t('publish.publishing') : $t('publish.publish') }}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <template v-if="editList && editList.length > 0">
-      <div v-for="edit in editList" :key="edit" class="dialog publish-edit">
-        <div v-if="edit" class="dialog-title">
-          <h4>{{ $t('publish.publishModeConfirm') }}</h4>
+      <template v-if="editList && editList.length > 0">
+        <div v-for="edit in editList" :key="edit" class="dialog publish-edit">
+          <div v-if="edit" class="dialog-title">
+            <h4>{{ $t('publish.publishModeConfirm') }}</h4>
+          </div>
+          <div class="dialog-body">
+            <div v-if="edit.site" class="site-detail">
+              <span>{{ edit.site.name }}</span>
+              <span>{{ edit.site.username }}</span>
+              <span>{{ edit.site.url }}</span>
+            </div>
+            <div>{{ $t('publish.publishModeOldPost') }}</div>
+            <div v-if="edit.post" class="post-preview markdown-body">
+              <h1 class="post-preview-title">{{ edit.post.title }}</h1>
+              <div class="post-preview-content" v-html="edit.post.html"></div>
+            </div>
+            <div class="buttons">
+              <button @click="() => edit.callback(true)">{{ $t('publish.publishModeEditPost') }}</button>
+              <button @click="() => edit.callback(false)">{{ $t('publish.publishModeCreatePost') }}</button>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      // 如果当前markdown没有url标签，那么发布的时候就会弹出是否继续或者回退的界面
+      <div v-if="confirm" class="dialog publish-confirm">
+        <div class="dialog-title">
+          <h4>{{ t('publish.confirmUrlTitle') }}</h4>
         </div>
         <div class="dialog-body">
-          <div v-if="edit.site" class="site-detail">
-            <span>{{ edit.site.name }}</span>
-            <span>{{ edit.site.username }}</span>
-            <span>{{ edit.site.url }}</span>
-          </div>
-          <div>{{ $t('publish.publishModeOldPost') }}</div>
-          <div v-if="edit.post" class="post-preview markdown-body">
-            <h1 class="post-preview-title">{{ edit.post.title }}</h1>
-            <div class="post-preview-content" v-html="edit.post.html"></div>
-          </div>
+          <div class="publish-confirm-message weighted">{{ t('publish.confirmUrlMessage') }}</div>
           <div class="buttons">
-            <button @click="() => edit.callback(true)">{{ $t('publish.publishModeEditPost') }}</button>
-            <button @click="() => edit.callback(false)">{{ $t('publish.publishModeCreatePost') }}</button>
+            <button @click="closePublish">{{ t('publish.confirmUrlCancel') }}</button>
+            <button @click="confirmNeutral">{{ t('publish.confirmUrlOpenSample') }}</button>
+            <button @click="confirmYes">{{ t('publish.confirmUrlContinue') }}</button>
           </div>
-        </div>
-      </div>
-    </template>
-
-    <div v-if="confirm && confirm.title" class="dialog publish-confirm">
-      <div class="dialog-title">
-        <h4>{{ confirm.title }}</h4>
-      </div>
-      <div class="dialog-body">
-        <div class="publish-confirm-message weighted">{{ confirm.message }}</div>
-        <div class="buttons">
-          <button v-if="confirm.no" @click="confirm.no.callback">{{ confirm.no.message }}</button>
-          <button v-if="confirm.neutral" @click="confirm.neutral.callback">{{ confirm.neutral.message }}</button>
-          <button v-if="confirm.yes" @click="confirm.yes.callback">{{ confirm.yes.message }}</button>
         </div>
       </div>
     </div>
@@ -400,6 +366,8 @@
     border-bottom: 1px solid #dddddd;
 
     h4 {
+      margin: 0;
+      padding: 0;
       display: inline-block;
       flex-grow: 1;
       text-align: center;

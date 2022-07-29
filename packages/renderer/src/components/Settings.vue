@@ -1,18 +1,18 @@
 <!-- 设置页面 -->
 <script setup lang="ts">
   import { computed, reactive, ref, toRaw, watch } from 'vue';
-  import { useStore } from 'vuex';
   import { useI18n } from 'vue-i18n';
   import debounce from 'lodash-es/debounce';
 
   import * as config from '../logic/config';
-  import * as renderer from '../logic/renderer';
   import * as statusBar from '../logic/statusBar';
-  import { sites, addSite, delSite, saveSites } from './global/sites';
+  import { resetConfiguration } from '../configuration/configurate';
+  import { notifyConfigChanged } from '../mdRenderer';
+  import { sites, addSite, delSite, saveSites } from '../configuration/sites';
+  import { renderConf, RenderConf, saveRenderConf, RenderMode } from '../configuration/render-conf';
+  import { publishConf, PublishConf, savePublishConf, AbstractMode } from '../configuration/publish-conf';
 
-  const render = ref(config.getRenderConfig()),
-    abstractNum = ref(config.getAbstractNumber()),
-    { t } = useI18n();
+  const { t } = useI18n();
 
   watch(
     sites,
@@ -21,29 +21,22 @@
       statusBar.show(t('setting.saveSettings'));
     }, 500)
   );
+  watch(renderConf, (value) => {
+    saveRenderConf(toRaw(value));
+    notifyConfigChanged();
+    statusBar.show(t('setting.saveSettings'));
+  });
   watch(
-    render,
-    (value) => {
-      console.log(value);
-      config.saveRenderConfig(value);
-      renderer.notifyConfigChanged();
-      statusBar.show(t('setting.saveSettings'));
-    },
-    { deep: true }
-  );
-  watch(
-    abstractNum,
+    publishConf,
     debounce((value) => {
-      config.saveAbstractNumber(value);
+      savePublishConf(toRaw(value));
       statusBar.show(t('setting.saveSettings'));
-    }, 1000)
+    }, 500)
   );
 
   function resetSettings() {
     if (window.confirm(t('setting.resetConfirm'))) {
-      config.clear();
-      // sites = config.getSites();
-      render.value = config.getRenderConfig();
+      resetConfiguration();
     }
   }
 </script>
@@ -98,14 +91,14 @@
 
       <div class="abstract-select">
         <label for="abstract">{{ $t('setting.abstract.name') }}</label>
-        <select id="abstract" v-model="render.abstract">
-          <option value="empty">{{ $t('setting.abstract.options.empty') }}</option>
-          <option value="article">{{ $t('setting.abstract.options.article') }}</option>
-          <option value="title">{{ $t('setting.abstract.options.title') }}</option>
+        <select id="abstract" v-model="publishConf.abstractMode">
+          <option value="{{AbstractMode.Empty}}">{{ $t('setting.abstract.options.empty') }}</option>
+          <option value="{{AbstractMode.Article}}">{{ $t('setting.abstract.options.article') }}</option>
+          <option value="{{AbstractMode.Title}}">{{ $t('setting.abstract.options.title') }}</option>
         </select>
-        <div v-if="render.abstract == 'article'" class="abstract-article">
+        <div v-if="publishConf.abstractMode == AbstractMode.Article" class="abstract-article">
           <label>{{ $t('setting.abstract.abstractNum') }}</label>
-          <input v-model="abstractNum" class="abstract-article-input" type="number" />
+          <input v-model="publishConf.abstractNum" class="abstract-article-input" type="number" />
         </div>
       </div>
 
@@ -113,7 +106,7 @@
 
       <p>
         <label for="highlight">{{ $t('setting.renderFeature.highlight') }}</label>
-        <select id="highlight" v-model="render.highlight">
+        <select id="highlight" v-model="publishConf.highlight">
           <option value="preview">{{ $t('setting.renderFeature.options.previewOnly') }}</option>
           <option value="publish">{{ $t('setting.renderFeature.options.previewAndPublish') }}</option>
           <option value="none">{{ $t('setting.renderFeature.options.disable') }}</option>
@@ -122,7 +115,7 @@
 
       <p>
         <label for="math">{{ $t('setting.renderFeature.mathjax') }}</label>
-        <select id="math" v-model="render.mathjax">
+        <select id="math" v-model="renderConf.mathjax">
           <option value="publish">{{ $t('setting.renderFeature.options.previewAndPublish') }}</option>
           <option value="none">{{ $t('setting.renderFeature.options.disable') }}</option>
         </select>

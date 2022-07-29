@@ -1,12 +1,11 @@
 <script setup lang="ts">
-  import { reactive, watch, toRefs, ref, onUpdated, onMounted, toRef, Ref } from 'vue';
+  import { reactive, watch, toRefs, ref, onUpdated, onMounted, toRef, Ref, onUnmounted } from 'vue';
   import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
-
   import Publish from '/@/components/Publish.vue';
   import * as utils from '../logic/utils';
-  import * as renderer from '/@/logic/renderer';
   import * as statusBar from '../logic/statusBar';
+  import { mdRender } from '../mdRenderer';
   import { nodeFs, ipc } from '#preload';
   const props = defineProps<{
       filePath: string;
@@ -28,7 +27,7 @@
   watch(filePath, () => {
     readFile();
   });
-  watch(fileText, async () => await debounceUpdate());
+  watch(fileText, () => debounceUpdate());
   watch(modified, (value) => {
     emit('setModified', props.num, value);
   });
@@ -40,6 +39,9 @@
     wysiwygActive: false
   });
 
+  readFile();
+  const destory = ipc.receive('menu.save', onSave);
+
   onUpdated(() => {
     const markdown: any = refMarkdown.value;
     utils.setLinks(markdown);
@@ -47,12 +49,15 @@
 
   onMounted(() => {
     utils.setTextareaTabKey(refTextarea.value);
-    readFile();
-    ipc.receive('menu.save', onSave);
+  });
+
+  onUnmounted(() => {
+    destory();
   });
 
   async function debounceUpdate() {
-    post.value = await renderer.render(fileText.value, filePath.value, true);
+    post.value = mdRender(fileText.value, filePath.value, true);
+    console.log(post.value);
   }
   function onSave() {
     if (props.active && modified.value) {

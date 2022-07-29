@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:03:15
- * @LastEditTime: 2022-07-23 21:15:22
+ * @LastEditTime: 2022-07-29 17:08:06
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\ipcWithMain.ts
  */
@@ -37,8 +37,13 @@ export const ipc = {
   },
   receive: (channel: string, func: any) => {
     if (validChannels.includes(channel)) {
-      ipcRenderer.on(channel, (event: any, ...args: any) => func(...args));
-    }
+      // Deliberately strip event as it includes `sender`
+      const subscription = (event: any, ...args: any[]) => func(...args);
+      ipcRenderer.on(channel, subscription);
+      return () => {
+        ipcRenderer.removeListener(channel, subscription);
+      };
+    } else return () => {};
   },
   syncMsg: (channel: string, data?: any) => {
     if (validChannels.includes(channel)) {

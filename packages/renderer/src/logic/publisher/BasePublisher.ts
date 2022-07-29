@@ -1,14 +1,14 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 19:46:07
- * @LastEditTime: 2022-07-23 21:22:31
+ * @LastEditTime: 2022-07-29 19:21:14
  * @Description: 博客发布基类，可以有多种实现
  * @FilePath: \push-markdown\packages\renderer\src\logic\publisher\BasePublisher.ts
  */
 'use strict';
 
 import { Promise as _Promise } from 'bluebird';
-import * as renderer from '../renderer';
+import * as renderer from '../../mdRenderer';
 import * as publisher from './index';
 import { nodePath, nodeFs } from '#preload';
 

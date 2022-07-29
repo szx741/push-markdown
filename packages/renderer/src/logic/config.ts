@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-07-28 11:31:12
+ * @LastEditTime: 2022-07-29 20:31:18
  * @Description: user settings
  * @FilePath: \push-markdown\packages\renderer\src\logic\config.ts
  */
@@ -17,12 +17,6 @@ export interface SiteConfig {
   url: string;
   username: string;
   password: string;
-}
-export interface RenderConfig {
-  abstract: string;
-  highlight: string;
-  mathjax: string;
-  mermaid: string;
 }
 export function clear() {
   store.getStoreSettingsClear();
@@ -69,24 +63,6 @@ export function saveNotCheck(notcheck: boolean) {
 
 export function getNotCheck(defaultValue = true) {
   return store.storeSettingsGet('notcheck', defaultValue);
-}
-
-export function getRenderConfig() {
-  const defaultValue: RenderConfig = {
-    abstract: 'article',
-    highlight: 'preview',
-    mathjax: 'publish',
-    mermaid: 'preview'
-  };
-  const config: RenderConfig = store.storeSettingsGet('render', {});
-  return {
-    ...defaultValue,
-    ...config
-  };
-}
-export function saveRenderConfig(render: any) {
-  console.log(render);
-  return store.storeSettingsSet('render', JSON.parse(JSON.stringify(render)));
 }
 
 export function saveAbstractNumber(abstractNum: any) {

@@ -1,9 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-10 15:38:00
- * @LastEditTime: 2022-04-18 21:28:56
+ * @LastEditTime: 2022-07-29 21:20:50
  * @Description:
- * @FilePath: \push-markdown\src\logic\renderer\mermaid-front-renderer.ts
+ * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\mermaid-front-renderer.ts
  */
 /**
  * Mermaid front renderer. Render mermaid code into svg graph in browser enverionment.
@@ -25,7 +25,7 @@ function renderElement(e: any) {
   e.innerHTML = mermaid.mermaidAPI.render('graphDiv', code);
 }
 
-export async function render(container: any, selector = '.mermaid') {
+export function render(container: any, selector = '.mermaid') {
   const elements = container.querySelectorAll(selector);
   elements.forEach(renderElement);
 }

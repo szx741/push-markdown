@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 19:44:30
- * @LastEditTime: 2022-07-23 22:14:19
+ * @LastEditTime: 2022-07-29 17:06:09
  * @Description: errorLog.ts的封装，对Error类型的封装
  * @FilePath: \push-markdown\packages\renderer\src\logic\errorLog.ts
  */
@@ -33,10 +33,6 @@ function getShortStack(stack?: string): string {
 // In renderer process (web page).
 // export const errorLogPath = ipcRenderer.sendSync('exePath'); // prints "pong"
 export const errorLogPath = ipc.syncMsg('exePath'); // prints "pong"
-
-// ipc.receive('menu.welcome', (data: any) => {
-//   console.log(`Received ${data} from main process`);
-// });
 
 export default function (error: unknown, vm: ComponentPublicInstance | null, info: string): void {
   const { message, stack } = error as Error;

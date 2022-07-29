@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-07-23 22:08:32
+ * @LastEditTime: 2022-07-29 22:10:19
  * @Description: electron的应用启动
  * @FilePath: \push-markdown\packages\main\src\index.ts
  */
@@ -9,7 +9,6 @@ import { app, BrowserWindow, protocol } from 'electron';
 import * as path from 'path';
 import { ipcMainCollection } from './ipc-message';
 
-// import './security-restrictions';
 import { restoreOrCreateWindow } from '/@/mainWindow';
 
 /**
@@ -21,7 +20,6 @@ if (!isSingleInstance) {
   process.exit(0);
 }
 app.on('second-instance', restoreOrCreateWindow);
-
 /**
  * 关闭硬件加速，这个有待商榷，除非有兼容性问题
  */

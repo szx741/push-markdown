@@ -39,47 +39,48 @@
     { deep: true }
   );
 
-  onMounted(() => {
-    statusBar.setCallback((text: string) => {
-      statusText.value = text;
-    });
-    // 菜单栏打开文件
-    ipc.receive('menu.open', (data: any) => {
-      openFile(data);
-    });
-    // 菜单栏打开设置
-    ipc.receive('menu.settings', () => {
-      const index = tabs.value.findIndex((tab) => tab.type === 'settings');
-      if (index === -1) addTab({ type: 'settings', filePath: '' });
-      else selectTab(index);
-    });
-    // 展示文件夹
-    ipc.receive('menu.showfile', () => {
-      showFile.value = !showFile.value;
-      store.setShowFile(showFile.value);
-    });
-    // 关闭当前网页标签
-    ipc.receive('menu.closetab', () => {
-      closeTab(currIndex.value);
-    });
-    // 重新加载文件
-    ipc.receive('menu.reloadfile', () => {
-      refreshTab(currIndex.value);
-    });
-    // 打开欢迎界面
-    ipc.receive('menu.welcome', () => {
-      const index = tabs.value.findIndex((tab: any) => tab.type === 'welcome');
-      if (index === -1) addTab({ type: 'welcome', filePath: '' });
-      else selectTab(index);
-    });
-    // 打开示例文档
-    ipc.receive('menu.sample', () => {
-      openFile(utils.getSampleFile());
-    });
-    // ipc.receive('menu.theme', (theme: any) => {
-    //   config.setTheme(theme);
-    // });
+  statusBar.setCallback((text: string) => {
+    statusText.value = text;
   });
+  // 菜单栏打开文件
+  ipc.receive('menu.open', (data: any) => {
+    openFile(data);
+  });
+  // 菜单栏打开设置
+  ipc.receive('menu.settings', () => {
+    const index = tabs.value.findIndex((tab) => tab.type === 'settings');
+    if (index === -1) addTab({ type: 'settings', filePath: '' });
+    else selectTab(index);
+  });
+  // 展示文件夹
+  ipc.receive('menu.showfile', () => {
+    showFile.value = !showFile.value;
+    store.setShowFile(showFile.value);
+  });
+  // 关闭当前网页标签
+  ipc.receive('menu.closetab', () => {
+    closeTab(currIndex.value);
+  });
+  // 重新加载文件
+  ipc.receive('menu.reloadfile', () => {
+    refreshTab(currIndex.value);
+  });
+  // 打开欢迎界面
+  ipc.receive('menu.welcome', () => {
+    const index = tabs.value.findIndex((tab: any) => tab.type === 'welcome');
+    if (index === -1) addTab({ type: 'welcome', filePath: '' });
+    else selectTab(index);
+  });
+  // 打开示例文档
+  ipc.receive('menu.sample', () => {
+    openFile(utils.getSampleFile());
+  });
+
+  // onMounted(() => {
+  //   // ipc.receive('menu.theme', (theme: any) => {
+  //   //   config.setTheme(theme);
+  //   // });
+  // });
 
   // 打开文件
   function openFile(filePath: string) {

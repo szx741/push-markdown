@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-07-27 21:53:21
+ * @LastEditTime: 2022-07-29 19:29:43
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\logic\utils.ts
  */
@@ -10,19 +10,6 @@ import { other, nodePath, ipc } from '#preload';
 
 export function fileName(file: string) {
   return nodePath.pathBasename(file, '.md');
-}
-
-export function toStr(src: any) {
-  return (src && typeof src === 'string' && src) || null;
-}
-
-export function toStrArr(src: string | string[] | null | undefined): string[] | null {
-  if (typeof src === 'string') {
-    return [src];
-  } else if (src instanceof Array) {
-    return src.map((s) => toStr(s)).filter((s) => s);
-  }
-  return null;
 }
 
 // console.log(import.meta.url);
@@ -96,4 +83,17 @@ export function setTextareaTabKey(textarea: any) {
       }
     };
   }
+}
+
+export async function promiseConcurrencyLimit(limit: number, arr: any[], fn: any) {
+  async function run(count: any): Promise<any> {
+    if (count < arr.length) {
+      await fn(arr[count]);
+      return run(count + limit);
+    }
+  }
+  const res = [];
+  for (let i = 0; i < limit && arr.length; i++) res.push(run(i));
+  await Promise.all(res);
+  console.log(limit, arr, fn);
 }
