@@ -1,46 +1,170 @@
 /*
  * @Author: szx
+ * @Date: 2021-07-11 18:03:08
+ * @LastEditTime: 2022-07-30 15:35:56
+ * @Description:文章发布工具。根据type调用不同的实现。目前支持MetaWeblog。
+ * @FilePath: \push-markdown\packages\renderer\src\mdPublish\index.ts
+ */
+'use strict';
+/*
+ * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-07-23 21:23:55
+ * @LastEditTime: 2022-07-30 15:32:56
  * @Description: 基于MetaWeblog接口的博客发布器，支持WordPress等博客
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
  * https://github.com/uhavemyword/metaweblog-api
- * @FilePath: \push-markdown\packages\renderer\src\logic\publisher\MetaWeblogPublisher.ts
+ * @FilePath: \push-markdown\packages\renderer\src\mdPublish\MetaPublisher.ts
  */
 'use strict';
 
 import MetaWeblog from 'metaweblog-api';
 
 import { FileCache, PostCache } from './PublishCache';
-import { getMimeType, BasePublisher } from './BasePublisher';
-import { show } from '../statusBar';
 import { nodePath, nodeFs, other, ipc } from '#preload';
+import { Post } from '../mdRenderer/markdown-text-to-html';
+import { promiseConcurrencyLimit } from '../logic/utils';
+import { show } from '../logic/statusBar';
+
+export enum PublishMode {
+  Manual = 'manual',
+  Auto = 'auto',
+  Create = 'create'
+}
+export enum PublishState {
+  STATE_RENDER = 'render',
+  STATE_READ_POST = 'read',
+  STATE_UPLOAD_MEDIA = 'upload',
+  STATE_PUBLISH_POST = 'publish',
+  STATE_EDIT_POST = 'edit',
+  STATE_COMPLETE = 'complete'
+}
+
+export interface PublishParams {
+  post: Post;
+  blogID: number;
+  stateHandler: (state: PublishState) => void;
+  publishMode: PublishMode;
+  mediaMode: 'force' | 'cache';
+  getNetPic: boolean;
+  notCheck: boolean;
+  editHandler: any;
+}
+
+const MEDIA_MIME_TYPES: any = {
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  jpe: 'image/jpeg',
+  gif: 'image/gif',
+  png: 'image/png',
+  bmp: 'image/bmp',
+  tif: 'image/tiff',
+  tiff: 'image/tiff',
+  ico: 'image/x-icon',
+  webp: 'image/webp'
+};
 
 /**
  * 基于MetaWeblog接口的博客发布器
  */
-export class MetaWeblogPublisher extends BasePublisher {
+export class MetaPublisher {
   metaWeblog: MetaWeblog;
   blogId: string;
   username: string;
   password: string;
   postCache: PostCache;
   mediaCache: FileCache;
-  url: string;
-  constructor(url: any, username: any, password: any) {
-    super();
-    // ipc.syncMsg('new-metaweblog', url);
-    this.metaWeblog = other.metaWeblog(url);
-    this.url = url;
+  siteUrl: string;
+  constructor(siteUrl: string, username: string, password: string) {
+    this.metaWeblog = other.metaWeblog(siteUrl);
+    this.siteUrl = siteUrl;
     this.blogId = '';
     this.username = username;
     this.password = password;
-    this.postCache = new PostCache(url, username);
-    this.mediaCache = new FileCache(url, username);
+    this.postCache = new PostCache(siteUrl, username);
+    this.mediaCache = new FileCache(siteUrl, username);
   }
 
-  async getOldPost(post: any, blogID: number) {
+  async publish({ post, blogID, stateHandler, publishMode, mediaMode, getNetPic, notCheck, editHandler }: PublishParams): Promise<boolean> {
+    // 显示正在Render
+    stateHandler(PublishState.STATE_RENDER);
+    const map = new Map<string, string>();
+    let oldPost = null;
+    switch (publishMode) {
+      // 自动模式
+      case PublishMode.Auto:
+        oldPost = await this.getOldPost(post, 0);
+        break;
+
+      // 手动模式
+      case PublishMode.Manual:
+        const _oldPost = await this.getOldPost(post, blogID);
+        // 如果旧文章有，并且获取网络图片选上了，那么图片链接就换到网络图片
+        if (_oldPost && getNetPic == true) {
+          this.getNetworkImage(_oldPost, map);
+          console.log('获取到的所有图片', map);
+        }
+        if (editHandler(_oldPost)) {
+          oldPost = _oldPost;
+        }
+        break;
+
+      case PublishMode.Create:
+        break;
+    }
+
+    if (oldPost) {
+      stateHandler(PublishState.STATE_EDIT_POST);
+      await this.editPost(oldPost, post);
+    } else {
+      stateHandler(PublishState.STATE_PUBLISH_POST);
+      await this.newPost(post);
+    }
+
+    // 显示正在处理上传的图片
+    stateHandler(PublishState.STATE_UPLOAD_MEDIA);
+
+    const div = document.createElement('div');
+    div.innerHTML = post.html;
+
+    // 一次并行传五张图，不能一次性全部发过去，可能会受到服务器的限制
+    const handleImage = async (img: HTMLImageElement) => {
+      const src = img.getAttribute('src');
+      if (src) {
+        if (src.startsWith('atom://')) {
+          const file = decodeURI(src.substr('atom://'.length));
+          if (nodeFs.fsExistsSync(file)) {
+            let url;
+            if (getNetPic && map.size > 0) {
+              url = await this.changeLocalMedia(file, map);
+            } else {
+              url = await this.uploadMedia(file, mediaMode, notCheck);
+            }
+            if (url) {
+              img.setAttribute('src', url);
+              img.parentElement?.setAttribute('href', url);
+            } else {
+              console.error('media process failure', file);
+            }
+          } else {
+            console.error('错误，本地不存在这张图片！', file);
+          }
+        } else {
+          const pImg = img.parentElement;
+          pImg?.setAttribute('href', src);
+          pImg?.setAttribute('align', 'center');
+          pImg?.classList.add('fancybox-wrapper', 'lazyload-container-unload');
+          pImg?.setAttribute('data-fancybox', 'post-images');
+        }
+      }
+    };
+    promiseConcurrencyLimit(5, Array.from(div.getElementsByTagName('img')), handleImage);
+
+    stateHandler(PublishState.STATE_COMPLETE);
+    return true;
+  }
+
+  async getOldPost(post: Post, blogID: number) {
     // 1、手动更新指定文章的ID，必须大于0
     if (blogID > 0) {
       console.log('手动更新指定文章ID');
@@ -140,7 +264,7 @@ export class MetaWeblogPublisher extends BasePublisher {
   async getNetworkImage(_oldPost: any, map: Map<string, string>) {
     const reg = /<img.+?src=('|")?([^'"]+)('|")?(?:\s+|>)/gim;
     let tem;
-    const url = new URL(this.url);
+    const url = new URL(this.siteUrl);
     while ((tem = reg.exec(_oldPost.html))) {
       if (tem[2].indexOf(url.hostname) != -1) {
         const imgName = tem[2].substring(tem[2].lastIndexOf('/') + 1);
@@ -182,11 +306,11 @@ export class MetaWeblogPublisher extends BasePublisher {
     }
     const bits = nodeFs.fsReadFileSync(file);
     let isByte = false;
-    if (this.url.indexOf('rpc.cnblogs.com') != -1) {
+    if (this.siteUrl.indexOf('rpc.cnblogs.com') != -1) {
       isByte = true;
     }
     show(`上传图片${file}中`);
-    const result = ipc.syncMsg('new-media-object', [isByte, this.blogId, this.username, this.password, nodePath.pathBasename(file), getMimeType(file), bits, this.url]);
+    const result = ipc.syncMsg('new-media-object', [isByte, this.blogId, this.username, this.password, nodePath.pathBasename(file), getMimeType(file), bits, this.siteUrl]);
 
     console.log('newMediaObject Result:', result);
 
@@ -201,3 +325,17 @@ export class MetaWeblogPublisher extends BasePublisher {
     }
   }
 }
+
+function getMimeType(file: any) {
+  let ext: string = nodePath.pathExtname(file);
+  ext = (ext && ext.length > 1 && ext.substr(1)) || ''; // jpg
+  const type = MEDIA_MIME_TYPES[ext];
+  if (!type) {
+    throw new Error(`[${file}]  media ext '${ext}' not supported`);
+  }
+  return type;
+}
+
+export const initMetaPublisher = (siteUrl: string, username: string, password: string) => {
+  return new MetaPublisher(siteUrl, username, password);
+};

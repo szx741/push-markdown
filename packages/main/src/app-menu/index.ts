@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 19:57:31
- * @LastEditTime: 2022-07-23 20:00:15
+ * @LastEditTime: 2022-07-31 15:35:23
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\app-menu\index.ts
  */
@@ -19,35 +19,28 @@
 import { Menu, app, dialog, shell, BrowserWindow } from 'electron';
 
 import * as language from './menu-lang';
-import * as langStore from './language-store';
-import * as themeStore from './theme-store';
+import { setLang, setTheme, getLang, getTheme } from './store';
 
 // 加载菜单栏
 export function menuInit(mainWindow: BrowserWindow) {
   // webContents它负责渲染并控制网页
-  const webContents = mainWindow.webContents;
-
+  const webContents = mainWindow.webContents,
+    lang = getLang(), // 当前的语言
+    theme = getTheme(), //当前的主题
+    l = lang === 'zh' ? language.zh : language.en;
   // 设置语言
   function setLanguage(lang: string) {
-    langStore.setLanguage(lang);
+    setLang(lang);
     // 通过 channel 发送异步消息给渲染进程
     webContents.send('menu.language', lang);
     // 重新渲染菜单栏
     menuInit(mainWindow);
   }
 
-  function setTheme(theme: string) {
-    themeStore.setTheme(theme);
-    webContents.send('menu.theme', theme);
-    menuInit(mainWindow);
+  function setThemeConf(newTheme: boolean) {
+    setTheme(newTheme);
+    webContents.send('menu.theme', newTheme);
   }
-
-  // 获取语言设置
-  const lang = langStore.getLanguage();
-  const l = lang === 'zh' ? language.zh : language.en;
-
-  const t = themeStore.getTheme();
-
   // 菜单栏模板
   const template: any[] = [
     {
@@ -102,7 +95,7 @@ export function menuInit(mainWindow: BrowserWindow) {
           submenu: [
             {
               label: '简体中文',
-              type: 'checkbox',
+              type: 'radio',
               checked: lang === 'zh',
               click: function () {
                 setLanguage('zh');
@@ -110,7 +103,7 @@ export function menuInit(mainWindow: BrowserWindow) {
             },
             {
               label: 'English',
-              type: 'checkbox',
+              type: 'radio',
               checked: lang === 'en',
               click: function () {
                 setLanguage('en');
@@ -241,34 +234,18 @@ export function menuInit(mainWindow: BrowserWindow) {
       submenu: [
         {
           label: l.light,
-          type: 'checkbox',
-          checked: t === 'github',
+          type: 'radio',
+          checked: theme === 'light',
           click: function () {
-            setTheme('github');
+            setThemeConf(true);
           }
         },
         {
           label: l.dark,
-          type: 'checkbox',
-          checked: t === 'dark',
+          type: 'radio',
+          checked: theme === 'dark',
           click: function () {
-            setTheme('dark');
-          }
-        },
-        {
-          label: l.splendor,
-          type: 'checkbox',
-          checked: t === 'splendor',
-          click: function () {
-            setTheme('splendor');
-          }
-        },
-        {
-          label: l.wysiwyg,
-          type: 'checkbox',
-          checked: t === 'wysiwyg',
-          click: function () {
-            setTheme('wysiwyg');
+            setThemeConf(false);
           }
         }
       ]

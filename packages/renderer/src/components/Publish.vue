@@ -1,16 +1,23 @@
 <!-- 发布窗口 -->
 <script setup lang="ts">
-  import { computed, isRef, onMounted, onUnmounted, reactive, Ref, ref, toRef } from 'vue';
+  import { computed, onUnmounted, Ref, ref, toRef } from 'vue';
 
-  import { Publisher, PublishParams, publishState } from '../logic/publisher';
+  import { PublishMode, PublishState } from '../mdPublish';
   import { openSampleFile, promiseConcurrencyLimit } from '../logic/utils';
   import * as statusBar from '../logic/statusBar';
 
   import * as config from '../logic/config';
   import { useI18n } from 'vue-i18n';
   import { ipc } from '#preload';
-  import { sites, Site } from '../configuration/sites';
+  import { sites, Site, publishers } from '../configuration/sites';
   import { Post } from '../mdRenderer/markdown-text-to-html';
+  import { PublishParams } from '../mdPublish';
+
+  interface EditItem {
+    site: Site;
+    post: Post;
+    callback: (edit: boolean) => void;
+  }
 
   const props = defineProps<{
       post: Post;
@@ -18,9 +25,9 @@
     }>(),
     active = toRef(props, 'active'), // 当前选中的界面
     post = toRef(props, 'post'),
-    publishMode = ref('manual'),
+    publishMode = ref(PublishMode.Manual),
     showPublish = ref(false),
-    editList: Ref<any> = ref([]),
+    editList: Ref<EditItem[]> = ref([]),
     publishing = ref(false),
     confirm = ref(false),
     aritcleId: Ref<number> = ref(-1),
@@ -31,7 +38,7 @@
     { t } = useI18n();
 
   const siteToString = (site: any) => `${site.name} [${site.username}] [${site.url}]`;
-  const selectedSites = computed(() => sites.value.filter((site) => site.selected));
+  const selectedSites = computed(() => sites.value.map((site, index) => (site.selected ? index : undefined)).filter((v) => v !== undefined));
 
   const menuPublishListen = (evnet: any, ...args: any[]) => {
     // 如果是当前界面并且有文本数据
@@ -45,9 +52,9 @@
         for (const site of sites.value) {
           if (post.value.url && site.articlesId.hasOwnProperty(post.value.url)) {
             aritcleId.value = site.articlesId[post.value.url];
-            publishMode.value = 'auto';
+            publishMode.value = PublishMode.Auto;
           } else {
-            publishMode.value = 'create';
+            publishMode.value = PublishMode.Create;
           }
         }
       }
@@ -61,49 +68,27 @@
 
   function select(site: Site) {
     site.selected = !site.selected;
-    // ref(!site.selected);
-    // this.$set(site, 'selected', !Boolean(site.selected));
   }
 
-  const fn = async (site: Site) => {
-    console.log('site.url:', site.url);
-    try {
-      const published = new Publisher(site.url, site.username, site.password, site.type);
-      const publishParams: PublishParams = {
+  const fn = async (index: number) => {
+    const site = sites.value[index],
+      publisher = publishers[index],
+      publishParams: PublishParams = {
         post: post.value,
         blogID: blogID.value,
-        stateHandler: (state: any) => {
-          switch (state) {
-            case publishState.STATE_RENDER:
-              statusBar.show(t('publish.status.render'));
-              break;
-            case publishState.STATE_READ_POST:
-              statusBar.show(t('publish.status.read'));
-              break;
-            case publishState.STATE_UPLOAD_MEDIA:
-              statusBar.show(t('publish.status.upload'));
-              break;
-            case publishState.STATE_PUBLISH_POST:
-              statusBar.show(t('publish.status.publish'));
-              break;
-            case publishState.STATE_EDIT_POST:
-              statusBar.show(t('publish.status.edit'));
-              break;
-            case publishState.STATE_COMPLETE:
-              statusBar.show(t('publish.status.complete'));
-              break;
-          }
-        },
+        stateHandler,
         publishMode: publishMode.value,
         mediaMode: forcedUpdate.value ? 'force' : 'cache',
         getNetPic: getNetPic.value,
         notCheck: notCheck.value,
         editHandler: (post_1: any) => editHandler(site, post_1)
       };
-      await published.publish(publishParams);
-      if (published) {
-        new Notification(t('publishSuccess'), { body: siteToString(site) });
-      }
+
+    try {
+      await publisher.publish(publishParams);
+      // if (published) {
+      //   new Notification(t('publishSuccess'), { body: siteToString(site) });
+      // }
     } catch (e: any) {
       new Notification(t('publishError'), { body: siteToString(site) + '\n' + e.message });
       console.error(e);
@@ -117,22 +102,41 @@
     closePublish();
   }
 
+  function stateHandler(state: any) {
+    switch (state) {
+      case PublishState.STATE_RENDER:
+        statusBar.show(t('publish.status.render'));
+        break;
+      case PublishState.STATE_READ_POST:
+        statusBar.show(t('publish.status.read'));
+        break;
+      case PublishState.STATE_UPLOAD_MEDIA:
+        statusBar.show(t('publish.status.upload'));
+        break;
+      case PublishState.STATE_PUBLISH_POST:
+        statusBar.show(t('publish.status.publish'));
+        break;
+      case PublishState.STATE_EDIT_POST:
+        statusBar.show(t('publish.status.edit'));
+        break;
+      case PublishState.STATE_COMPLETE:
+        statusBar.show(t('publish.status.complete'));
+        break;
+    }
+  }
+
   function editHandler(site: Site, post: Post) {
     if (site && post) {
-      return new Promise((resolve: any) => {
-        const item: any = {
-          site,
-          post,
-          callback: (edit: any): any => {
-            // edit: boolean
-            // remove item from editList and then resolve
-            const index: any = editList.value.indexOf(item);
-            editList.value.splice(index, 1);
-            resolve(edit);
-          }
-        };
-        editList.value.push(item);
-      });
+      const item: EditItem = {
+        site,
+        post,
+        callback: (edit: boolean): void => {
+          // edit: boolean
+          const index: number = editList.value.indexOf(item);
+          editList.value.splice(index, 1);
+        }
+      };
+      editList.value.push(item);
     } else {
       return false;
     }
@@ -234,8 +238,8 @@
         </div>
       </div>
 
-      <template v-if="editList && editList.length > 0">
-        <div v-for="edit in editList" :key="edit" class="dialog publish-edit">
+      <template v-if="editList.length > 0">
+        <div v-for="(edit, index) in editList" :key="index" class="dialog publish-edit">
           <div v-if="edit" class="dialog-title">
             <h4>{{ $t('publish.publishModeConfirm') }}</h4>
           </div>
@@ -246,7 +250,7 @@
               <span>{{ edit.site.url }}</span>
             </div>
             <div>{{ $t('publish.publishModeOldPost') }}</div>
-            <div v-if="edit.post" class="post-preview markdown-body">
+            <div v-if="edit.post" class="post-preview">
               <h1 class="post-preview-title">{{ edit.post.title }}</h1>
               <div class="post-preview-content" v-html="edit.post.html"></div>
             </div>
@@ -277,6 +281,10 @@
 </template>
 
 <style lang="scss" scoped>
+  .publish-wrapper {
+    width: 100%;
+    height: 100%;
+  }
   .dialog {
     position: absolute;
     margin: auto;
@@ -299,10 +307,6 @@
   img {
     background-color: whitesmoke;
   }
-  .publish-wrapper {
-    width: 100%;
-    height: 100%;
-  }
 
   .overlay {
     position: absolute;
@@ -310,7 +314,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(128, 128, 128, 0.7);
+    background-color: rgba(128, 128, 128, 0.4);
   }
 
   .post-preview {
@@ -374,9 +378,9 @@
     }
 
     img {
-      padding: 8px;
+      margin-right: 8px;
       height: 19px;
-      width: auto;
+      background-color: transparent;
 
       &:hover {
         background-color: #dddddd;
@@ -428,12 +432,10 @@
   }
 
   .site {
-    background-color: #f0f0f0;
     padding: 15px;
     display: flex;
     flex-direction: row;
     align-items: center;
-
     > input {
       margin-right: 20px;
     }

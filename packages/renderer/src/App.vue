@@ -1,14 +1,12 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-07-26 17:23:05
+ * @LastEditTime: 2022-07-31 16:11:50
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\App.vue
 -->
 <template>
   <main-comp />
-  <!-- <hello-world msg="Vite + Vue" /> -->
-  <!-- <router-view></router-view> -->
 </template>
 
 <script setup lang="ts">
@@ -26,8 +24,8 @@
 </script>
 
 <style lang="scss">
-  @import 'github-markdown-css/github-markdown.css';
-  // @import 'github-markdown-css/github-markdown-dark.css';
+  @import '/@/common/assets/theme/github-markdown.css';
+
   #app {
     height: 100%;
   }

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2022-07-29 21:27:49
+ * @LastEditTime: 2022-07-30 13:33:14
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
@@ -35,7 +35,7 @@ export interface Post {
   file: string | null;
   src: string | null;
   title: string;
-  html: string | null;
+  html: string;
   url: string | null;
   tags: string[] | null;
   categories: string[] | null;

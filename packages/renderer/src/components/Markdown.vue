@@ -32,13 +32,6 @@
     emit('setModified', props.num, value);
   });
 
-  const theme: any = reactive({
-    githubActive: true,
-    darkActive: false,
-    splendorActive: false,
-    wysiwygActive: false
-  });
-
   readFile();
   const destory = ipc.receive('menu.save', onSave);
 
@@ -55,10 +48,10 @@
     destory();
   });
 
-  async function debounceUpdate() {
+  function debounceUpdate() {
     post.value = mdRender(fileText.value, filePath.value, true);
-    console.log(post.value);
   }
+
   function onSave() {
     if (props.active && modified.value) {
       writeFile();
@@ -106,15 +99,13 @@
 
 <template>
   <div class="wrapper">
-    <!-- <div class="container" :class="{ 'markdown-body-light': githubActive, 'markdown-body-dark': darkActive, splendor: splendorActive, wysiwyg: wysiwygActive }"> -->
     <div class="container">
       <!-- 编辑器  -->
       <div class="left">
-        <textarea ref="textarea" v-model="fileText" class="left-content" title="text" @input="update"></textarea>
-        <!-- <textarea ref="textarea" v-model="fileText" class="left-content" :class="{ 'left-light': !darkActive, 'left-dark': darkActive }" title="text" @input="update"></textarea> -->
+        <textarea ref="textarea" v-model="fileText" class="left-content scroll-bar" title="text" @input="update"></textarea>
       </div>
 
-      <div class="right">
+      <div class="right scroll-bar">
         <!-- <div class="right" :class="{ 'right-light': !darkActive, 'right-dark': darkActive }"> -->
         <div class="content">
           <h1 v-if="post.title" class="title">{{ post.title }}</h1>
@@ -145,7 +136,7 @@
 
               <tr class="meta-item">
                 <td class="meta-name">{{ $t('meta.categories') }}</td>
-                <td v-if="post.categories" class="meta-value list">
+                <td v-if="post.categories" class="meta-value">
                   <span v-for="category in post.categories" :key="category" class="category">{{ category }}</span>
                 </td>
                 <td v-else class="meta-value empty">{{ $t('meta.empty') }}</td>
@@ -153,10 +144,10 @@
 
               <tr class="meta-item">
                 <td class="meta-name">{{ $t('meta.tags') }}</td>
-                <td v-if="post.tags" class="meta-value list">
-                  <span v-for="tag in post.tags" :key="tag" class="tag">{{ tag }}</span>
+                <td v-if="post.tags" class="meta-value">
+                  <span v-for="tag in post.tags" :key="tag" class="tag">{{ tag }} </span>
                 </td>
-                <td v-else class="meta-value empty">{{ $t('meta.empty') }}</td>
+                <td v-else class="meta-value empty">{{ $t('meta.empty') }} </td>
               </tr>
             </table>
           </div>
@@ -166,20 +157,11 @@
       </div>
     </div>
 
-    <Publish class="markdown-body" :post="post" :active="active"></Publish>
+    <Publish :post="post" :active="active"></Publish>
   </div>
 </template>
 
 <style lang="scss" scoped>
-  /*@import "../assets/MathJax.css";*/
-  // @import 'highlight.js/styles/github.css';
-  // @import 'github-markdown-css/github-markdown-light.css';
-  @import '../common/assets/theme/github-markdown-light.css';
-  @import '../common/assets/theme/github-markdown-dark.css';
-  // @import 'github-markdown-css/github-markdown-dark.css';
-  // @import '../common/assets/theme/splendor.css';
-  // @import '../common/assets/theme/wysiwyg.css';
-
   .wrapper {
     width: 100%;
     height: 100%;
@@ -196,88 +178,40 @@
 
   .left {
     width: 47%;
-    // flex-grow: 1;
+    height: 100%;
     display: flex;
     overflow: hidden;
-    border-right: 1px solid #eeeeee;
+    padding: 0;
+    margin: 0;
   }
 
   .right {
     width: 53%;
     flex-grow: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
-  .right::-webkit-scrollbar {
+  .scroll-bar::-webkit-scrollbar {
     width: 10px;
     height: 1px;
   }
 
-  // /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
-  .right-light::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: #cacaca;
-  }
-  /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
-  .right-light::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background: #eeeeee;
-  }
-
-  .right-dark::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: #686c6f;
-  }
-  /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
-  .right-dark::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background: transparent;
-  }
-
-  textarea {
+  .left-content {
     width: 100%;
     height: 100%;
-    // overflow: hidden;
-    margin: 0;
+    overflow-y: scroll;
     border: none;
     outline: none;
     resize: none;
     background-color: rgb(255, 255, 255);
     color: rgb(77, 77, 77);
-  }
-
-  textarea::-webkit-scrollbar {
-    width: 10px;
-    height: 1px;
-  }
-  // /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
-  .left-light::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: #cacaca;
-  }
-  /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
-  .left-light::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background: #eeeeee;
-  }
-
-  .left-dark::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: #686c6f;
-  }
-  /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
-  .left-dark::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background: transparent;
-  }
-
-  .left-content {
-    padding: 35px;
+    cursor: auto;
+    padding: 35px 35px 0;
+    margin: 0;
     box-sizing: border-box;
   }
   .content {
     padding: 37px;
-    box-sizing: border-box;
   }
 
   .markdown {
@@ -286,11 +220,9 @@
   }
 
   .abstract {
-    margin: 15px 0 25px 0;
+    margin: 15px 0 15px 0;
     padding: 0 1em;
-    // color: #6a737d;
-    // color: #454d57;
-    border-left: 0.25em solid #dfe2e5;
+    border-left: 0.25em solid;
 
     .meta-name {
       margin-right: 20px;
@@ -299,19 +231,17 @@
 
   .meta {
     width: 100%;
-    overflow-x: scroll;
+    overflow-x: hidden;
     margin-top: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 
     table {
-      width: 98%;
-      box-sizing: border-box;
-      border: 1px solid #eee;
+      width: 100%;
       border-spacing: 20px 15px;
 
       * {
         background: transparent;
-        vertical-align: top;
+        vertical-align: center;
         text-align: left;
       }
     }
@@ -330,11 +260,9 @@
   @mixin float-left {
     float: left;
     white-space: nowrap;
-    margin-bottom: 5px;
-    overflow-x: hidden;
+    overflow: hidden;
     max-width: 100%;
     text-overflow: ellipsis;
-
     &:not(:last-child) {
       margin-right: 5px;
     }
@@ -349,7 +277,6 @@
 
   .tag {
     @include float-left;
-
     border: 1px solid;
     border-radius: 2px;
     padding: 0.15em 0.3em;
@@ -357,7 +284,7 @@
     color: #666;
   }
 
-  .meta-value.url.empty {
+  .meta-value.empty {
     color: red;
   }
 </style>

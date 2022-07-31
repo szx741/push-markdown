@@ -1,9 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:00:58
- * @LastEditTime: 2022-07-23 19:38:09
+ * @LastEditTime: 2022-07-31 13:50:55
  * @Description: 窗口的多语言支持
- * @FilePath: \push-markdown\packages\main\src\menu-lang.ts
+ * @FilePath: \push-markdown\packages\main\src\app-menu\menu-lang.ts
  */
 
 'use strict';
@@ -24,7 +24,6 @@ export const en = {
   copy: 'Copy',
   paste: 'Paste',
   selectAll: 'Select All',
-  // view: 'View',
   reload: 'Reload',
   fileTree: 'File tree',
   closeTab: 'Close Current File',
@@ -46,12 +45,9 @@ export const en = {
   showAll: 'Show All',
   quit: 'Quit',
   bringAllToFront: 'Bring All to Front',
-
   theme: 'Theme',
-  light: 'Github',
-  dark: 'Dark',
-  splendor: 'Splendor',
-  wysiwyg: 'Wysiwyg'
+  light: 'Light',
+  dark: 'Dark'
 };
 
 export const zh = {
@@ -70,7 +66,6 @@ export const zh = {
   copy: '复制',
   paste: '粘贴',
   selectAll: '全选',
-  // view: '显示',
   reload: '重新加载',
   fileTree: '文件列表',
   closeTab: '关闭当前文件',
@@ -93,8 +88,6 @@ export const zh = {
   quit: '退出',
   bringAllToFront: '前置全部窗口',
   theme: '主题',
-  light: 'Github',
-  dark: 'Night',
-  splendor: 'Splendor',
-  wysiwyg: 'Wysiwyg'
+  light: '浅色',
+  dark: '深色'
 };

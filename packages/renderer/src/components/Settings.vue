@@ -1,16 +1,15 @@
 <!-- 设置页面 -->
 <script setup lang="ts">
-  import { computed, reactive, ref, toRaw, watch } from 'vue';
+  import { toRaw, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import debounce from 'lodash-es/debounce';
 
-  import * as config from '../logic/config';
   import * as statusBar from '../logic/statusBar';
   import { resetConfiguration } from '../configuration/configurate';
   import { notifyConfigChanged } from '../mdRenderer';
   import { sites, addSite, delSite, saveSites } from '../configuration/sites';
-  import { renderConf, RenderConf, saveRenderConf, RenderMode } from '../configuration/render-conf';
-  import { publishConf, PublishConf, savePublishConf, AbstractMode } from '../configuration/publish-conf';
+  import { renderConf, saveRenderConf, RenderMode } from '../configuration/render-conf';
+  import { publishConf, savePublishConf, AbstractMode } from '../configuration/publish-conf';
 
   const { t } = useI18n();
 
@@ -19,7 +18,7 @@
     debounce((value) => {
       saveSites(toRaw(value));
       statusBar.show(t('setting.saveSettings'));
-    }, 500)
+    }, 1000)
   );
   watch(renderConf, (value) => {
     saveRenderConf(toRaw(value));
@@ -31,7 +30,7 @@
     debounce((value) => {
       savePublishConf(toRaw(value));
       statusBar.show(t('setting.saveSettings'));
-    }, 500)
+    }, 1000)
   );
 
   function resetSettings() {
@@ -43,7 +42,7 @@
 
 <template>
   <div class="container">
-    <div class="settings markdown-body">
+    <div class="settings">
       <h2>{{ $t('settings') }}</h2>
 
       <h3>{{ $t('setting.siteSettings') }}</h3>
@@ -55,13 +54,6 @@
           <div>
             <label for="name">{{ $t('setting.name') }}</label>
             <input id="name" v-model="site.name" type="text" />
-          </div>
-
-          <div>
-            <label for="type">{{ $t('setting.apiType') }}</label>
-            <select id="type" v-model="site.type">
-              <option value="MetaWeblog">MetaWeblog</option>
-            </select>
           </div>
 
           <div>
@@ -180,10 +172,8 @@
   .site {
     position: relative;
     padding: 15px 40px 15px 20px;
-    border: 1px solid #ddd;
     margin-bottom: 20px;
     font-size: 85%;
-    background-color: #f8f8f8;
 
     > div + div {
       margin-top: 8px;
@@ -204,7 +194,7 @@
       flex-grow: 1;
       width: 0;
       outline: none;
-      border: 1px solid #e0e0e0;
+      border: 1px solid;
       padding: 2px 5px;
     }
   }

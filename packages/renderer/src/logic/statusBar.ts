@@ -1,9 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-07-21 23:03:30
+ * @LastEditTime: 2022-07-30 16:05:48
  * @Description: 状态栏信息显示
- * @FilePath: \push-markdown\src\logic\statusBar.ts
+ * @FilePath: \push-markdown\packages\renderer\src\logic\statusBar.ts
  */
 'use strict';
 

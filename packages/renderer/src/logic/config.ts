@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-07-29 20:31:18
+ * @LastEditTime: 2022-07-31 15:40:35
  * @Description: user settings
  * @FilePath: \push-markdown\packages\renderer\src\logic\config.ts
  */
@@ -32,31 +32,6 @@ export function newSite(): SiteConfig {
   };
 }
 
-const defaultSites = [newSite()];
-
-/**
- * 获得网站的配置信息，密码需要用Base64解码
- * @returns SiteConfig[]
- */
-export function getSites(): SiteConfig[] {
-  const sites: SiteConfig[] = store.storeSettingsGet('sites', defaultSites);
-  sites.forEach((site) => {
-    site.password = site.password && Base64.decode(site.password);
-  });
-  return sites;
-}
-
-/**
- * 保存网站配置信息，密码以Base64的方式保存
- * @param sites
- */
-export function saveSites(sites: SiteConfig[]) {
-  sites.forEach((site) => {
-    site.password = site.password && Base64.encode(site.password);
-  });
-  store.storeSettingsSet('sites', sites);
-}
-
 export function saveNotCheck(notcheck: boolean) {
   return store.storeSettingsSet('notcheck', notcheck);
 }
@@ -76,4 +51,8 @@ export function getAbstractNumber(): number {
 export function getArticleID(url: string, siteUrl: string, username: string) {
   const storeName = ['cache', 'post', filenamifyUrl(siteUrl), filenamifyUrl(username)].join('-').toString();
   return store.storeGet(storeName, url);
+}
+
+export function getTheme(): boolean {
+  return store.getTheme();
 }

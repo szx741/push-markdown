@@ -29,7 +29,6 @@
     "postinstall": "cross-env ELECTRON_RUN_AS_NODE=1 npx --no-install electron ./scripts/update-electron-vendors.js "
   },
   "dependencies": {
-    "bluebird": "^3.7.2",
     "core-js": "^3.23.5",
     "dayjs": "^1.11.4",
     "electron-log": "^4.4.8",

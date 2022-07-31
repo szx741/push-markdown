@@ -1,12 +1,12 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-07-28 19:55:03
+ * @LastEditTime: 2022-07-31 22:20:49
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\MainComp.vue
 -->
 <script setup lang="ts">
-  import { onMounted, ref, toRaw, watch } from 'vue';
+  import { ref, toRaw, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
 
   import FilesViewer from './FilesViewer.vue';
@@ -14,11 +14,13 @@
   import Welcome from './Welcome.vue';
   import Markdown from './Markdown.vue';
   import Settings from './Settings.vue';
+  import '#preload';
 
   import { nodePath, ipc, nodeFs, store } from '#preload';
   import { getTabs, getCurrentTab, saveTabs, saveCurrentTab, Tab } from '/@/logic/useRecord';
   import * as utils from '/@/logic/utils';
   import * as statusBar from '/@/logic/statusBar';
+  import { getTheme } from '../logic/config';
 
   const tabs = ref(getTabs()), // 保存标签
     currIndex = ref(getCurrentTab()),
@@ -27,7 +29,8 @@
     { t } = useI18n(),
     appDir = nodePath.pathDirname(ipc.syncMsg('__static')),
     pathDir = ref(nodePath.pathDirname(tabs.value[currIndex.value]?.filePath || appDir)),
-    currPost = ref();
+    theme = ref(getTheme());
+
   watch(tabs, (value) => saveTabs(toRaw(value)), { deep: true });
   watch(
     currIndex,
@@ -76,11 +79,10 @@
     openFile(utils.getSampleFile());
   });
 
-  // onMounted(() => {
-  //   // ipc.receive('menu.theme', (theme: any) => {
-  //   //   config.setTheme(theme);
-  //   // });
-  // });
+  ipc.receive('menu.theme', (newTheme: boolean) => {
+    theme.value = newTheme;
+    console.log(theme.value);
+  });
 
   // 打开文件
   function openFile(filePath: string) {
@@ -196,14 +198,10 @@
 </script>
 
 <template>
-  <div id="drag" class="out-root" @dragover="fileDragover" @drop="fileDrop">
-    <div v-if="showFile" class="file-box">
-      <div class="file-box-header">
-        <p> {{ pathDir }}</p>
-      </div>
-      <hr />
-      <FilesViewer :path-dir="pathDir" @forward="forward" @back="back" @open-file="openFile($event)" />
-    </div>
+  <div id="drag" class="out-root markdown-body" :class="{ 'markdown-github-dark': !theme }" @dragover="fileDragover" @drop="fileDrop">
+    <template v-if="showFile">
+      <FilesViewer :theme="theme" :path-dir="pathDir" @forward="forward" @back="back" @open-file="openFile($event)" />
+    </template>
 
     <div class="root">
       <div class="tab-titles">
@@ -245,79 +243,33 @@
 <style lang="scss" scoped>
   .out-root {
     display: flex;
+    flex-direction: row;
     height: 100%;
     width: 100%;
-  }
-  .file-box {
-    float: left;
-    max-width: 300px;
-    min-width: 150px;
-    // width: 250px;
-    width: calc(15%); /*左侧初始化宽度*/
-    overflow: auto;
-    margin: 5px 0;
-    padding: 0px 12px 10px;
-    border-right: 2px solid #f1f1f1;
-
-    &::-webkit-scrollbar {
-      width: 4px;
-      height: 1px;
-    }
-    /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
-    &::-webkit-scrollbar-thumb {
-      border-radius: 4px;
-      background: #d4d4d4;
-    }
-    /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
-    &::-webkit-scrollbar-track {
-      border-radius: 4px;
-      background: #f1f1f1;
-    }
-  }
-  .file-box-header {
-    background-color: white;
-    opacity: 0.9;
-    position: sticky;
-    top: 0;
-    z-index: 99;
-    p {
-      width: 100%;
-      color: #212;
-      white-space: unwrap;
-      font-weight: bold;
-      word-break: break-all;
-      padding: 0;
-    }
   }
 
   .root {
     height: 100%;
-    width: 100%;
-    box-sizing: border-box;
+    width: 80%;
     overflow: hidden;
-    // display: flex;
+    display: flex;
     flex-direction: column;
-    flex: 1;
   }
 
   .tab-titles {
-    background-color: rgb(248, 246, 246);
-    padding: 3px 3px 0 3px;
-    height: 30px;
+    height: 32px;
     display: flex;
     flex-direction: row;
     overflow-y: hidden;
     overflow-x: auto;
 
-    // &::-webkit-scrollbar {
-    //   display: none;
-    // }
-    &::-webkit-scrollbar-track {
-      border-radius: 5px;
-    }
     &::-webkit-scrollbar {
       height: 3px; /*设置滚动条样式*/
     }
+    &::-webkit-scrollbar-track {
+      border-radius: 5px;
+    }
+
     &::-webkit-scrollbar-thumb {
       border-radius: 5px;
       background-color: rgb(175, 175, 175);
@@ -326,7 +278,6 @@
 
   .tab-contents {
     height: calc(100% - 32px);
-    flex-grow: 1;
   }
 
   .tab-content {

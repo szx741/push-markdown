@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:09:35
- * @LastEditTime: 2022-07-28 20:23:32
+ * @LastEditTime: 2022-07-31 15:40:41
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\store.ts
  */
@@ -12,9 +12,6 @@ const storeRecord = new Store({ name: 'use-record' });
 export const store = {
   getLanguage() {
     return storeSettings.get('language', 'zh');
-  },
-  getTheme(): any {
-    return storeSettings.get('theme', 'github');
   },
   getStoreSettingsClear() {
     return storeSettings.clear();
@@ -49,5 +46,12 @@ export const store = {
   storeGet(name: string, key: any, value?: any): any {
     const store = new Store({ name });
     return store.get(key);
+  },
+  getTheme(): any {
+    return storeSettings.get('theme', true);
+  },
+  setTheme(theme: boolean) {
+    //light是true,dark是false
+    return storeSettings.set('theme', theme);
   }
 };

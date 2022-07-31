@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-11-14 19:41:30
- * @LastEditTime: 2022-07-28 11:45:22
+ * @LastEditTime: 2022-07-31 21:08:30
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\FilesViewer.vue
 -->
@@ -60,28 +60,31 @@
 </script>
 
 <template>
-  <table>
-    <tbody>
-      <tr class="clickable" @click="$emit('back')">
-        <td class="icon-row">
+  <div class="file-box scroll-bar">
+    <div class="file-box-header">
+      <p> {{ pathDir }}</p>
+      <div class="div-hr"></div>
+    </div>
+    <div class="file-box-table">
+      <div class="file-box-tr" @click="$emit('back')">
+        <div class="icon-row">
           <svg class="icon-folder" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
             <path
               d="M527.9 224H480v-48c0-26.5-21.5-48-48-48H272l-64-64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h400c16.5 0 31.9-8.5 40.7-22.6l79.9-128c20-31.9-3-73.4-40.7-73.4zM48 118c0-3.3 2.7-6 6-6h134.1l64 64H426c3.3 0 6 2.7 6 6v42H152c-16.8 0-32.4 8.8-41.1 23.2L48 351.4zm400 282H72l77.2-128H528z"
             />
           </svg>
-        </td>
-        <td>...</td>
-        <td></td>
-      </tr>
+        </div>
+        <div>...</div>
+      </div>
 
-      <tr v-for="file in files" :key="file.name" class="clickable" @click="onFileClick(file)">
-        <td class="icon-row">
+      <div v-for="file in files" :key="file.name" class="file-box-tr" @click="onFileClick(file)">
+        <div class="icon-row">
           <svg v-if="file.directory" class="icon-folder" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path
               d="M464 128H272l-54.63-54.63c-6-6-14.14-9.37-22.63-9.37H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V176c0-26.51-21.49-48-48-48zm0 272H48V112h140.12l54.63 54.63c6 6 14.14 9.37 22.63 9.37H464v224z"
             />
           </svg>
-          <svg v-else class="icon-file" t="1637054972741" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2452" width="18" height="18">
+          <svg v-else class="icon-file" t="1637054972741" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2452">
             <path
               d="M854.6 288.6L639.4 73.4c-6-6-14.1-9.4-22.6-9.4H192c-17.7 0-32 14.3-32 32v832c0 17.7 14.3 32 32 32h640c17.7 0 32-14.3 32-32V311.3c0-8.5-3.4-16.7-9.4-22.7zM790.2 326H602V137.8L790.2 326z m1.8 562H232V136h302v216c0 23.2 18.8 42 42 42h216v494z"
               p-id="2453"
@@ -91,31 +94,63 @@
               p-id="2454"
             ></path>
           </svg>
-        </td>
-        <td>{{ file.name }}</td>
-      </tr>
-    </tbody>
-  </table>
+        </div>
+        <div>{{ file.name }}</div>
+      </div>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-  table {
-    border-collapse: collapse;
+<style lang="scss" scoped>
+  .file-box {
+    max-width: 300px;
+    min-width: 150px;
+    width: 20%; /*左侧初始化宽度*/
+    margin: 5px 0;
+    padding: 0 8px 0 10px;
+    border-right: 2px solid;
+    overflow-y: auto;
   }
-  table,
-  tbody {
+  .scroll-bar::-webkit-scrollbar {
+    width: 4px;
+    height: 1px;
+  }
+
+  .file-box-header {
+    background-color: var(--color-canvas-default);
+    padding-top: 10px;
+    opacity: 0.9;
+    top: 0;
+    position: sticky;
+    z-index: 99;
+    p {
+      font-weight: bold;
+      word-break: break-all;
+      margin-bottom: 5px;
+    }
+  }
+  .file-box-hr {
+    border-bottom: 2px solid var(--color-prettylights-syntax-comment);
+  }
+
+  .file-box-table {
+    display: flex;
+    flex-direction: column;
     width: 100%;
   }
-  .clickable {
+  .file-box-tr {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
     cursor: pointer;
-    height: 30px;
-    width: 100%;
-    border-bottom: 1px solid #dee2e6;
-    justify-content: center;
+    border-bottom: 1px solid;
+    margin: 1px;
   }
 
   .icon-row {
-    margin-left: 10em;
+    margin-top: 6px;
     width: 2em;
   }
   .icon-folder {
