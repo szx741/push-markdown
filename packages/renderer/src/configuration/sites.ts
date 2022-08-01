@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-28 21:32:05
- * @LastEditTime: 2022-07-30 14:57:44
+ * @LastEditTime: 2022-08-01 21:35:39
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\configuration\sites.ts
  */
@@ -16,7 +16,7 @@ export interface Site {
   username: string;
   password: string;
   selected: boolean;
-  articlesId: { [key: string]: number };
+  // articlesId: { [key: string]: string };
 }
 export let publishers: MetaPublisher[] = [];
 export const sites = ref(getSites());
@@ -50,10 +50,9 @@ export function getSites(): Site[] {
 function newSite(): Site {
   return {
     name: 'Sample Site Config',
-    url: 'http://www.example.com/xmlrpc.php',
+    url: 'https://www.example.com/xmlrpc.php',
     username: 'username',
     password: '',
-    selected: false,
-    articlesId: {}
+    selected: false
   };
 }

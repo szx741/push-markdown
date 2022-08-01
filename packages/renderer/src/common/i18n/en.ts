@@ -31,7 +31,7 @@ const en = {
     resetConfirm: 'Confirm to reset all settings ?',
     confirmDelete: 'Confirm Delete',
 
-    renderSettings: 'Render Settings',
+    renderSettings: 'Publish Settings',
     abstract: {
       name: 'Abstract Extraction',
       options: {
@@ -45,14 +45,12 @@ const en = {
     renderFeature: {
       highlight: 'Code Highlight',
       mathjax: 'MathJax Formula',
-      mermaid: 'Mermaid Diagrams',
       options: {
-        previewOnly: 'Preview Only',
-        previewAndPublish: 'Preview and Publish',
-        disable: 'Disable'
+        yes: 'Yes',
+        no: 'No'
       },
       nodes:
-        '[Default] Preview Only：Render only when previewing locally, only pre-processing when publishing, blogs need to configure plugin to render<br/>' +
+        'Preview Only：Render only when previewing locally, only pre-processing when publishing, blogs need to configure plugin to render<br/>' +
         'Preview and publish: Render when local preview and publish, blog needs to configure the corresponding CSS style<br/>' +
         'Disable: Not render when local preview and publish'
     }

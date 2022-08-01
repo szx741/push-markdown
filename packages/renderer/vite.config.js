@@ -1,16 +1,16 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-07-26 15:49:43
+ * @LastEditTime: 2022-08-01 13:00:26
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\vite.config.js
  */
 /* eslint-env node */
-
-import { chrome } from '../../.electron-vendors.cache.json';
-import { join } from 'path';
 import vue from '@vitejs/plugin-vue';
 import { renderer } from 'unplugin-auto-expose';
+import { join } from 'path';
+
+import { chrome } from '../../.electron-vendors.cache.json';
 
 const PACKAGE_ROOT = __dirname;
 

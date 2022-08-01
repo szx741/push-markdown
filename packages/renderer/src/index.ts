@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-07-28 21:41:54
+ * @LastEditTime: 2022-08-01 21:40:15
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\index.ts
  */
@@ -30,6 +30,9 @@ import App from '/@/App.vue';
 import i18n from './common/i18n';
 import outputErrorLog from '/@/logic/errorLog';
 import './common/assets/style.scss';
+import './common/assets/theme/highlight-github.css';
+import './common/assets/theme/highlight-github-dark.css';
+import '/@/common/assets/theme/github-markdown.css';
 const app = createApp(App);
 
 app.config.errorHandler = outputErrorLog;

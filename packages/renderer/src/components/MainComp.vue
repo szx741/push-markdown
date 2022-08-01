@@ -1,12 +1,12 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-07-31 22:20:49
+ * @LastEditTime: 2022-08-01 21:56:41
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\MainComp.vue
 -->
 <script setup lang="ts">
-  import { ref, toRaw, watch } from 'vue';
+  import { nextTick, ref, toRaw, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
 
   import FilesViewer from './FilesViewer.vue';
@@ -14,7 +14,6 @@
   import Welcome from './Welcome.vue';
   import Markdown from './Markdown.vue';
   import Settings from './Settings.vue';
-  import '#preload';
 
   import { nodePath, ipc, nodeFs, store } from '#preload';
   import { getTabs, getCurrentTab, saveTabs, saveCurrentTab, Tab } from '/@/logic/useRecord';
@@ -29,7 +28,8 @@
     { t } = useI18n(),
     appDir = nodePath.pathDirname(ipc.syncMsg('__static')),
     pathDir = ref(nodePath.pathDirname(tabs.value[currIndex.value]?.filePath || appDir)),
-    theme = ref(getTheme());
+    theme = ref(getTheme()),
+    tabScroll = ref();
 
   watch(tabs, (value) => saveTabs(toRaw(value)), { deep: true });
   watch(
@@ -81,7 +81,6 @@
 
   ipc.receive('menu.theme', (newTheme: boolean) => {
     theme.value = newTheme;
-    console.log(theme.value);
   });
 
   // 打开文件
@@ -156,21 +155,22 @@
     tabs.value.splice(pos, 0, tab);
     currIndex.value = pos;
   }
-  async function refreshTab(index: any) {
-    const tab = tabs.value[index];
-    const file = tab.filePath;
-    if (tab.type === 'markdown' && tab.modified && !utils.isSampleFile(tab.filePath)) {
+  function refreshTab(index: number) {
+    const tab = tabs.value[index],
+      file = tab.filePath;
+    if (tab.type !== 'markdown') return;
+    if (tab.modified && !utils.isSampleFile(tab.filePath)) {
       statusBar.show(t('reloadNeedSaveFirst'));
       return;
     }
-    await fileEmpty(index);
-    statusBar.show(t('refreshSuccess'));
-    tabs.value[index].filePath = file;
-  }
-  async function fileEmpty(index: any) {
     tabs.value[index].filePath = 'tmpClose';
+    statusBar.show(t('refreshSuccess'));
+    nextTick(() => {
+      tabs.value[index].filePath = file;
+    });
   }
-  async function closeTab(index: any) {
+
+  function closeTab(index: any) {
     const tab = tabs.value[index];
     if (tab.type === 'markdown' && tab.modified && !utils.isSampleFile(tab.filePath)) {
       if (!window.confirm(t('closeModifiedFile'))) {
@@ -195,19 +195,35 @@
       saveCurrentTab(currIndex.value);
     }
   }
+
+  function onWheel(event: WheelEvent) {
+    //禁止事件默认行为（此处禁止鼠标滚轮行为关联到"屏幕滚动条上下移动"行为）
+    event.preventDefault();
+    //设置鼠标滚轮滚动时屏幕滚动条的移动步长
+    var step = 50;
+    if (event.deltaY < 0) {
+      //向上滚动鼠标滚轮，屏幕滚动条左移
+      tabScroll.value.scrollLeft -= step;
+    } else {
+      //向下滚动鼠标滚轮，屏幕滚动条右移
+      tabScroll.value.scrollLeft += step;
+    }
+  }
+
+  console.log(store.getokok());
 </script>
 
 <template>
   <div id="drag" class="out-root markdown-body" :class="{ 'markdown-github-dark': !theme }" @dragover="fileDragover" @drop="fileDrop">
     <template v-if="showFile">
-      <FilesViewer :theme="theme" :path-dir="pathDir" @forward="forward" @back="back" @open-file="openFile($event)" />
+      <FilesViewer :path-dir="pathDir" @forward="forward" @back="back" @open-file="openFile($event)" />
     </template>
 
     <div class="root">
-      <div class="tab-titles">
+      <div ref="tabScroll" class="tab-titles" @wheel="onWheel">
         <TabTitle
           v-for="(tab, i) in tabs"
-          :key="tab.type"
+          :key="tab.filePath"
           :tab-type="tab.type"
           :tab-title="tabTitle(tab)"
           :selected="currIndex === i"
@@ -230,7 +246,7 @@
           </template>
 
           <template v-else-if="tab.type === 'markdown'">
-            <Markdown :file-path="tab.filePath || ''" :active="currIndex === i" :num="i" @set-modified="setModified"> </Markdown>
+            <Markdown :file-path="tab.filePath || ''" :active="currIndex === i" :index="i" @set-modified="setModified"> </Markdown>
           </template>
         </div>
       </div>
@@ -250,7 +266,7 @@
 
   .root {
     height: 100%;
-    width: 80%;
+    width: 85%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -258,6 +274,7 @@
 
   .tab-titles {
     height: 32px;
+    width: 100%;
     display: flex;
     flex-direction: row;
     overflow-y: hidden;

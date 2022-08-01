@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:03:15
- * @LastEditTime: 2022-07-29 17:08:06
+ * @LastEditTime: 2022-08-01 16:09:22
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\ipcWithMain.ts
  */
@@ -43,7 +43,7 @@ export const ipc = {
       return () => {
         ipcRenderer.removeListener(channel, subscription);
       };
-    } else return () => {};
+    }
   },
   syncMsg: (channel: string, data?: any) => {
     if (validChannels.includes(channel)) {

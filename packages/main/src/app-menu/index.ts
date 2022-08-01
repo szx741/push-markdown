@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 19:57:31
- * @LastEditTime: 2022-07-31 15:35:23
+ * @LastEditTime: 2022-08-01 15:12:30
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\app-menu\index.ts
  */
@@ -235,7 +235,7 @@ export function menuInit(mainWindow: BrowserWindow) {
         {
           label: l.light,
           type: 'radio',
-          checked: theme === 'light',
+          checked: theme,
           click: function () {
             setThemeConf(true);
           }
@@ -243,7 +243,7 @@ export function menuInit(mainWindow: BrowserWindow) {
         {
           label: l.dark,
           type: 'radio',
-          checked: theme === 'dark',
+          checked: !theme,
           click: function () {
             setThemeConf(false);
           }

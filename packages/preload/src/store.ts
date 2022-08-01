@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:09:35
- * @LastEditTime: 2022-07-31 15:40:41
+ * @LastEditTime: 2022-08-01 23:12:13
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\store.ts
  */
@@ -53,5 +53,17 @@ export const store = {
   setTheme(theme: boolean) {
     //light是true,dark是false
     return storeSettings.set('theme', theme);
+  },
+  getokok() {
+    return [storeSettings.store, storeRecord.store, storeSettings.path];
   }
 };
+
+
+//   [site.url && site.username]:{
+//     [post.url]: blogID
+//   }
+
+// imgMap{
+
+// }

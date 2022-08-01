@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-07-29 22:10:19
+ * @LastEditTime: 2022-08-01 21:47:19
  * @Description: electron的应用启动
  * @FilePath: \push-markdown\packages\main\src\index.ts
  */
@@ -51,7 +51,6 @@ app
     ipcMainCollection;
     protocol.registerFileProtocol('atom', (request, callback) => {
       const url = request.url.replace(/^atom:\/\//, '');
-      // Decode URL to prevent errors when loading filenames with UTF-8 chars or chars like "#"
       const decodedUrl = decodeURI(url); // Needed in case URL contains spaces
       try {
         return callback({ path: path.normalize(decodedUrl) });

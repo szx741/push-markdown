@@ -8,7 +8,6 @@
   import { resetConfiguration } from '../configuration/configurate';
   import { notifyConfigChanged } from '../mdRenderer';
   import { sites, addSite, delSite, saveSites } from '../configuration/sites';
-  import { renderConf, saveRenderConf, RenderMode } from '../configuration/render-conf';
   import { publishConf, savePublishConf, AbstractMode } from '../configuration/publish-conf';
 
   const { t } = useI18n();
@@ -18,19 +17,16 @@
     debounce((value) => {
       saveSites(toRaw(value));
       statusBar.show(t('setting.saveSettings'));
-    }, 1000)
+    }, 1000),
+    { deep: true }
   );
-  watch(renderConf, (value) => {
-    saveRenderConf(toRaw(value));
-    notifyConfigChanged();
-    statusBar.show(t('setting.saveSettings'));
-  });
   watch(
     publishConf,
     debounce((value) => {
       savePublishConf(toRaw(value));
       statusBar.show(t('setting.saveSettings'));
-    }, 1000)
+    }, 1000),
+    { deep: true }
   );
 
   function resetSettings() {
@@ -71,7 +67,11 @@
             <input id="password" v-model="site.password" type="password" />
           </div>
 
-          <img src="../common/assets/close.png" class="delete" @click="delSite(i)" />
+          <svg class="delete" viewBox="0 0 1024 1024" @click="delSite(i)">
+            <path
+              d="M576 512l277.333333 277.333333-64 64-277.333333-277.333333L234.666667 853.333333 170.666667 789.333333l277.333333-277.333333L170.666667 234.666667 234.666667 170.666667l277.333333 277.333333L789.333333 170.666667 853.333333 234.666667 576 512z"
+            ></path>
+          </svg>
         </div>
       </template>
 
@@ -84,11 +84,11 @@
       <div class="abstract-select">
         <label for="abstract">{{ $t('setting.abstract.name') }}</label>
         <select id="abstract" v-model="publishConf.abstractMode">
-          <option value="{{AbstractMode.Empty}}">{{ $t('setting.abstract.options.empty') }}</option>
-          <option value="{{AbstractMode.Article}}">{{ $t('setting.abstract.options.article') }}</option>
-          <option value="{{AbstractMode.Title}}">{{ $t('setting.abstract.options.title') }}</option>
+          <option :value="AbstractMode.Empty">{{ $t('setting.abstract.options.empty') }}</option>
+          <option :value="AbstractMode.Article">{{ $t('setting.abstract.options.article') }}</option>
+          <option :value="AbstractMode.Title">{{ $t('setting.abstract.options.title') }}</option>
         </select>
-        <div v-if="publishConf.abstractMode == AbstractMode.Article" class="abstract-article">
+        <div v-if="publishConf.abstractMode === AbstractMode.Article" class="abstract-article">
           <label>{{ $t('setting.abstract.abstractNum') }}</label>
           <input v-model="publishConf.abstractNum" class="abstract-article-input" type="number" />
         </div>
@@ -99,17 +99,16 @@
       <p>
         <label for="highlight">{{ $t('setting.renderFeature.highlight') }}</label>
         <select id="highlight" v-model="publishConf.highlight">
-          <option value="preview">{{ $t('setting.renderFeature.options.previewOnly') }}</option>
-          <option value="publish">{{ $t('setting.renderFeature.options.previewAndPublish') }}</option>
-          <option value="none">{{ $t('setting.renderFeature.options.disable') }}</option>
+          <option :value="true">{{ $t('setting.renderFeature.options.yes') }}</option>
+          <option :value="false">{{ $t('setting.renderFeature.options.no') }}</option>
         </select>
       </p>
 
       <p>
         <label for="math">{{ $t('setting.renderFeature.mathjax') }}</label>
-        <select id="math" v-model="renderConf.mathjax">
-          <option value="publish">{{ $t('setting.renderFeature.options.previewAndPublish') }}</option>
-          <option value="none">{{ $t('setting.renderFeature.options.disable') }}</option>
+        <select id="math" v-model="publishConf.mathjax">
+          <option :value="true">{{ $t('setting.renderFeature.options.yes') }}</option>
+          <option :value="false">{{ $t('setting.renderFeature.options.no') }}</option>
         </select>
       </p>
 
@@ -154,12 +153,12 @@
   }
 
   .abstract-article {
-    margin-left: 20px;
+    margin-left: 30px;
   }
 
   .abstract-article-input {
-    margin-left: 10px;
-    width: 60px;
+    margin-left: 5px;
+    width: 40px;
   }
 
   .settings {
@@ -200,6 +199,7 @@
   }
 
   select {
+    margin-left: 5px;
     outline: none;
   }
 

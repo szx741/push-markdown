@@ -10,10 +10,10 @@
   const props = defineProps<{
       filePath: string;
       active: boolean;
-      num: number;
+      index: number;
     }>(),
     emit = defineEmits<{
-      (e: 'setModified', i: number, modified: boolean): void;
+      (e: 'setModified', index: number, modified: boolean): void;
     }>(),
     filePath = toRef(props, 'filePath'),
     modified = ref(false),
@@ -27,9 +27,9 @@
   watch(filePath, () => {
     readFile();
   });
-  watch(fileText, () => debounceUpdate());
+  watch(fileText, () => postRender());
   watch(modified, (value) => {
-    emit('setModified', props.num, value);
+    emit('setModified', props.index, value);
   });
 
   readFile();
@@ -45,17 +45,15 @@
   });
 
   onUnmounted(() => {
-    destory();
+    if (destory) destory();
   });
 
-  function debounceUpdate() {
+  function postRender() {
     post.value = mdRender(fileText.value, filePath.value, true);
   }
 
   function onSave() {
-    if (props.active && modified.value) {
-      writeFile();
-    }
+    if (props.active && modified.value) writeFile();
   }
   function readFile() {
     if (filePath.value != 'tmpClose') {
@@ -102,7 +100,7 @@
     <div class="container">
       <!-- 编辑器  -->
       <div class="left">
-        <textarea ref="textarea" v-model="fileText" class="left-content scroll-bar" title="text" @input="update"></textarea>
+        <textarea ref="textarea" v-model="fileText" class="left-content scroll-bar" title="text" spellcheck="false" @input="update"></textarea>
       </div>
 
       <div class="right scroll-bar">
@@ -206,7 +204,7 @@
     background-color: rgb(255, 255, 255);
     color: rgb(77, 77, 77);
     cursor: auto;
-    padding: 35px 35px 0;
+    padding: 35px 32px 0 35px;
     margin: 0;
     box-sizing: border-box;
   }

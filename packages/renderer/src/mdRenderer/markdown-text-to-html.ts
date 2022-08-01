@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2022-07-30 13:33:14
+ * @LastEditTime: 2022-08-01 20:02:13
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
@@ -12,12 +12,10 @@ import { htmlToText } from 'html-to-text';
 import MarkdownIt from 'markdown-it';
 import { slugify } from 'transliteration';
 
-import {} from '../configuration/render-conf';
 import { AbstractMode, publishConf } from '../configuration/publish-conf';
 
 import * as config from '../logic/config';
 import { fileName } from '../logic/utils';
-import * as mermaidRenderer from './mermaid-front-renderer';
 
 const blank = decodeURI('%E3%80%80');
 
@@ -42,9 +40,10 @@ export interface Post {
   authors: string[] | null;
   date: Date | null;
   abstract: string | null;
+  upload: string;
 }
 
-export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, isPreview = true) {
+export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, isPreview: any) {
   const startTime = getTime();
   fileText = (fileText && fileText.trim()) || '';
   // 解析markdown，content包含yaml和markdown正文两部分
@@ -59,7 +58,7 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
   const htmlText = md.render(markdown, env);
 
   // 处理markdown的html纯文本
-  const html = handleMarkdownHTML(htmlText, filePath);
+  const { upload, html } = handleMarkdownHTML(htmlText, filePath, isPreview);
 
   // 变成一个完整的Post
   const post: Post = {
@@ -67,7 +66,8 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
     title: attr.title || fileName(filePath) || 'Unnamed',
     file: filePath,
     src: fileText,
-    html
+    html,
+    upload
   };
 
   // 处理Post
@@ -89,7 +89,7 @@ function extractFrontMatter(contentAttr: any) {
   };
   attr.title = toStr(contentAttr.title);
   attr.abstract = toStr(contentAttr.abstract);
-  attr.url = contentAttr.url && slugify(toStr(contentAttr.url));
+  if (toStr(contentAttr.url)) attr.url = slugify(toStr(contentAttr.url));
   attr.tags = toStrArr(contentAttr.tags || contentAttr.tag);
   attr.categories = toStrArr(contentAttr.categories || contentAttr.category);
   attr.authors = toStrArr(contentAttr.authors || contentAttr.author);
@@ -97,7 +97,7 @@ function extractFrontMatter(contentAttr: any) {
   return attr;
 }
 
-function handleMarkdownHTML(htmlText: any, filePath: string) {
+function handleMarkdownHTML(htmlText: any, filePath: string, isPreview: any) {
   // 创建HTML样式（非文本格式）
   const div = createInvisibleDiv(document, htmlText);
   // 把tab键转换成Emsp，（因为tab在网页里面只是一个半角空格，这里转换成全角空格）
@@ -105,21 +105,19 @@ function handleMarkdownHTML(htmlText: any, filePath: string) {
 
   // 替换本地文件URL
   replaceLocalImages(div, nodePath.pathDirname(filePath));
-  // 代码高亮
-  // if (shouldRenderFeature(isPreview, renderConfig.highlight)) {
+
+  // 保存一份没有被代码高亮，在上传的时候用这份
+  const upload = div.innerHTML;
+
+  // 代码高亮，在本地一定会用的
   highlightCode(div);
-  // }
-  // 是否渲染mermaid
-  // if (shouldRenderFeature(isPreview, renderConfig.mermaid)) {
-  mermaidRenderer.render(div);
-  // }
-  return div.innerHTML;
+
+  return { upload, html: div.innerHTML };
 }
 
 function handlePost(post: Post, html: string) {
   // 如果post的url为空，那么就就title转换成拼音
-  if (post.url === null) post.url = slugify(post.title);
-
+  if (!post.url) post.url = slugify(post.title);
   // 判断摘要从哪里提取
   if (post.abstract === null) {
     switch (publishConf.value.abstractMode) {

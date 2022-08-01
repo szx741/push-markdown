@@ -30,7 +30,7 @@
     editList: Ref<EditItem[]> = ref([]),
     publishing = ref(false),
     confirm = ref(false),
-    aritcleId: Ref<number> = ref(-1),
+    aritcleId: Ref<string> = ref('-1'),
     blogID = ref(0),
     forcedUpdate = ref(false),
     getNetPic = ref(true),
@@ -40,30 +40,30 @@
   const siteToString = (site: any) => `${site.name} [${site.username}] [${site.url}]`;
   const selectedSites = computed(() => sites.value.map((site, index) => (site.selected ? index : undefined)).filter((v) => v !== undefined));
 
-  const menuPublishListen = (evnet: any, ...args: any[]) => {
+  const menuPublishListen = () => {
     // 如果是当前界面并且有文本数据
     if (active.value && post.value) {
       // 展现Publish的面板
       showPublish.value = true;
       // 如果没有设置URL，就会弹出窗口提醒
       if (!post.value.url) confirm.value = true;
-      else {
-        // 根据 markdown发布的url和id来判断发布的模式是自动还是创建新的文章模式
-        for (const site of sites.value) {
-          if (post.value.url && site.articlesId.hasOwnProperty(post.value.url)) {
-            aritcleId.value = site.articlesId[post.value.url];
-            publishMode.value = PublishMode.Auto;
-          } else {
-            publishMode.value = PublishMode.Create;
-          }
-        }
-      }
+      // else {
+      //   // 根据 markdown发布的url和id来判断发布的模式是自动还是创建新的文章模式
+      //   for (const site of sites.value) {
+      //     if (site.articlesId.hasOwnProperty(post.value.url)) {
+      //       aritcleId.value = site.articlesId[post.value.url];
+      //       publishMode.value = PublishMode.Auto;
+      //     } else {
+      //       publishMode.value = PublishMode.Create;
+      //     }
+      //   }
+      // }
     }
   };
   const destory = ipc.receive('menu.publish', menuPublishListen);
 
   onUnmounted(() => {
-    destory();
+    if (destory) destory();
   });
 
   function select(site: Site) {
@@ -85,10 +85,10 @@
       };
 
     try {
-      await publisher.publish(publishParams);
-      // if (published) {
-      //   new Notification(t('publishSuccess'), { body: siteToString(site) });
-      // }
+      const res = await publisher.publish(publishParams);
+      if (res) {
+        new Notification(t('publishSuccess'), { body: siteToString(site) });
+      }
     } catch (e: any) {
       new Notification(t('publishError'), { body: siteToString(site) + '\n' + e.message });
       console.error(e);
@@ -160,120 +160,122 @@
 </script>
 
 <template>
-  <div>
-    <div style="width:100px hight:100px">ninini{{ showPublish }}</div>
-    <div v-if="showPublish" class="publish-wrapper">
-      <div class="overlay"></div>
+  <div v-if="showPublish" class="publish-wrapper">
+    <div class="overlay"></div>
 
-      <div class="dialog publish-container">
-        <div class="dialog-title">
-          <h4>{{ $t('publish.title') }}</h4>
-          <img src="../common/assets/close.png" @click="closePublish" />
+    <div class="dialog publish-container">
+      <div class="dialog-title">
+        <h4>{{ $t('publish.title') }}</h4>
+        <svg viewBox="0 0 1024 1024" @click="closePublish">
+          <path
+            d="M576 512l277.333333 277.333333-64 64-277.333333-277.333333L234.666667 853.333333 170.666667 789.333333l277.333333-277.333333L170.666667 234.666667 234.666667 170.666667l277.333333 277.333333L789.333333 170.666667 853.333333 234.666667 576 512z"
+          ></path>
+        </svg>
+        <div class="close-svg"></div>
+      </div>
+
+      <div class="dialog-body">
+        <div class="publish-sites">
+          <div class="publish-site-text">
+            <span>{{ $t('publish.selectSites') }}</span>
+            <a class="publish-site-edit" href="#" @click="showSettings()">{{ $t('publish.settings') }}</a>
+          </div>
+          <div class="sites">
+            <div v-for="site in sites" :key="site.url" class="site" @click="select(site)">
+              <!-- <div v-for="(site, index) in sites" :key="index" class="site"> -->
+              <input v-model="site.selected" title="select" type="checkbox" />
+              <div class="site-info">
+                <div class="site-name">
+                  <h4>{{ site.name }}</h4>
+                </div>
+                <div class="site-detail">
+                  <span>
+                    <small>{{ site.username }} </small>
+                  </span>
+                  <span>
+                    <small>{{ site.url }}</small>
+                  </span>
+                </div>
+              </div>
+              <div>
+                <span> {{ $t('publish.articleID') }}: </span>
+                {{ aritcleId }}
+              </div>
+            </div>
+          </div>
         </div>
 
+        <div class="publish-mode">
+          <div class="publish-mode-select">
+            <label style="margin-right: 10px" for="publish-mode-select">{{ $t('publish.publishMode') }} </label>
+            <select id="publish-mode-select" v-model="publishMode">
+              <option value="manual">{{ $t('publish.publishModeManual') }}</option>
+              <option value="create">{{ $t('publish.publishModeCreate') }}</option>
+              <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
+            </select>
+            <div v-if="publishMode == PublishMode.Manual">
+              <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
+              <input v-model="blogID" class="publish-article-id" type="number" placeholder="ID" />
+              <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
+              <input v-model="getNetPic" type="checkbox" :disabled="forcedUpdate" />
+              <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>
+              <input v-model="forcedUpdate" type="checkbox" :disabled="getNetPic" />
+            </div>
+            <div v-else-if="publishMode == PublishMode.Auto">
+              <label class="publish-mode-label">{{ $t('publish.notCheckingRemoteImages') }}</label>
+              <input v-model="notCheck" type="checkbox" />
+            </div>
+          </div>
+
+          <div v-if="publishMode == 'manual'" class="publish-modeXXX-hint">{{ $t('publish.publishModeManualHint') }} </div>
+          <div v-if="publishMode == 'auto'" class="publish-modeXXX-hint">{{ $t('publish.publishModeAutoHint') }} </div>
+          <div v-if="publishMode == 'create'" class="publish-modeXXX-hint">{{ $t('publish.publishModeCreateHint') }} </div>
+          <div class="publish-mode-hint" v-html="$t('publish.publishModeHint')"> </div>
+        </div>
+
+        <div class="buttons">
+          <button :disabled="publishing" @click="publish">
+            {{ publishing ? $t('publish.publishing') : $t('publish.publish') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <template v-if="editList.length > 0">
+      <div v-for="(edit, index) in editList" :key="index" class="dialog publish-edit">
+        <div v-if="edit" class="dialog-title">
+          <h4>{{ $t('publish.publishModeConfirm') }}</h4>
+        </div>
         <div class="dialog-body">
-          <div class="publish-sites">
-            <div class="publish-site-text">
-              <span>{{ $t('publish.selectSites') }}</span>
-              <a class="publish-site-edit" href="#" @click="showSettings()">{{ $t('publish.settings') }}</a>
-            </div>
-            <div class="sites">
-              <div v-for="site in sites" :key="site.url" class="site" @click="select(site)">
-                <!-- <div v-for="(site, index) in sites" :key="index" class="site"> -->
-                <input v-model="site.selected" title="select" type="checkbox" />
-                <div class="site-info">
-                  <div class="site-name">
-                    <h4>{{ site.name }}</h4>
-                  </div>
-                  <div class="site-detail">
-                    <span>
-                      <small>{{ site.username }} </small>
-                    </span>
-                    <span>
-                      <small>{{ site.url }}</small>
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <span> {{ $t('publish.articleID') }}: </span>
-                  {{ aritcleId }}
-                </div>
-              </div>
-            </div>
+          <div v-if="edit.site" class="site-detail">
+            <span>{{ edit.site.name }}</span>
+            <span>{{ edit.site.username }}</span>
+            <span>{{ edit.site.url }}</span>
           </div>
-
-          <div class="publish-mode">
-            <div class="publish-mode-select">
-              <label style="margin-right: 10px" for="publish-mode-select">{{ $t('publish.publishMode') }} </label>
-              <select id="publish-mode-select" v-model="publishMode">
-                <option value="manual">{{ $t('publish.publishModeManual') }}</option>
-                <option value="create">{{ $t('publish.publishModeCreate') }}</option>
-                <option value="auto">{{ $t('publish.publishModeAuto') }}</option>
-              </select>
-              <div v-if="publishMode == 'manual'">
-                <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
-                <input v-model="blogID" class="publish-article-id" type="number" placeholder="ID" />
-                <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
-                <input v-model="getNetPic" type="checkbox" :disabled="forcedUpdate" />
-                <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>
-                <input v-model="forcedUpdate" type="checkbox" :disabled="getNetPic" />
-              </div>
-              <div v-else-if="publishMode == 'auto'">
-                <label class="publish-mode-label">{{ $t('publish.notCheckingRemoteImages') }}</label>
-                <input v-model="notCheck" type="checkbox" />
-              </div>
-            </div>
-
-            <div v-if="publishMode == 'manual'" class="publish-modeXXX-hint">{{ $t('publish.publishModeManualHint') }} </div>
-            <div v-if="publishMode == 'auto'" class="publish-modeXXX-hint">{{ $t('publish.publishModeAutoHint') }} </div>
-            <div v-if="publishMode == 'create'" class="publish-modeXXX-hint">{{ $t('publish.publishModeCreateHint') }} </div>
-            <div class="publish-mode-hint" v-html="$t('publish.publishModeHint')"> </div>
+          <div>{{ $t('publish.publishModeOldPost') }}</div>
+          <div v-if="edit.post" class="post-preview">
+            <h1 class="post-preview-title">{{ edit.post.title }}</h1>
+            <div class="post-preview-content" v-html="edit.post.html"></div>
           </div>
-
           <div class="buttons">
-            <button :disabled="publishing" @click="publish">
-              {{ publishing ? $t('publish.publishing') : $t('publish.publish') }}
-            </button>
+            <button @click="() => edit.callback(true)">{{ $t('publish.publishModeEditPost') }}</button>
+            <button @click="() => edit.callback(false)">{{ $t('publish.publishModeCreatePost') }}</button>
           </div>
         </div>
       </div>
+    </template>
 
-      <template v-if="editList.length > 0">
-        <div v-for="(edit, index) in editList" :key="index" class="dialog publish-edit">
-          <div v-if="edit" class="dialog-title">
-            <h4>{{ $t('publish.publishModeConfirm') }}</h4>
-          </div>
-          <div class="dialog-body">
-            <div v-if="edit.site" class="site-detail">
-              <span>{{ edit.site.name }}</span>
-              <span>{{ edit.site.username }}</span>
-              <span>{{ edit.site.url }}</span>
-            </div>
-            <div>{{ $t('publish.publishModeOldPost') }}</div>
-            <div v-if="edit.post" class="post-preview">
-              <h1 class="post-preview-title">{{ edit.post.title }}</h1>
-              <div class="post-preview-content" v-html="edit.post.html"></div>
-            </div>
-            <div class="buttons">
-              <button @click="() => edit.callback(true)">{{ $t('publish.publishModeEditPost') }}</button>
-              <button @click="() => edit.callback(false)">{{ $t('publish.publishModeCreatePost') }}</button>
-            </div>
-          </div>
-        </div>
-      </template>
-
-      // 如果当前markdown没有url标签，那么发布的时候就会弹出是否继续或者回退的界面
-      <div v-if="confirm" class="dialog publish-confirm">
-        <div class="dialog-title">
-          <h4>{{ t('publish.confirmUrlTitle') }}</h4>
-        </div>
-        <div class="dialog-body">
-          <div class="publish-confirm-message weighted">{{ t('publish.confirmUrlMessage') }}</div>
-          <div class="buttons">
-            <button @click="closePublish">{{ t('publish.confirmUrlCancel') }}</button>
-            <button @click="confirmNeutral">{{ t('publish.confirmUrlOpenSample') }}</button>
-            <button @click="confirmYes">{{ t('publish.confirmUrlContinue') }}</button>
-          </div>
+    // 如果当前markdown没有url标签，那么发布的时候就会弹出是否继续或者回退的界面
+    <div v-if="confirm" class="dialog publish-confirm">
+      <div class="dialog-title">
+        <h4>{{ t('publish.confirmUrlTitle') }}</h4>
+      </div>
+      <div class="dialog-body">
+        <div class="publish-confirm-message weighted">{{ t('publish.confirmUrlMessage') }}</div>
+        <div class="buttons">
+          <button @click="closePublish">{{ t('publish.confirmUrlCancel') }}</button>
+          <button @click="confirmNeutral">{{ t('publish.confirmUrlOpenSample') }}</button>
+          <button @click="confirmYes">{{ t('publish.confirmUrlContinue') }}</button>
         </div>
       </div>
     </div>
@@ -304,10 +306,6 @@
     flex-direction: column;
   }
 
-  img {
-    background-color: whitesmoke;
-  }
-
   .overlay {
     position: absolute;
     left: 0;
@@ -336,9 +334,15 @@
     }
   }
 
+  .publish-mode {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
   .publish-mode-select {
     display: flex;
     align-items: center;
+    flex-direction: row;
     height: 30px;
   }
   .publish-mode-label {
@@ -352,7 +356,7 @@
 
   .publish-modeXXX-hint {
     font-size: 0.9em;
-    margin-top: 5px;
+    margin: 5px 0;
   }
 
   .publish-mode-hint {
@@ -377,13 +381,13 @@
       text-align: center;
     }
 
-    img {
+    svg {
       margin-right: 8px;
-      height: 19px;
-      background-color: transparent;
+      height: 22px;
+      // background-color: transparent;
 
       &:hover {
-        background-color: #dddddd;
+        background-color: #aaa;
       }
     }
   }

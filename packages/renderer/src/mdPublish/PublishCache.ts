@@ -1,14 +1,13 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2022-07-23 21:25:42
+ * @LastEditTime: 2022-08-01 21:34:57
  * @Description: 文章、图片发布缓存，避免文章、图片重复发布
- * @FilePath: \push-markdown\packages\renderer\src\logic\publisher\PublishCache.ts
+ * @FilePath: \push-markdown\packages\renderer\src\mdPublish\PublishCache.ts
  */
 
 'use strict';
 
-import filenamifyUrl from 'filenamify-url';
 import { store, other } from '#preload';
 
 /**
@@ -16,10 +15,9 @@ import { store, other } from '#preload';
  */
 class Cache {
   storeName!: string;
-  constructor(type: any, url: any, user: any) {
-    this.storeName = ['cache', type, filenamifyUrl(url), filenamifyUrl(user)].join('-').toString();
-
-    console.log('this.store.path:', store.newStore(this.storeName));
+  constructor(type: string, uid: string) {
+    // this.storeName = ['cache', type, filenamifyUrl(url), filenamifyUrl(user)].join('-').toString();
+    // console.log('this.store.path:', store.newStore(this.storeName));
   }
 
   async put(object: any, data: any) {
@@ -39,7 +37,7 @@ class Cache {
       const key = this.key(object);
       // console.log(key);
       if (key) {
-        console.log(this.storeName, key, store.storeGet(this.storeName, key));
+        // console.log(this.storeName, key, store.storeGet(this.storeName, key));
         return store.storeGet(this.storeName, key);
       }
     }
@@ -55,8 +53,8 @@ class Cache {
  * 文章缓存，避免文章重复创建（已有文章直接编辑）。根据post.url区分。
  */
 export class PostCache extends Cache {
-  constructor(url: any, user: any) {
-    super('post', url, user);
+  constructor(uid: string) {
+    super('post', uid);
   }
 
   async put(post: any, data: any) {
@@ -76,8 +74,8 @@ export class PostCache extends Cache {
  * 图片缓存，避免重复上传。根据文件哈希值区分。
  */
 export class FileCache extends Cache {
-  constructor(url: any, user: any) {
-    super('media', url, user);
+  constructor(uid: string) {
+    super('media', uid);
   }
 
   async put(file: any, data: any) {

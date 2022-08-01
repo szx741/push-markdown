@@ -51,3 +51,62 @@ h6 {
   font-size: 12px;
   font-weight: 600;
 }
+
+/***************************** 自定义区间开始 ****************************/
+.markdown-body {
+  .scroll-bar {
+    /*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
+    &::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background: var(--color-canvas-subtle);
+    }
+    /*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
+    }
+  }
+
+  .left-content {
+    color: var(--color-fg-default);
+    background-color: var(--color-canvas-default);
+  }
+  svg {
+    fill: var(--color-fg-default);
+  }
+  .file-box {
+    border-right-color: var(--color-neutral-muted);
+  }
+
+  .file-box-tr,
+  .site input {
+    border-color: var(--color-border-default);
+  }
+
+  .tab.selected {
+    box-shadow: 0px -5px 10px -10px var(--color-fg-default) inset;
+    background-color: var(--color-canvas-default);
+  }
+
+  .tab img:hover {
+    background-color: var(--color-prettylights-syntax-comment);
+  }
+
+  .abstract {
+    border-left-color: var(--color-border-default);
+  }
+
+  .tab {
+    background-color: var(--color-border-default);
+  }
+
+  .tab-titles {
+    background-color: var(--color-neutral-muted);
+  }
+  .dialog {
+    background-color: var(--color-canvas-default);
+  }
+  .site {
+    background-color: var(--color-canvas-subtle);
+  }
+}

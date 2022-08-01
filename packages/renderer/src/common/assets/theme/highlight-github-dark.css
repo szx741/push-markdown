@@ -1,0 +1,77 @@
+.markdown-github-dark.markdown-body .hljs {
+  color: #c9d1d9;
+  /* background: #0d1117; */
+}
+.markdown-github-dark.markdown-body .hljs-doctag,
+.markdown-github-dark.markdown-body .hljs-keyword,
+.markdown-github-dark.markdown-body .hljs-meta .markdown-github-dark.markdown-body .hljs-keyword,
+.markdown-github-dark.markdown-body .hljs-template-tag,
+.markdown-github-dark.markdown-body .hljs-template-variable,
+.markdown-github-dark.markdown-body .hljs-type,
+.markdown-github-dark.markdown-body .hljs-variable.language_ {
+  color: #ff7b72;
+}
+.markdown-github-dark.markdown-body .hljs-title,
+.markdown-github-dark.markdown-body .hljs-title.class_,
+.markdown-github-dark.markdown-body .hljs-title.class_.inherited__,
+.markdown-github-dark.markdown-body .hljs-title.function_ {
+  color: #d2a8ff;
+}
+.markdown-github-dark.markdown-body .hljs-attr,
+.markdown-github-dark.markdown-body .hljs-attribute,
+.markdown-github-dark.markdown-body .hljs-literal,
+.markdown-github-dark.markdown-body .hljs-meta,
+.markdown-github-dark.markdown-body .hljs-number,
+.markdown-github-dark.markdown-body .hljs-operator,
+.markdown-github-dark.markdown-body .hljs-selector-attr,
+.markdown-github-dark.markdown-body .hljs-selector-class,
+.markdown-github-dark.markdown-body .hljs-selector-id,
+.markdown-github-dark.markdown-body .hljs-variable {
+  color: #79c0ff;
+}
+.markdown-github-dark.markdown-body .hljs-meta .markdown-github-dark.markdown-body .hljs-string,
+.markdown-github-dark.markdown-body .hljs-regexp,
+.markdown-github-dark.markdown-body .hljs-string {
+  color: #a5d6ff;
+}
+.markdown-github-dark.markdown-body .hljs-built_in,
+.markdown-github-dark.markdown-body .hljs-symbol {
+  color: #ffa657;
+}
+.markdown-github-dark.markdown-body .hljs-code,
+.markdown-github-dark.markdown-body .hljs-comment,
+.markdown-github-dark.markdown-body .hljs-formula {
+  color: #8b949e;
+}
+.markdown-github-dark.markdown-body .hljs-name,
+.markdown-github-dark.markdown-body .hljs-quote,
+.markdown-github-dark.markdown-body .hljs-selector-pseudo,
+.markdown-github-dark.markdown-body .hljs-selector-tag {
+  color: #7ee787;
+}
+.markdown-github-dark.markdown-body .hljs-subst {
+  color: #c9d1d9;
+}
+.markdown-github-dark.markdown-body .hljs-section {
+  color: #1f6feb;
+  font-weight: 700;
+}
+.markdown-github-dark.markdown-body .hljs-bullet {
+  color: #f2cc60;
+}
+.markdown-github-dark.markdown-body .hljs-emphasis {
+  color: #c9d1d9;
+  font-style: italic;
+}
+.markdown-github-dark.markdown-body .hljs-strong {
+  color: #c9d1d9;
+  font-weight: 700;
+}
+.markdown-github-dark.markdown-body .hljs-addition {
+  color: #aff5b4;
+  background-color: #033a16;
+}
+.markdown-github-dark.markdown-body .hljs-deletion {
+  color: #ffdcd7;
+  background-color: #67060c;
+}

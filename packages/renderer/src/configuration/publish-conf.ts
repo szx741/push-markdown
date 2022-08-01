@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 20:22:24
- * @LastEditTime: 2022-07-29 21:14:22
+ * @LastEditTime: 2022-08-01 17:42:25
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\configuration\publish-conf.ts
  */
@@ -14,15 +14,10 @@ export enum AbstractMode {
   Empty = 'empty'
 }
 
-enum RenderMode {
-  Preview = 'preview',
-  Publish = 'publish',
-  Forbidden = 'forbidden'
-}
-
 export interface PublishConf {
   abstractMode: AbstractMode;
-  highlight: RenderMode;
+  mathjax: boolean;
+  highlight: boolean;
   abstractNum: number;
 }
 
@@ -35,9 +30,11 @@ export function savePublishConf(config: PublishConf) {
 export function getPublishConf() {
   const defaultValue: PublishConf = {
     abstractMode: AbstractMode.Article,
+    mathjax: true,
     abstractNum: 120,
-    highlight: RenderMode.Preview
+    highlight: false
   };
   const config: PublishConf = store.storeSettingsGet('publish', defaultValue);
+  console.log(config);
   return config;
 }

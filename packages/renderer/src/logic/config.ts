@@ -1,13 +1,13 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-07-31 15:40:35
+ * @LastEditTime: 2022-08-01 21:40:42
  * @Description: user settings
  * @FilePath: \push-markdown\packages\renderer\src\logic\config.ts
  */
 'use strict';
 
-import filenamifyUrl from 'filenamify-url';
+import filenamify from 'filenamify';
 import { Base64 } from 'js-base64';
 import { store } from '#preload';
 
@@ -49,8 +49,8 @@ export function getAbstractNumber(): number {
 }
 
 export function getArticleID(url: string, siteUrl: string, username: string) {
-  const storeName = ['cache', 'post', filenamifyUrl(siteUrl), filenamifyUrl(username)].join('-').toString();
-  return store.storeGet(storeName, url);
+  // const storeName = ['cache', 'post', filenamifyUrl(siteUrl), filenamifyUrl(username)].join('-').toString();
+  // return store.storeGet(storeName, url);
 }
 
 export function getTheme(): boolean {

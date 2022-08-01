@@ -31,7 +31,7 @@ const zh = {
     resetConfirm: '确认重置全部设置为默认值？',
     confirmDelete: '确认删除',
 
-    renderSettings: '渲染设置',
+    renderSettings: '发布设置',
     abstract: {
       name: '摘要自动提取',
       options: {
@@ -44,15 +44,14 @@ const zh = {
     },
 
     renderFeature: {
-      highlight: '代码高亮',
-      mathjax: 'MathJax公式',
-      mermaid: 'Mermaid图表',
+      highlight: '发布的代码是否需要高亮（默认为否）',
+      mathjax: '发布是否渲染MathJax（默认为是），修改此项之后需要重新加载文章',
       options: {
-        previewOnly: '仅预览',
-        previewAndPublish: '预览和发布',
-        disable: '禁用'
+        yes: '是',
+        no: '否'
       },
-      notes: '[默认] 仅预览：只在本地预览时渲染，发布时只做预处理，博客配置插件渲染<br/>' + '预览和发布：本地预览、发布时都渲染，博客需要配置相应的CSS样式<br/>' + '不使用：本地预览、发布时都不渲染'
+      notes:
+        '本地预览高亮代码，不渲染MathJax，但发布时可以按需是否渲染<br/> 选择是，发布的文章会做相应的处理，博客就只需配置css样式<br/> 选择否，发布的文章只是普通处理后的文本，博客需要配置对应的插件才能渲染'
     }
   },
 

@@ -44,61 +44,6 @@
   --color-danger-fg: #cf222e;
 }
 
-/***************************** 自定义区间开始 ****************************/
-
-/*定义滚动条的滑块的样式有圆角和阴影以及自定义的背景色*/
-.markdown-body .scroll-bar::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
-}
-/*定义滚动条所在轨道的样式。有圆角和阴影以及淡色系的背景色*/
-.markdown-body .scroll-bar::-webkit-scrollbar-track {
-  border-radius: 10px;
-  background: var(--color-canvas-subtle);
-}
-
-.markdown-body .left-content {
-  color: var(--color-fg-default);
-  background-color: var(--color-canvas-default);
-}
-
-.markdown-body svg {
-  fill: var(--color-fg-subtle);
-}
-
-.markdown-body .file-box {
-  border-right-color: var(--color-neutral-muted);
-}
-.markdown-body .site {
-  background-color: var(--color-border-default);
-}
-.markdown-body .file-box-tr,
-.markdown-body .site input {
-  border-color: var(--color-border-default);
-}
-.markdown-body .tab.selected {
-  box-shadow: 0px -5px 10px -10px var(--color-fg-default) inset;
-  background-color: var(--color-canvas-default);
-}
-.markdown-body .tab img:hover {
-  background-color: var(--color-prettylights-syntax-comment);
-}
-.markdown-body .abstract {
-  border-left-color: var(--color-border-default);
-}
-.markdown-body .tab {
-  background-color: var(--color-border-default);
-}
-
-.markdown-body .tab-titles {
-  background-color: var(--color-neutral-muted);
-}
-
-.markdown-body .dialog {
-  background-color: var(--color-canvas-subtle);
-}
-/***************************** 自定义区间结束 ****************************/
-
 .markdown-github-dark.markdown-body {
   color-scheme: dark;
   --color-prettylights-syntax-comment: #8b949e;
@@ -143,6 +88,15 @@
   --color-accent-emphasis: #1f6feb;
   --color-attention-subtle: rgba(187, 128, 9, 0.15);
   --color-danger-fg: #f85149;
+}
+
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em;
+}
+code.hljs {
+  padding: 3px 5px;
 }
 
 .markdown-body {

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-07-23 20:00:32
+ * @LastEditTime: 2022-08-01 21:39:07
  * @Description: 主窗口设置
  * @FilePath: \push-markdown\packages\main\src\mainWindow.ts
  */

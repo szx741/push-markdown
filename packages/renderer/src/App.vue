@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-07-31 16:11:50
+ * @LastEditTime: 2022-08-01 21:56:12
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\App.vue
 -->
@@ -24,8 +24,6 @@
 </script>
 
 <style lang="scss">
-  @import '/@/common/assets/theme/github-markdown.css';
-
   #app {
     height: 100%;
   }

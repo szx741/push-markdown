@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:22:43
- * @LastEditTime: 2022-07-29 21:29:50
+ * @LastEditTime: 2022-08-01 17:55:49
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-it-init.ts
  */
@@ -13,9 +13,7 @@ import * as markdownItTableOfContents from 'markdown-it-table-of-contents';
 import mathjax3 from 'markdown-it-mathjax3';
 import * as markdownItTaskCheckbox from 'markdown-it-task-checkbox';
 import uslug from 'uslug';
-
-import { markdownItMermaid } from './markdown-it-mermaid';
-import { renderConf, RenderMode } from '../configuration/render-conf';
+import { publishConf } from './../configuration/publish-conf';
 
 export function markdownItInit() {
   // https://github.com/markdown-it/markdown-it
@@ -47,13 +45,7 @@ export function markdownItInit() {
     divWrap: false
   });
 
-  //  mermaid preprocess
-  // ```mermaid ... ```  ==>  <div class="mermaid">...</div>
-  if (isFeatureEnabled(renderConf.value.mermaid)) {
-    md.use(markdownItMermaid);
-  }
-
-  if (isFeatureEnabled(renderConf.value.mathjax)) {
+  if (publishConf.value.mathjax) {
     md.use(mathjax3);
   }
   const defaultRender =
@@ -83,8 +75,4 @@ export function markdownItInit() {
     return defaultRender(tokens, idx, options, env, self);
   };
   return md;
-}
-
-function isFeatureEnabled(renderMode: RenderMode) {
-  return renderMode === RenderMode.Preview || renderMode === RenderMode.Publish;
 }

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2022-07-30 15:35:56
+ * @LastEditTime: 2022-08-01 21:36:04
  * @Description:文章发布工具。根据type调用不同的实现。目前支持MetaWeblog。
  * @FilePath: \push-markdown\packages\renderer\src\mdPublish\index.ts
  */
@@ -19,13 +19,16 @@
 'use strict';
 
 import MetaWeblog from 'metaweblog-api';
+import filenamify from 'filenamify';
+
+import { nodePath, nodeFs, other, ipc } from '#preload';
 
 import { FileCache, PostCache } from './PublishCache';
-import { nodePath, nodeFs, other, ipc } from '#preload';
 import { Post } from '../mdRenderer/markdown-text-to-html';
 import { promiseConcurrencyLimit } from '../logic/utils';
 import { show } from '../logic/statusBar';
-
+import { Site, sites } from '../configuration/sites';
+import { publishConf, PublishConf } from '../configuration/publish-conf';
 export enum PublishMode {
   Manual = 'manual',
   Auto = 'auto',
@@ -69,20 +72,20 @@ const MEDIA_MIME_TYPES: any = {
  */
 export class MetaPublisher {
   metaWeblog: MetaWeblog;
-  blogId: string;
   username: string;
   password: string;
+  uid: string;
   postCache: PostCache;
   mediaCache: FileCache;
   siteUrl: string;
   constructor(siteUrl: string, username: string, password: string) {
     this.metaWeblog = other.metaWeblog(siteUrl);
     this.siteUrl = siteUrl;
-    this.blogId = '';
+    this.uid = filenamify(`${siteUrl}&&${username}`);
     this.username = username;
     this.password = password;
-    this.postCache = new PostCache(siteUrl, username);
-    this.mediaCache = new FileCache(siteUrl, username);
+    this.postCache = new PostCache(this.uid);
+    this.mediaCache = new FileCache(this.uid);
   }
 
   async publish({ post, blogID, stateHandler, publishMode, mediaMode, getNetPic, notCheck, editHandler }: PublishParams): Promise<boolean> {
@@ -125,14 +128,15 @@ export class MetaPublisher {
     stateHandler(PublishState.STATE_UPLOAD_MEDIA);
 
     const div = document.createElement('div');
-    div.innerHTML = post.html;
+    if (publishConf.value.highlight) div.innerHTML = post.html;
+    else div.innerHTML = post.upload;
 
     // 一次并行传五张图，不能一次性全部发过去，可能会受到服务器的限制
     const handleImage = async (img: HTMLImageElement) => {
       const src = img.getAttribute('src');
       if (src) {
         if (src.startsWith('atom://')) {
-          const file = decodeURI(src.substr('atom://'.length));
+          const file = decodeURI(src.substring(7));
           if (nodeFs.fsExistsSync(file)) {
             let url;
             if (getNetPic && map.size > 0) {
@@ -174,39 +178,40 @@ export class MetaPublisher {
       }
     }
     // 2、否则，从本地缓存查找之前的ID
-    const oldPostId = await this.postCache.get(post);
-    console.log('getOldPost', oldPostId);
-    if (oldPostId) {
-      // console.log('metaweblog old post id', oldPostId);
-      const oldPost = await this.metaWeblog.getPost(oldPostId, this.username, this.password).catch(() => null);
-      // console.log('metaweblog old post', oldPost);
-      // noinspection EqualityComparisonWithCoercionJS
-      if (oldPost && oldPost.postid == oldPostId) {
-        return this.toPost(oldPost);
-      }
-      console.log('本地与网络不一致');
-      console.log('本地缓存的postID', oldPostId);
-      console.log('网络获取的文章', oldPost);
-    }
+    // if (!post.url) return;
+    // const oldPostId = site.articlesId[post.url];
+    // console.log('getOldPost', oldPostId);
+    // if (oldPostId) {
+    //   // console.log('metaweblog old post id', oldPostId);
+    //   const oldPost = await this.metaWeblog.getPost(oldPostId, this.username, this.password).catch(() => null);
+    //   // console.log('metaweblog old post', oldPost);
+    //   // noinspection EqualityComparisonWithCoercionJS
+    //   if (oldPost && oldPost.postid == oldPostId) {
+    //     return this.toPost(oldPost);
+    //   }
+    //   console.log('本地与网络不一致');
+    //   console.log('本地缓存的postID', oldPostId);
+    //   console.log('网络获取的文章', oldPost);
+    // }
     // 3、如果在本地缓存也找不到的话，说明第一次用这个软件，那么就从博客获取所有的文章匹配相同的标题
-    if (blogID == 0) {
-      const arr = await this.metaWeblog.getRecentPosts('', this.username, this.password, 1000);
-      for (const a of arr) {
-        if (a.title == post.title && a.postid) {
-          console.log('本地可能没有缓存，因此去查找wordpress上的所有博客，匹配到相同的标题即为同一篇');
-          const oldPost = await this.metaWeblog.getPost(a.postid, this.username, this.password).catch(() => null);
-          return this.toPost(oldPost);
-        }
-      }
-    }
+    // if (blogID == 0) {
+    //   const arr = await this.metaWeblog.getRecentPosts('', this.username, this.password, 1000);
+    //   for (const a of arr) {
+    //     if (a.title == post.title && a.postid) {
+    //       console.log('本地可能没有缓存，因此去查找wordpress上的所有博客，匹配到相同的标题即为同一篇');
+    //       const oldPost = await this.metaWeblog.getPost(a.postid, this.username, this.password).catch(() => null);
+    //       return this.toPost(oldPost);
+    //     }
+    //   }
+    // }
     return null;
   }
 
-  async newPost(post: any) {
+  async newPost(post: Post) {
     const _post = this.toMetaWeblogPost(post);
-    const id = await this.metaWeblog.newPost(this.blogId, this.username, this.password, _post, true);
+    const id = await this.metaWeblog.newPost('', this.username, this.password, _post, true);
     console.log('newpost this.blogId:', id);
-
+    // this.site.
     await this.postCache.put(post, id);
     return id;
   }
@@ -249,7 +254,7 @@ export class MetaPublisher {
 
   async checkCategoryExists(post: any) {
     if (post.categories && post.categories.length > 0) {
-      const oldCats = await this.metaWeblog.getCategories(this.blogId, this.username, this.password);
+      const oldCats = await this.metaWeblog.getCategories('', this.username, this.password);
       for (let i = 0; i < post.categories; i++) {
         const catName = post.categories[i];
         if (oldCats.findIndex((cat: any) => cat.description === catName) === -1) {
@@ -310,7 +315,7 @@ export class MetaPublisher {
       isByte = true;
     }
     show(`上传图片${file}中`);
-    const result = ipc.syncMsg('new-media-object', [isByte, this.blogId, this.username, this.password, nodePath.pathBasename(file), getMimeType(file), bits, this.siteUrl]);
+    const result = ipc.syncMsg('new-media-object', [isByte, '', this.username, this.password, nodePath.pathBasename(file), getMimeType(file), bits, this.siteUrl]);
 
     console.log('newMediaObject Result:', result);
 
