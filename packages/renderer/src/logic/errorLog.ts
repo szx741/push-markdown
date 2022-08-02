@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 19:44:30
- * @LastEditTime: 2022-07-29 17:06:09
+ * @LastEditTime: 2022-08-02 20:07:55
  * @Description: errorLog.ts的封装，对Error类型的封装
  * @FilePath: \push-markdown\packages\renderer\src\logic\errorLog.ts
  */
@@ -9,7 +9,7 @@ import { ComponentPublicInstance } from 'vue';
 import dayjs from 'dayjs';
 // import os from 'os';
 import useMessage from '/@/components/message';
-import { ipc, nodeFs } from '#preload';
+import { ipc, nodeFs, other } from '#preload';
 
 function getShortStack(stack?: string): string {
   const splitStack = stack?.split('\n    ');
@@ -36,7 +36,7 @@ export const errorLogPath = ipc.syncMsg('exePath'); // prints "pong"
 
 export default function (error: unknown, vm: ComponentPublicInstance | null, info: string): void {
   const { message, stack } = error as Error;
-  const { electron, chrome, node, v8 } = ipc.syncMsg('process.versions');
+  const { electron, chrome, node, v8 } = other.versions;
   const { outerWidth, outerHeight, innerWidth, innerHeight } = window;
   const { width, height } = window.screen;
 
@@ -51,7 +51,7 @@ export default function (error: unknown, vm: ComponentPublicInstance | null, inf
   // 浏览器窗口信息
   const browserInfo = { outerWidth, outerHeight, innerWidth, innerHeight };
   const errorLog = {
-    versions: ipc.syncMsg('version'),
+    versions: other.versions,
     date: dayjs().format('YYYY-MM-DD HH:mm'),
     error: errorInfo,
     electron: electronInfo,

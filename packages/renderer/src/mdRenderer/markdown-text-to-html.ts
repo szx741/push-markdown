@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2022-08-01 20:02:13
+ * @LastEditTime: 2022-08-02 22:03:10
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
@@ -20,26 +20,26 @@ import { fileName } from '../logic/utils';
 const blank = decodeURI('%E3%80%80');
 
 interface Attr {
-  title: string | null;
-  abstract: string | null;
-  url: string | null;
-  tags: string[] | null;
-  categories: string[] | null;
-  authors: string[] | null;
-  date: Date | null;
+  title: string | undefined;
+  abstract: string | undefined;
+  url: string | undefined;
+  tags: string[] | undefined;
+  categories: string[] | undefined;
+  authors: string[] | undefined;
+  date: Date | undefined;
 }
 
 export interface Post {
-  file: string | null;
-  src: string | null;
+  filePath: string | undefined;
+  fileText: string | undefined;
   title: string;
   html: string;
-  url: string | null;
-  tags: string[] | null;
-  categories: string[] | null;
-  authors: string[] | null;
-  date: Date | null;
-  abstract: string | null;
+  url: string | undefined;
+  tags: string[] | undefined;
+  categories: string[] | undefined;
+  authors: string[] | undefined;
+  date: Date | undefined;
+  abstract: string | undefined;
   upload: string;
 }
 
@@ -64,8 +64,8 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
   const post: Post = {
     ...attr,
     title: attr.title || fileName(filePath) || 'Unnamed',
-    file: filePath,
-    src: fileText,
+    filePath: filePath,
+    fileText: fileText,
     html,
     upload
   };
@@ -79,17 +79,17 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
 
 function extractFrontMatter(contentAttr: any) {
   const attr: Attr = {
-    title: null,
-    abstract: null,
-    url: null,
-    tags: null,
-    categories: null,
-    authors: null,
-    date: null
+    title: undefined,
+    abstract: undefined,
+    url: undefined,
+    tags: undefined,
+    categories: undefined,
+    authors: undefined,
+    date: undefined
   };
   attr.title = toStr(contentAttr.title);
   attr.abstract = toStr(contentAttr.abstract);
-  if (toStr(contentAttr.url)) attr.url = slugify(toStr(contentAttr.url));
+  if (toStr(contentAttr.url)) attr.url = toStr(contentAttr.url);
   attr.tags = toStrArr(contentAttr.tags || contentAttr.tag);
   attr.categories = toStrArr(contentAttr.categories || contentAttr.category);
   attr.authors = toStrArr(contentAttr.authors || contentAttr.author);
@@ -153,16 +153,16 @@ function extractAbstract(title: string, html: string) {
 }
 
 function toStr(src: any) {
-  return (src && typeof src === 'string' && src) || null;
+  return (src && typeof src === 'string' && src) || undefined;
 }
 
-function toStrArr(src: string | string[] | null | undefined): string[] | null {
+function toStrArr(src: string | string[] | null | undefined): string[] | undefined {
   if (typeof src === 'string') {
     return [src];
   } else if (src instanceof Array) {
     return src.map((s) => toStr(s)).filter((s) => s);
   }
-  return null;
+  return undefined;
 }
 
 function toSystemTimezone(date: Date) {

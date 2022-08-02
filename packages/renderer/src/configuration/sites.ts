@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-28 21:32:05
- * @LastEditTime: 2022-08-01 21:35:39
+ * @LastEditTime: 2022-08-02 12:32:57
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\configuration\sites.ts
  */
@@ -16,7 +16,6 @@ export interface Site {
   username: string;
   password: string;
   selected: boolean;
-  // articlesId: { [key: string]: string };
 }
 export let publishers: MetaPublisher[] = [];
 export const sites = ref(getSites());
@@ -39,7 +38,7 @@ export function saveSites(sites: Site[]) {
 }
 
 export function getSites(): Site[] {
-  const sites: Site[] = store.storeSettingsGet('sites', [newSite()]);
+  const sites: Site[] = store.storeSettingsGet('sites');
   sites.forEach((site) => {
     site.password = site.password && Base64.decode(site.password);
     publishers.push(initMetaPublisher(site.url, site.username, site.password));

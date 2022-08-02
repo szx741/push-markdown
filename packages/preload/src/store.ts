@@ -1,25 +1,54 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:09:35
- * @LastEditTime: 2022-08-01 23:12:13
+ * @LastEditTime: 2022-08-02 23:31:16
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\store.ts
  */
 import Store from 'electron-store';
-
-const storeSettings = new Store({ name: 'settings' });
+const options = {
+  name: 'settings',
+  defaults: {
+    publish: {
+      abstractMode: 'article',
+      mathjax: true,
+      abstractNum: 120,
+      highlight: false
+    },
+    sites: [
+      {
+        name: 'Sample Site Config',
+        url: 'https://www.example.com/xmlrpc.php',
+        username: 'username',
+        password: '',
+        selected: false
+      }
+    ],
+    application: {
+      theme: true,
+      language: 'zh',
+      filelist: true
+    },
+    detail: {
+      noCheck: true,
+      forcedUpdate: false,
+      getNetPic: false
+    }
+  }
+};
+const storeSettings = new Store(options);
 const storeRecord = new Store({ name: 'use-record' });
 export const store = {
   getLanguage() {
     return storeSettings.get('language', 'zh');
   },
-  getStoreSettingsClear() {
+  storeSettingsClear() {
     return storeSettings.clear();
   },
   storeSettingsSet(key: any, value: any): void {
     storeSettings.set(key, value);
   },
-  storeSettingsGet(key: any, value: any): any {
+  storeSettingsGet(key: any, value?: any): any {
     return storeSettings.get(key, value);
   },
   storeRecordSet(key: any, value: any) {
@@ -28,42 +57,40 @@ export const store = {
   storeRecordGet(key: any, value: any): any {
     return storeRecord.get(key, value);
   },
-  setShowFile(value: any) {
-    return storeSettings.set('show-file', value);
+  setShowFile(value: boolean) {
+    return storeSettings.set('filelist', value);
   },
   getShowFile(): boolean {
-    const res = storeSettings.get('show-file', true);
+    const res = storeSettings.get('filelist');
     if (typeof res === 'boolean') return res;
     else return true;
-  },
-  newStore(name: string) {
-    return new Store({ name }).path;
-  },
-  storeSet(name: string, key: any, value: any) {
-    const store = new Store({ name });
-    return store.set(key, value);
-  },
-  storeGet(name: string, key: any, value?: any): any {
-    const store = new Store({ name });
-    return store.get(key);
   },
   getTheme(): any {
     return storeSettings.get('theme', true);
   },
   setTheme(theme: boolean) {
-    //light是true,dark是false
     return storeSettings.set('theme', theme);
   },
+  openInEditor() {
+    storeSettings.openInEditor();
+  },
+  getSettingsPath() {
+    return storeSettings.path;
+  },
+
   getokok() {
-    return [storeSettings.store, storeRecord.store, storeSettings.path];
+    return storeSettings.get('publish.abstractMode.nimasl');
+  },
+  setokok() {
+    storeSettings.set('fe.fe.nimagresl', 'uiui');
   }
 };
 
-
-//   [site.url && site.username]:{
-//     [post.url]: blogID
+// [uid:'site.url && site.username]:{
+//   posts:{
+//     [post.url]:postId
 //   }
-
-// imgMap{
-
+//   images:{
+//     [imageName]:imageUrl;
+//   }
 // }

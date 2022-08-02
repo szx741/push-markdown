@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-08-01 21:56:41
+ * @LastEditTime: 2022-08-02 21:17:12
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\MainComp.vue
 -->
@@ -15,7 +15,7 @@
   import Markdown from './Markdown.vue';
   import Settings from './Settings.vue';
 
-  import { nodePath, ipc, nodeFs, store } from '#preload';
+  import { nodePath, ipc, nodeFs, store, other } from '#preload';
   import { getTabs, getCurrentTab, saveTabs, saveCurrentTab, Tab } from '/@/logic/useRecord';
   import * as utils from '/@/logic/utils';
   import * as statusBar from '/@/logic/statusBar';
@@ -209,8 +209,6 @@
       tabScroll.value.scrollLeft += step;
     }
   }
-
-  console.log(store.getokok());
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 20:22:24
- * @LastEditTime: 2022-08-01 17:42:25
+ * @LastEditTime: 2022-08-02 22:37:58
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\configuration\publish-conf.ts
  */
@@ -35,6 +35,5 @@ export function getPublishConf() {
     highlight: false
   };
   const config: PublishConf = store.storeSettingsGet('publish', defaultValue);
-  console.log(config);
   return config;
 }

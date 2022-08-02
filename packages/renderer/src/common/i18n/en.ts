@@ -49,7 +49,7 @@ const en = {
         yes: 'Yes',
         no: 'No'
       },
-      nodes:
+      notes:
         'Preview Only：Render only when previewing locally, only pre-processing when publishing, blogs need to configure plugin to render<br/>' +
         'Preview and publish: Render when local preview and publish, blog needs to configure the corresponding CSS style<br/>' +
         'Disable: Not render when local preview and publish'

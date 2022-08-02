@@ -25,13 +25,13 @@
     }>(),
     active = toRef(props, 'active'), // 当前选中的界面
     post = toRef(props, 'post'),
-    publishMode = ref(PublishMode.Manual),
+    publishMode = ref(PublishMode.Create),
     showPublish = ref(false),
     editList: Ref<EditItem[]> = ref([]),
     publishing = ref(false),
     confirm = ref(false),
     aritcleId: Ref<string> = ref('-1'),
-    blogID = ref(0),
+    postID = ref(0),
     forcedUpdate = ref(false),
     getNetPic = ref(true),
     notCheck = ref(config.getNotCheck()),
@@ -47,17 +47,16 @@
       showPublish.value = true;
       // 如果没有设置URL，就会弹出窗口提醒
       if (!post.value.url) confirm.value = true;
-      // else {
-      //   // 根据 markdown发布的url和id来判断发布的模式是自动还是创建新的文章模式
-      //   for (const site of sites.value) {
-      //     if (site.articlesId.hasOwnProperty(post.value.url)) {
-      //       aritcleId.value = site.articlesId[post.value.url];
-      //       publishMode.value = PublishMode.Auto;
-      //     } else {
-      //       publishMode.value = PublishMode.Create;
-      //     }
-      //   }
-      // }
+      else {
+        // 根据 markdown发布的url和id来判断发布的模式是自动还是创建新的文章模式
+        for (const publisher of publishers) {
+          const res = publisher.postCache.get(post.value.url);
+          if (res) {
+            aritcleId.value = res;
+            publishMode.value = PublishMode.Auto;
+          }
+        }
+      }
     }
   };
   const destory = ipc.receive('menu.publish', menuPublishListen);
@@ -75,7 +74,7 @@
       publisher = publishers[index],
       publishParams: PublishParams = {
         post: post.value,
-        blogID: blogID.value,
+        postID: postID.value.toString(),
         stateHandler,
         publishMode: publishMode.value,
         mediaMode: forcedUpdate.value ? 'force' : 'cache',
@@ -130,10 +129,10 @@
       const item: EditItem = {
         site,
         post,
-        callback: (edit: boolean): void => {
-          // edit: boolean
+        callback: (edit: boolean) => {
           const index: number = editList.value.indexOf(item);
           editList.value.splice(index, 1);
+          return edit;
         }
       };
       editList.value.push(item);
@@ -215,7 +214,7 @@
             </select>
             <div v-if="publishMode == PublishMode.Manual">
               <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
-              <input v-model="blogID" class="publish-article-id" type="number" placeholder="ID" />
+              <input v-model="postID" class="publish-article-id" type="number" placeholder="ID" />
               <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
               <input v-model="getNetPic" type="checkbox" :disabled="forcedUpdate" />
               <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>

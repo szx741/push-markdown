@@ -1,12 +1,13 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-07-29 19:29:43
+ * @LastEditTime: 2022-08-02 22:40:57
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\logic\utils.ts
  */
 'use strict';
 import { other, nodePath, ipc } from '#preload';
+import filenamify from 'filenamify';
 
 export function fileName(file: string) {
   return nodePath.pathBasename(file, '.md');
@@ -95,5 +96,8 @@ export async function promiseConcurrencyLimit(limit: number, arr: any[], fn: any
   const res = [];
   for (let i = 0; i < limit && arr.length; i++) res.push(run(i));
   await Promise.all(res);
-  console.log(limit, arr, fn);
+}
+
+export function getFilenamify(siteUrl: string, username: string) {
+  return filenamify(`${siteUrl}&&${username}`).replaceAll('.', '!');
 }

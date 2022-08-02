@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:03:15
- * @LastEditTime: 2022-08-01 16:09:22
+ * @LastEditTime: 2022-08-02 20:08:01
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\ipcWithMain.ts
  */
@@ -21,7 +21,6 @@ const validChannels = [
   'menu.showfile',
   'menu.closetab',
   'menu.reloadfile',
-  'process.versions',
   'menu.theme',
   'new-media-object',
   'new-metaweblog',

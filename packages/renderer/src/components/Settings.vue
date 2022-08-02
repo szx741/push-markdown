@@ -1,16 +1,21 @@
 <!-- 设置页面 -->
 <script setup lang="ts">
-  import { toRaw, watch } from 'vue';
+  import { ref, toRaw, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import debounce from 'lodash-es/debounce';
+  import filenamify from 'filenamify';
 
   import * as statusBar from '../logic/statusBar';
-  import { resetConfiguration } from '../configuration/configurate';
+  import { resetConfiguration, openSettings, settingsPath } from '../configuration/configurate';
   import { notifyConfigChanged } from '../mdRenderer';
   import { sites, addSite, delSite, saveSites } from '../configuration/sites';
   import { publishConf, savePublishConf, AbstractMode } from '../configuration/publish-conf';
+  import { other, store } from '#preload';
+  import { json } from 'stream/consumers';
+  import { getFilenamify } from '../logic/utils';
 
-  const { t } = useI18n();
+  const { t } = useI18n(),
+    whichSite = ref(0);
 
   watch(
     sites,
@@ -34,6 +39,43 @@
       resetConfiguration();
     }
   }
+
+  interface importJSON {
+    ID: string;
+    Slug: string;
+    'Images Filename': string;
+    'Image URL': string;
+  }
+
+  const readClipboard = debounce(() => {
+    const text = other.readFromClipboard();
+    try {
+      const site = sites.value[whichSite.value],
+        key = getFilenamify(site.url, site.username),
+        jsons: importJSON[] = JSON.parse(text);
+
+      const jsonPost: any = {},
+        jsonMedia: any = {};
+
+      jsons.forEach((json) => {
+        jsonPost[decodeURI(json.Slug)] = json.ID;
+        const imageUrlArr = json['Image URL'].split('||'),
+          imageNameArr = json['Images Filename'].split('||');
+        imageNameArr.forEach((name, index) => {
+          if (name !== '') jsonMedia[name] = imageUrlArr[index];
+        });
+      });
+      let res = store.storeSettingsGet(key);
+      if (!res) res = { post: {}, media: {} };
+      res.post = { ...res?.post, ...jsonPost };
+      res.media = { ...res?.media, ...jsonMedia };
+      store.storeSettingsSet(key, res);
+      statusBar.show('成功导入，可以打开设置查看，需要重新打开应用才会生效', 5000);
+    } catch (err) {
+      statusBar.show('出错了！！格式不对！！');
+      console.log(err);
+    }
+  }, 500);
 </script>
 
 <template>
@@ -116,9 +158,21 @@
 
       <h3>{{ $t('setting.otherSettings') }}</h3>
 
-      <p class="buttons">
+      <blockquote class="small">
+        {{ '设置存储位置：' + settingsPath }}<br />
+        更改设置文件后，需要关闭后重新打开应用才能生效
+      </blockquote>
+
+      <div class="other-setting">
+        <button @click="openSettings">打开设置</button>
         <button @click="resetSettings">{{ $t('setting.reset') }}</button>
-      </p>
+        <div>
+          <button @click="readClipboard">从剪切板添加到</button>
+          <select v-model="whichSite">
+            <option v-for="(site, index) in sites" :key="index" :value="index">第{{ index + 1 }}个博客</option>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -162,7 +216,7 @@
   }
 
   .settings {
-    padding: 60px 20px;
+    padding: 20px 0 60px;
     width: 600px;
     margin: auto;
     max-width: 100%;
@@ -224,8 +278,13 @@
   .small {
     font-size: 85%;
   }
-
   .buttons {
     text-align: center;
+  }
+  .other-setting {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
   }
 </style>
