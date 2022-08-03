@@ -16,11 +16,11 @@ on:
       - .gitignore
 
 jobs:
-  lint:
-    uses: ./.github/workflows/lint.yml
-  typechecking:
-    uses: ./.github/workflows/typechecking.yml
+  # lint:
+  #   uses: ./.github/workflows/lint.yml
+  # typechecking:
+  #   uses: ./.github/workflows/typechecking.yml
   draft_release:
     if: github.event_name == 'push' && github.ref_name == 'main'
-    needs: [typechecking]
+    # needs: [typechecking]
     uses: ./.github/workflows/release.yml

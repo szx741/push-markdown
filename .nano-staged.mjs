@@ -1,8 +1,8 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:23:48
- * @LastEditTime: 2022-07-23 13:23:48
- * @Description: 
+ * @LastEditTime: 2022-08-03 21:36:58
+ * @Description:
  * @FilePath: \push-markdown\.nano-staged.mjs
  */
 import {resolve, sep} from 'path';
@@ -20,7 +20,7 @@ export default {
     return Array.from(
       filenames.reduce((set, filename) => {
         const pack = filename.replace(pathToPackages, '').split(sep)[0];
-        set.add(`npm run typecheck:${pack} --if-present`);
+        set.add(`pnpm run typecheck:${pack} --if-present`);
         return set;
       }, new Set),
     );
