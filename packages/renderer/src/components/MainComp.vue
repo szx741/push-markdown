@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-08-02 21:17:12
+ * @LastEditTime: 2022-08-03 19:59:07
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\MainComp.vue
 -->
@@ -15,11 +15,10 @@
   import Markdown from './Markdown.vue';
   import Settings from './Settings.vue';
 
-  import { nodePath, ipc, nodeFs, store, other } from '#preload';
-  import { getTabs, getCurrentTab, saveTabs, saveCurrentTab, Tab } from '/@/logic/useRecord';
-  import * as utils from '/@/logic/utils';
-  import * as statusBar from '/@/logic/statusBar';
-  import { getTheme } from '../logic/config';
+  import { nodePath, ipc, nodeFs, store } from '#preload';
+  import { getTabs, getCurrentTab, saveTabs, saveCurrentTab, Tab } from '../conf/use-record';
+  import { getSampleFile, isSampleFile, mdFileName } from '../utils/tools';
+  import { setCallback, show } from '../utils/statusBar';
 
   const tabs = ref(getTabs()), // 保存标签
     currIndex = ref(getCurrentTab()),
@@ -28,7 +27,7 @@
     { t } = useI18n(),
     appDir = nodePath.pathDirname(ipc.syncMsg('__static')),
     pathDir = ref(nodePath.pathDirname(tabs.value[currIndex.value]?.filePath || appDir)),
-    theme = ref(getTheme()),
+    theme = ref(store.getTheme()),
     tabScroll = ref();
 
   watch(tabs, (value) => saveTabs(toRaw(value)), { deep: true });
@@ -42,7 +41,7 @@
     { deep: true }
   );
 
-  statusBar.setCallback((text: string) => {
+  setCallback((text: string) => {
     statusText.value = text;
   });
   // 菜单栏打开文件
@@ -76,7 +75,7 @@
   });
   // 打开示例文档
   ipc.receive('menu.sample', () => {
-    openFile(utils.getSampleFile());
+    openFile(getSampleFile());
   });
 
   ipc.receive('menu.theme', (newTheme: boolean) => {
@@ -93,11 +92,11 @@
         addTab({
           type: 'markdown',
           filePath: filePath,
-          title: utils.fileName(filePath),
+          title: mdFileName(filePath),
           modified: false
         });
       } else {
-        statusBar.show(t('readFileNotExists') + filePath);
+        show(t('readFileNotExists') + filePath);
       }
     } else {
       selectTab(index);
@@ -159,20 +158,20 @@
     const tab = tabs.value[index],
       file = tab.filePath;
     if (tab.type !== 'markdown') return;
-    if (tab.modified && !utils.isSampleFile(tab.filePath)) {
-      statusBar.show(t('reloadNeedSaveFirst'));
+    if (tab.modified && !isSampleFile(tab.filePath)) {
+      show(t('reloadNeedSaveFirst'));
       return;
     }
     tabs.value[index].filePath = 'tmpClose';
-    statusBar.show(t('refreshSuccess'));
+    show(t('refreshSuccess'));
     nextTick(() => {
       tabs.value[index].filePath = file;
     });
   }
 
-  function closeTab(index: any) {
+  function closeTab(index: number) {
     const tab = tabs.value[index];
-    if (tab.type === 'markdown' && tab.modified && !utils.isSampleFile(tab.filePath)) {
+    if (tab.type === 'markdown' && tab.modified && !isSampleFile(tab.filePath)) {
       if (!window.confirm(t('closeModifiedFile'))) {
         return;
       }
@@ -221,7 +220,8 @@
       <div ref="tabScroll" class="tab-titles" @wheel="onWheel">
         <TabTitle
           v-for="(tab, i) in tabs"
-          :key="tab.filePath"
+          :key="tab.filePath + i"
+          :tab-file="tab.filePath"
           :tab-type="tab.type"
           :tab-title="tabTitle(tab)"
           :selected="currIndex === i"
@@ -234,7 +234,7 @@
       </div>
 
       <div class="tab-contents">
-        <div v-for="(tab, i) in tabs" v-show="currIndex === i" :key="tab.type" class="tab-content" :file="tab.filePath">
+        <div v-for="(tab, i) in tabs" v-show="currIndex === i" :key="tab.type" class="tab-content">
           <template v-if="tab.type === 'welcome'">
             <Welcome></Welcome>
           </template>
@@ -260,6 +260,7 @@
     flex-direction: row;
     height: 100%;
     width: 100%;
+    flex-wrap: nowrap;
   }
 
   .root {

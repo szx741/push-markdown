@@ -27,6 +27,13 @@ const en = {
     addSite: 'Add Site',
 
     otherSettings: 'Other Settings',
+    settingsFileLocation: 'Settings File Location: ',
+    openSettingsFile: 'Open Settings File',
+    clipboardPaste: 'Clipboard Paste',
+    toNo: 'to No.',
+    noBlog: 'Blog',
+    settingsFileWarning: 'After changing the settings file, you need to close and reopen the application to take effect',
+    settingsFileWarning2: 'The clipboard can import blog post IDs and image URLs, see the tutorial for details',
     reset: 'Reset All Settings',
     resetConfirm: 'Confirm to reset all settings ?',
     confirmDelete: 'Confirm Delete',
@@ -75,8 +82,8 @@ const en = {
     publishModeManual: 'Manual Confirm',
     publishModeCreate: 'Create New Article',
     publishModeAuto: 'Auto',
-    publishModeManualHint: 'Manual confirmation: mode one first; if ID is 0, then mode two; if mode two fails, then mode three; if mode three fails, then mode four;',
-    publishModeAutoHint: 'Auto-judge: mode two first; if mode two fails, then mode three; if mode three fails, then mode four;',
+    publishModeManualHint: 'Manual confirmation: mode one first; if ID is 0, then mode two; if mode two fails, then mode three',
+    publishModeAutoHint: 'Auto-judge: mode two first; if mode two fails, then mode three',
     publishModeCreateHint: 'Create new article: direct mode four',
     enterArticleID: 'Enter article ID',
     getRemoteImages: 'Get remote images',
@@ -85,8 +92,7 @@ const en = {
     publishModeHint: `
     Mode I: Update the specified article ID (0 is not specified article ID, will go to mode two) <br/>
     Mode 2: Update locally cached fetched article ID (same URL) <br/>
-    Mode III: Update the article ID obtained remotely (same title, because getting all articles, including content, is more traffic-intensive)<br/>
-    Mode 4: Create a new article `,
+    Mode 3: Create a new article `,
     publishModeConfirm: 'Confirm Publish Mode',
     publishModeOldPost: 'The article with the same URL is detected as follows:',
     publishModeEditPost: 'Edit this article',

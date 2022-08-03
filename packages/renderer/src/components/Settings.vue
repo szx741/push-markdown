@@ -3,16 +3,12 @@
   import { ref, toRaw, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import debounce from 'lodash-es/debounce';
-  import filenamify from 'filenamify';
 
-  import * as statusBar from '../logic/statusBar';
-  import { resetConfiguration, openSettings, settingsPath } from '../configuration/configurate';
+  import { show } from '../utils/statusBar';
+  import { resetConfiguration, openSettings, settingsPath, readClipboard } from '../conf/configurate';
+  import { sites, addSite, delSite, saveSites } from '../conf/sites';
+  import { publishConf, savePublishConf, AbstractMode } from '../conf/publish-conf';
   import { notifyConfigChanged } from '../mdRenderer';
-  import { sites, addSite, delSite, saveSites } from '../configuration/sites';
-  import { publishConf, savePublishConf, AbstractMode } from '../configuration/publish-conf';
-  import { other, store } from '#preload';
-  import { json } from 'stream/consumers';
-  import { getFilenamify } from '../logic/utils';
 
   const { t } = useI18n(),
     whichSite = ref(0);
@@ -21,7 +17,7 @@
     sites,
     debounce((value) => {
       saveSites(toRaw(value));
-      statusBar.show(t('setting.saveSettings'));
+      show(t('setting.saveSettings'));
     }, 1000),
     { deep: true }
   );
@@ -29,7 +25,8 @@
     publishConf,
     debounce((value) => {
       savePublishConf(toRaw(value));
-      statusBar.show(t('setting.saveSettings'));
+      notifyConfigChanged();
+      show(t('setting.saveSettings'));
     }, 1000),
     { deep: true }
   );
@@ -40,42 +37,14 @@
     }
   }
 
-  interface importJSON {
-    ID: string;
-    Slug: string;
-    'Images Filename': string;
-    'Image URL': string;
-  }
-
-  const readClipboard = debounce(() => {
-    const text = other.readFromClipboard();
+  function importConfig() {
     try {
-      const site = sites.value[whichSite.value],
-        key = getFilenamify(site.url, site.username),
-        jsons: importJSON[] = JSON.parse(text);
-
-      const jsonPost: any = {},
-        jsonMedia: any = {};
-
-      jsons.forEach((json) => {
-        jsonPost[decodeURI(json.Slug)] = json.ID;
-        const imageUrlArr = json['Image URL'].split('||'),
-          imageNameArr = json['Images Filename'].split('||');
-        imageNameArr.forEach((name, index) => {
-          if (name !== '') jsonMedia[name] = imageUrlArr[index];
-        });
-      });
-      let res = store.storeSettingsGet(key);
-      if (!res) res = { post: {}, media: {} };
-      res.post = { ...res?.post, ...jsonPost };
-      res.media = { ...res?.media, ...jsonMedia };
-      store.storeSettingsSet(key, res);
-      statusBar.show('成功导入，可以打开设置查看，需要重新打开应用才会生效', 5000);
+      readClipboard(whichSite.value);
     } catch (err) {
-      statusBar.show('出错了！！格式不对！！');
+      show('出错了！！格式不对！！');
       console.log(err);
     }
-  }, 500);
+  }
 </script>
 
 <template>
@@ -124,7 +93,7 @@
       <h3>{{ $t('setting.renderSettings') }}</h3>
 
       <div class="abstract-select">
-        <label for="abstract">{{ $t('setting.abstract.name') }}</label>
+        <label>{{ $t('setting.abstract.name') }}</label>
         <select id="abstract" v-model="publishConf.abstractMode">
           <option :value="AbstractMode.Empty">{{ $t('setting.abstract.options.empty') }}</option>
           <option :value="AbstractMode.Article">{{ $t('setting.abstract.options.article') }}</option>
@@ -139,7 +108,7 @@
       <blockquote class="small">{{ $t('setting.abstract.notes') }}</blockquote>
 
       <p>
-        <label for="highlight">{{ $t('setting.renderFeature.highlight') }}</label>
+        <label>{{ $t('setting.renderFeature.highlight') }}</label>
         <select id="highlight" v-model="publishConf.highlight">
           <option :value="true">{{ $t('setting.renderFeature.options.yes') }}</option>
           <option :value="false">{{ $t('setting.renderFeature.options.no') }}</option>
@@ -147,7 +116,7 @@
       </p>
 
       <p>
-        <label for="math">{{ $t('setting.renderFeature.mathjax') }}</label>
+        <label>{{ $t('setting.renderFeature.mathjax') }}</label>
         <select id="math" v-model="publishConf.mathjax">
           <option :value="true">{{ $t('setting.renderFeature.options.yes') }}</option>
           <option :value="false">{{ $t('setting.renderFeature.options.no') }}</option>
@@ -159,18 +128,21 @@
       <h3>{{ $t('setting.otherSettings') }}</h3>
 
       <blockquote class="small">
-        {{ '设置存储位置：' + settingsPath }}<br />
-        更改设置文件后，需要关闭后重新打开应用才能生效
+        {{ $t('setting.settingsFileLocation') + settingsPath }}<br />
+        {{ $t('setting.settingsFileWarning') }}<br />
+        {{ $t('setting.settingsFileWarning2') }}<br />
       </blockquote>
 
       <div class="other-setting">
-        <button @click="openSettings">打开设置</button>
+        <button @click="openSettings">{{ $t('setting.openSettingsFile') }}</button>
         <button @click="resetSettings">{{ $t('setting.reset') }}</button>
         <div>
-          <button @click="readClipboard">从剪切板添加到</button>
+          <button @click="importConfig">{{ $t('setting.clipboardPaste') }}</button>
+          <span>{{ $t('setting.toNo') }}</span>
           <select v-model="whichSite">
-            <option v-for="(site, index) in sites" :key="index" :value="index">第{{ index + 1 }}个博客</option>
+            <option v-for="(_, index) in sites" :key="index" :value="index">{{ index + 1 }}</option>
           </select>
+          <span>{{ $t('setting.noBlog') }}</span>
         </div>
       </div>
     </div>

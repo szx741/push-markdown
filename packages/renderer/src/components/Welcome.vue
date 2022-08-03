@@ -8,7 +8,7 @@
 <!-- 欢迎页面 -->
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
-  import * as utils from '/@/logic/utils';
+  import * as utils from '/@/utils/tools';
   const introduction = ref();
 
   onMounted(() => {

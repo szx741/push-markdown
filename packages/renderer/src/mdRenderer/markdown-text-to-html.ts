@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2022-08-02 22:03:10
+ * @LastEditTime: 2022-08-03 16:12:14
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
@@ -12,13 +12,8 @@ import { htmlToText } from 'html-to-text';
 import MarkdownIt from 'markdown-it';
 import { slugify } from 'transliteration';
 
-import { AbstractMode, publishConf } from '../configuration/publish-conf';
-
-import * as config from '../logic/config';
-import { fileName } from '../logic/utils';
-
-const blank = decodeURI('%E3%80%80');
-
+import { AbstractMode, publishConf } from '../conf/publish-conf';
+import { mdFileName } from '../utils/tools';
 interface Attr {
   title: string | undefined;
   abstract: string | undefined;
@@ -43,6 +38,8 @@ export interface Post {
   upload: string;
 }
 
+const blank = decodeURI('%E3%80%80');
+
 export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, isPreview: any) {
   const startTime = getTime();
   fileText = (fileText && fileText.trim()) || '';
@@ -63,7 +60,7 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
   // 变成一个完整的Post
   const post: Post = {
     ...attr,
-    title: attr.title || fileName(filePath) || 'Unnamed',
+    title: attr.title || mdFileName(filePath) || 'Unnamed',
     filePath: filePath,
     fileText: fileText,
     html,
@@ -119,7 +116,7 @@ function handlePost(post: Post, html: string) {
   // 如果post的url为空，那么就就title转换成拼音
   if (!post.url) post.url = slugify(post.title);
   // 判断摘要从哪里提取
-  if (post.abstract === null) {
+  if (!post.abstract) {
     switch (publishConf.value.abstractMode) {
       case AbstractMode.Title:
         post.abstract = post.title;
@@ -144,8 +141,7 @@ function extractAbstract(title: string, html: string) {
     uppercaseHeadings: false,
     singleNewLineParagraphs: true
   });
-  //这块可以优化
-  const abstractNum = config.getAbstractNumber();
+  const abstractNum = publishConf.value.abstractNum;
   let startIndex = 0;
   if (text.startsWith(title)) startIndex = title.length;
   if (text.length > abstractNum + startIndex) text = text.substring(startIndex, abstractNum + startIndex).trim() + '...';

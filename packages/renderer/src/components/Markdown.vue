@@ -1,12 +1,15 @@
 <script setup lang="ts">
-  import { reactive, watch, toRefs, ref, onUpdated, onMounted, toRef, Ref, onUnmounted } from 'vue';
+  import { watch, ref, onUpdated, onMounted, toRef, Ref, onUnmounted } from 'vue';
   import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
-  import Publish from '/@/components/Publish.vue';
-  import * as utils from '../logic/utils';
-  import * as statusBar from '../logic/statusBar';
-  import { mdRender } from '../mdRenderer';
+
+  import Publish from './Publish.vue';
+
   import { nodeFs, ipc } from '#preload';
+  import { setLinks, setTextareaTabKey, isSampleFile } from '../utils/tools';
+  import { show } from '../utils/statusBar';
+  import { mdRender, Post } from '../mdRenderer';
+
   const props = defineProps<{
       filePath: string;
       active: boolean;
@@ -18,7 +21,19 @@
     filePath = toRef(props, 'filePath'),
     modified = ref(false),
     fileText: Ref<string> = ref(''),
-    post: Ref<any> = ref({}),
+    post: Ref<Post> = ref({
+      filePath: undefined,
+      fileText: undefined,
+      title: '',
+      html: '',
+      url: undefined,
+      tags: undefined,
+      categories: undefined,
+      authors: undefined,
+      date: undefined,
+      abstract: undefined,
+      upload: ''
+    }),
     refMarkdown = ref(),
     refTextarea = ref(),
     { t } = useI18n();
@@ -37,11 +52,11 @@
 
   onUpdated(() => {
     const markdown: any = refMarkdown.value;
-    utils.setLinks(markdown);
+    setLinks(markdown);
   });
 
   onMounted(() => {
-    utils.setTextareaTabKey(refTextarea.value);
+    setTextareaTabKey(refTextarea.value);
   });
 
   onUnmounted(() => {
@@ -61,7 +76,7 @@
         if (err) {
           console.error(err);
           const text = t('readFileError') + err.message;
-          statusBar.show(text);
+          show(text);
           console.log(fileText.value);
           fileText.value = text;
         } else {
@@ -72,18 +87,18 @@
     }
   }
   function writeFile() {
-    if (utils.isSampleFile(filePath.value)) {
-      statusBar.show(t('cannotWriteSampleFile'));
+    if (isSampleFile(filePath.value)) {
+      show(t('cannotWriteSampleFile'));
       return;
     }
     nodeFs.fsWriteFile(filePath.value, fileText.value, { encoding: 'utf-8' }, (err: any) => {
       // do nothing
       if (!err) {
         modified.value = false;
-        statusBar.show(t('saveFileSuccess'));
+        show(t('saveFileSuccess'));
       } else {
         console.error(err);
-        statusBar.show(t('saveFileError') + err.message);
+        show(t('saveFileError') + err.message);
       }
     });
   }
@@ -117,7 +132,7 @@
             <table>
               <tr class="meta-item">
                 <td class="meta-name">{{ $t('meta.file') }}</td>
-                <td class="meta-value">{{ post.file }}</td>
+                <td class="meta-value">{{ post.filePath }}</td>
               </tr>
 
               <tr class="meta-item">

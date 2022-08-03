@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:22:43
- * @LastEditTime: 2022-08-01 17:55:49
+ * @LastEditTime: 2022-08-03 14:04:20
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-it-init.ts
  */
@@ -13,7 +13,8 @@ import * as markdownItTableOfContents from 'markdown-it-table-of-contents';
 import mathjax3 from 'markdown-it-mathjax3';
 import * as markdownItTaskCheckbox from 'markdown-it-task-checkbox';
 import uslug from 'uslug';
-import { publishConf } from './../configuration/publish-conf';
+
+import { publishConf } from '../conf/publish-conf';
 
 export function markdownItInit() {
   // https://github.com/markdown-it/markdown-it

@@ -1,23 +1,30 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-08 13:09:13
- * @LastEditTime: 2022-08-01 20:13:21
+ * @LastEditTime: 2022-08-03 15:16:12
  * @Description: 单个标签，含标题和关闭按钮
  * @FilePath: \push-markdown\packages\renderer\src\components\TabTitle.vue
 -->
 <script setup lang="ts">
+  import { other } from '#preload';
+
   const props = defineProps<{
+    tabFile: string;
     tabType: string;
     tabTitle: string;
     selected: boolean;
     modified?: boolean;
-    tabClick: any;
-    tabRefresh: any;
-    tabClose: any;
+    tabClick: () => void;
+    tabRefresh: () => void;
+    tabClose: () => void;
   }>();
+
+  function onFileClick() {
+    if (props.tabType === 'markdown') other.shell.openPath(props.tabFile);
+  }
 </script>
 <template>
-  <div class="tab" :class="{ selected: props.selected }" @click="props.tabClick" @click.middle="props.tabClose" @click.right="props.tabClose">
+  <div class="tab" :class="{ selected: props.selected }" @click="props.tabClick" @click.middle="props.tabClose" @click.right="onFileClick">
     <span>{{ props.modified ? '* ' : '' }}{{ props.tabTitle || '' }}</span>
 
     <svg v-if="props.tabType === 'markdown'" viewBox="0 0 1024 1024" @click.stop="props.tabRefresh">

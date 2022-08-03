@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:09:35
- * @LastEditTime: 2022-08-02 23:31:16
+ * @LastEditTime: 2022-08-03 15:18:56
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\store.ts
  */
@@ -24,16 +24,14 @@ const options = {
         selected: false
       }
     ],
-    application: {
-      theme: true,
-      language: 'zh',
-      filelist: true
-    },
     detail: {
-      noCheck: true,
+      notCheck: true,
       forcedUpdate: false,
       getNetPic: false
-    }
+    },
+    theme: true,
+    language: 'zh',
+    filelist: true
   }
 };
 const storeSettings = new Store(options);
@@ -76,21 +74,5 @@ export const store = {
   },
   getSettingsPath() {
     return storeSettings.path;
-  },
-
-  getokok() {
-    return storeSettings.get('publish.abstractMode.nimasl');
-  },
-  setokok() {
-    storeSettings.set('fe.fe.nimagresl', 'uiui');
   }
 };
-
-// [uid:'site.url && site.username]:{
-//   posts:{
-//     [post.url]:postId
-//   }
-//   images:{
-//     [imageName]:imageUrl;
-//   }
-// }

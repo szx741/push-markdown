@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:24:09
- * @LastEditTime: 2022-08-02 21:18:45
+ * @LastEditTime: 2022-08-03 15:34:14
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\other.ts
  */
@@ -46,6 +46,7 @@ function urlExists(url: string) {
 }
 export const other = {
   async checkUrlValid(url: string) {
+    url = encodeURI(url);
     return await urlExists(url);
   },
   shell: shell,

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-08-01 21:39:07
+ * @LastEditTime: 2022-08-03 19:49:41
  * @Description: 主窗口设置
  * @FilePath: \push-markdown\packages\main\src\mainWindow.ts
  */
@@ -15,7 +15,7 @@ async function createWindow() {
   const browserWindow = new BrowserWindow({
     minHeight: 180,
     minWidth: 320,
-    width: 1600,
+    width: 1500,
     height: 800,
     show: false, // 使用事件 ready-to-show 来展示窗口
     // web渲染进程设置

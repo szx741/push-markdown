@@ -1,15 +1,15 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-08-02 22:40:57
+ * @LastEditTime: 2022-08-03 17:15:58
  * @Description:
- * @FilePath: \push-markdown\packages\renderer\src\logic\utils.ts
+ * @FilePath: \push-markdown\packages\renderer\src\utils\tools.ts
  */
 'use strict';
 import { other, nodePath, ipc } from '#preload';
 import filenamify from 'filenamify';
 
-export function fileName(file: string) {
+export function mdFileName(file: string) {
   return nodePath.pathBasename(file, '.md');
 }
 

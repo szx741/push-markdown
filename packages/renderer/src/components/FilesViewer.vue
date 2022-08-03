@@ -1,14 +1,14 @@
 <!--
  * @Author: szx
  * @Date: 2021-11-14 19:41:30
- * @LastEditTime: 2022-08-01 17:05:57
+ * @LastEditTime: 2022-08-03 19:57:21
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\FilesViewer.vue
 -->
 <script setup lang="ts">
   import { watch, ref, toRef } from 'vue';
   import naturalCompare from 'natural-compare-lite';
-  import { nodeFs, nodePath } from '#preload';
+  import { nodeFs, nodePath, other } from '#preload';
 
   interface FolderFile {
     name: string;
@@ -34,6 +34,11 @@
   function onFileClick(folderFile: FolderFile) {
     if (folderFile.directory) emit('forward', folderFile.name);
     else emit('openFile', nodePath.pathJoin(folderFile.path, folderFile.name));
+  }
+
+  function rightClickOpen(folderFile: FolderFile) {
+    if (folderFile.directory) other.shell.showItemInFolder(pathDir.value);
+    else other.shell.openPath(nodePath.pathJoin(folderFile.path, folderFile.name));
   }
 
   function filesOrDir() {
@@ -77,7 +82,7 @@
         <div>...</div>
       </div>
 
-      <div v-for="file in files" :key="file.name" class="file-box-tr" @click="onFileClick(file)">
+      <div v-for="file in files" :key="file.name" class="file-box-tr" @click="() => onFileClick(file)" @click.right="() => rightClickOpen(file)">
         <div class="icon-row">
           <svg v-if="file.directory" class="icon-folder" viewBox="0 0 1024 1024">
             <path

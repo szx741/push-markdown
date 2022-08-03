@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2022-08-02 22:37:03
+ * @LastEditTime: 2022-08-03 13:49:33
  * @Description: 文章、图片发布缓存，避免文章、图片重复发布
  * @FilePath: \push-markdown\packages\renderer\src\mdPublish\PublishCache.ts
  */
@@ -9,7 +9,7 @@
 'use strict';
 
 import { store } from '#preload';
-import { getFilenamify } from '../logic/utils';
+import { getFilenamify } from '../utils/tools';
 
 /**
  * 缓存基类
