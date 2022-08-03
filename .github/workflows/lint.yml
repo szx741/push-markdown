@@ -13,11 +13,11 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16 # Need for npm >=7.7
-          cache: 'npm'
+          node-version: 16 # Need for pnpm >=7.7
+          cache: 'pnpm'
 
       # TODO: Install not all dependencies, but only those required for this workflow
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
-      - run: npm run lint --if-present
+      - run: pnpm run lint --if-present
