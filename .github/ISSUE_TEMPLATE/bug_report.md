@@ -1,27 +1,27 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: 错误报告
+about: 创建一个报告以帮助我们改进
 title: ''
-labels: bug
-assignees: cawa-93
+labels: 错误
+assignees: szx
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**描述该错误**
+简明扼要地描述一下这个bug是什么。
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**要重现**
+重现该行为的步骤。
+1. 转到"..."。
+2. 点击'....'。
+3. 向下滚动到'....'
+4. 看到错误
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**预期的行为**
+简明扼要地描述你期望发生的情况。
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**屏幕截图**
+如果适用，添加屏幕截图以帮助解释你的问题。
 
-**Additional context**
-Add any other context about the problem here.
+**额外的背景**
+在这里添加关于问题的任何其他背景。
