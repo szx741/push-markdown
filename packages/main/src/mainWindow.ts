@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-08-05 11:07:21
+ * @LastEditTime: 2022-08-05 12:15:12
  * @Description: 主窗口设置
  * @FilePath: \push-markdown\packages\main\src\mainWindow.ts
  */
@@ -24,7 +24,8 @@ async function createWindow() {
       contextIsolation: true, //默认开启上下文隔离，为了安全😊
       webSecurity: true, // 关闭跨域限制，为了安全😊
       webviewTag: false, // 不知道是啥，关就完事了，为了安全😊
-      preload: join(__dirname, '../../preload/dist/index.cjs'),
+      sandbox: false, //千万不要开启，要不然预加载脚本也会受限
+      preload: join(__dirname, '../../preload/dist/index.cjs')
     }
   });
   /**
