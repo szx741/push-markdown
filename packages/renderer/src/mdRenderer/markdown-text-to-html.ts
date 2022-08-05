@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2022-08-04 22:19:57
+ * @LastEditTime: 2022-08-05 23:03:39
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
@@ -10,7 +10,9 @@ import frontMatter from 'front-matter';
 import highlight from 'highlight.js';
 import { htmlToText } from 'html-to-text';
 import MarkdownIt from 'markdown-it';
-import { slugify } from 'transliteration';
+import { slugify as slug, transliterate } from 'transliteration';
+
+import slugify from '@sindresorhus/slugify';
 
 import { AbstractMode, publishConf } from '../conf/publish-conf';
 import { mdFileName } from '../utils/tools';
@@ -114,7 +116,7 @@ function handleMarkdownHTML(htmlText: any, filePath: string, isPreview: any) {
 
 function handlePost(post: Post, html: string) {
   // 如果post的url为空，那么就就title转换成拼音
-  if (!post.url) post.url = slugify(post.title);
+  if (!post.url) post.url = slugify(transliterate(post.title));
   // 判断摘要从哪里提取
   if (!post.abstract) {
     switch (publishConf.value.abstractMode) {
