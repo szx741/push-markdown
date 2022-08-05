@@ -1,13 +1,16 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:21:25
- * @LastEditTime: 2022-07-23 18:12:04
+ * @LastEditTime: 2022-08-05 00:42:27
  * @Description:
  * @FilePath: \push-markdown\.electron-builder.config.js
  */
+const packageConf = require('./package.json');
+
 if (process.env.VITE_APP_VERSION === undefined) {
-  const now = new Date();
-  process.env.VITE_APP_VERSION = `${now.getUTCFullYear() - 2000}.${now.getUTCMonth() + 1}.${now.getUTCDate()}-${now.getUTCHours() * 60 + now.getUTCMinutes()}`;
+  // const now = new Date();
+  // process.env.VITE_APP_VERSION = `${now.getUTCFullYear() - 2000}.${now.getUTCMonth() + 1}.${now.getUTCDate()}-${now.getUTCHours() * 60 + now.getUTCMinutes()}`;
+  process.env.VITE_APP_VERSION = packageConf.version;
 }
 
 /**
@@ -18,8 +21,7 @@ const config = {
   appId: 'com.szx.life.push_markdown',
   productName: 'push-markdown',
   directories: {
-    output: 'dist',
-    buildResources: 'buildResources'
+    output: 'dist'
   },
   files: ['packages/**/dist/**'],
   extraMetadata: {
@@ -48,7 +50,13 @@ const config = {
         target: 'default'
       }
     ]
-  }
+  },
+  publish: [
+    {
+      provider: 'generic',
+      url: 'http://download.szx.life/push-markdown'
+    }
+  ]
 };
 
 module.exports = config;

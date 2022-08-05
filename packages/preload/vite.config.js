@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-07-23 17:20:56
+ * @LastEditTime: 2022-08-05 11:01:22
  * @Description:
  * @FilePath: \push-markdown\packages\preload\vite.config.js
  */
@@ -35,7 +35,7 @@ const config = {
       }
     },
     emptyOutDir: true,
-    brotliSize: false
+    reportCompressedSize: false
   },
   plugins: [preload.vite()]
 };

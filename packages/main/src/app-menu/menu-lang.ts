@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:00:58
- * @LastEditTime: 2022-07-31 13:50:55
+ * @LastEditTime: 2022-08-04 12:09:21
  * @Description: 窗口的多语言支持
  * @FilePath: \push-markdown\packages\main\src\app-menu\menu-lang.ts
  */
@@ -35,6 +35,7 @@ export const en = {
   close: 'Close',
   help: 'Help',
   learnMore: 'Learn More',
+  checkUpdate: 'Check Update',
   openWelcomePage: 'Open Welcome Page',
   viewSampleFile: 'View Sample File',
   tutorials: 'Tutorials',
@@ -77,6 +78,7 @@ export const zh = {
   close: '关闭',
   help: '帮助',
   learnMore: '了解更多',
+  checkUpdate: '检查更新',
   openWelcomePage: '打开欢迎页',
   viewSampleFile: '查看示例文档',
   tutorials: '使用教程',

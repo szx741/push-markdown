@@ -37,6 +37,8 @@ const en = {
     reset: 'Reset All Settings',
     resetConfirm: 'Confirm to reset all settings ?',
     confirmDelete: 'Confirm Delete',
+    importSuccess: 'Imported configuration successfully',
+    importFail: 'Imported configuration failed, probably due to inconsistent format',
 
     renderSettings: 'Publish Settings',
     abstract: {
@@ -118,24 +120,23 @@ const en = {
 
   introduction: `
     <h2>Introduction</h2>
-      <p>Push Markdown is an open source tool for publishing local Markdown files to blogs, based on Electron implementation, supports English and Chinese, windows and macOS are currently supported</p>
+      <p>Push Markdown is an open source tool for publishing local Markdown files to blogs, based on Electron implementation, supports English and Chinese, windows is currently supported</p>
       <ol>
-        <li>Supports mainstream Markdown syntax, TOC, code highlighting, <strike>MathJax math equations</strike>, local preview and easy editing features (we recommend using Haroopad, Typora and other tools to write well, then use this tool to publish). </li>
-        <li>Automated blog publishing. Blog can set attributes such as title, summary, fixed link, author, publish time, tags, categories, etc. Automatically batch upload local images referenced in markdown files. Support multi-site publishing at the same time. Currently only support MetaWeblog interface, compatible with WordPress, cnblogs the two blogs, the follow-up can continue to develop other interfaces. </li>
-        <li>Blogs that have been published to remote by this tool can be updated using this tool (blogs are distinguished using fixed links i.e. url), and the same images do not need to be uploaded repeatedly when updating (images are distinguished using file md5). </li>
+        <li>Supports mainstream Markdown syntax, TOC, code highlighting, MathJax math equations, local preview and easy editing features (we recommend using Haroopad, Typora and other tools to write well, then use this tool to publish). </li>
+        <li>Automated blog publishing. Blog can set attributes such as title, summary, fixed link, author, publish time, tags, categories, etc. Automatically batch upload local images referenced in markdown files. Support multi-site publishing at the same time. Currently only support WordPress. </li>
+        <li>Blogs that have been published to remote by this tool can be updated using this tool (blogs are distinguished using fixed links i.e. url), and the same images do not need to be uploaded repeatedly when updating (Images are distinguished using file names). </li>
       </ol>
     <h2>Instructions for use</h2>
     <h3>Be sure to refer to <a href="https://gitee.com/xaotuman/push-markdown/blob/master/docs/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.md">tutorials</a> ！！！！！ before using </h3>
     <ol>
       <li>Open <a href="#" data-href="settings">settings</a> from menu, configure the blog URL and account information.</li>
       <li>Open the Markdown file to be published from the menu to see if the rendering is correct. Note that the Markdown source file must be UTF-8 encoded with the <code>.md</code> extension. </li>
-      <li>Click Publish from the menu, check the blog you want to publish in the popup window, and click Publish. The local preview uses the GitHub style by default, but you can also change the style, and the final result depends on the blog's CSS style configuration after publishing to the blog. </li>
+      <li>Click Publish from the menu, check the blog you want to publish in the popup window, and click Publish. The local preview uses the GitHub style by default, including light and dark, and the final result depends on the blog's CSS style configuration after publishing to the blog. </li>
       <li>The post upload logic and image upload logic have been optimized to rely on more than just local caching to accommodate multiple devices and newly installed software, see my <a href="https://szx.life/push-markdown/push-markdown重构/">technical blog</a> for more details on the logic. </li>
       <li>If you have questions about the formatting of the documentation, you can always open the <a href="#" data-href="sample">example documentation</a> to see it. </li>
-      <li>For more, see the <a href="https://gitee.com/xaotuman/push-markdown">Gitee</a>, <a href="https://szx.life/push-markdown/push-markdown重构/">technical blog</a>. </li>
+      <li>If you like this software, please go to <a href="https://gitee.com/xaotuman/push-markdown">Gitee</a> or <a href="https://github.com/szx741/push-markdown">GitHub</a> and give me a Star!</li>
       <li>Original project address <a href="https://github.com/jzj1993/PublishMarkdown">GitHub</a>, <a href="http://paincker.com/publish-markdown">technical blog</a>. </li>
     </ol>
-    Translated with www.DeepL.com/Translator (free version)
-    `
+`
 };
 export default en;

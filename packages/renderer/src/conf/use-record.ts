@@ -1,9 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-07-27 20:54:09
+ * @LastEditTime: 2022-08-04 19:54:38
  * @Description:
- * @FilePath: \push-markdown\packages\renderer\src\logic\useRecord.ts
+ * @FilePath: \push-markdown\packages\renderer\src\conf\use-record.ts
  */
 'use strict';
 import { store, nodeFs } from '#preload';
@@ -14,7 +14,7 @@ export interface Tab {
   filePath: string;
 }
 const defaultRecord = {
-  type: 'welcom',
+  type: 'welcome',
   modified: false,
   filePath: ''
 };

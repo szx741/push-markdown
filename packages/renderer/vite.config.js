@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-08-01 13:00:26
+ * @LastEditTime: 2022-08-05 11:00:48
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\vite.config.js
  */
@@ -41,10 +41,7 @@ const config = {
       input: join(PACKAGE_ROOT, 'index.html')
     },
     emptyOutDir: true,
-    brotliSize: false
-  },
-  test: {
-    environment: 'happy-dom'
+    reportCompressedSize: false
   },
   plugins: [
     vue(),

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-07-26 15:49:48
+ * @LastEditTime: 2022-08-05 11:06:40
  * @Description:
  * @FilePath: \push-markdown\packages\main\vite.config.js
  */
@@ -42,7 +42,7 @@ const config = {
       }
     },
     emptyOutDir: true,
-    brotliSize: false
+    reportCompressedSize: false
   }
 };
 

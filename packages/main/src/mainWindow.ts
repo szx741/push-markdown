@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:40:31
- * @LastEditTime: 2022-08-03 19:49:41
+ * @LastEditTime: 2022-08-05 11:07:21
  * @Description: 主窗口设置
  * @FilePath: \push-markdown\packages\main\src\mainWindow.ts
  */
@@ -9,7 +9,7 @@ import { BrowserWindow } from 'electron';
 import { join } from 'path';
 import { URL } from 'url';
 
-import { menuInit } from '/@/app-menu';
+import { menuInit } from './app-menu';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -20,11 +20,11 @@ async function createWindow() {
     show: false, // 使用事件 ready-to-show 来展示窗口
     // web渲染进程设置
     webPreferences: {
-      // nodeIntegration: false,  //默认不开启node集成，为了安全😊
-      // contextIsolation: true, //默认开启上下文隔离，为了安全😊
+      nodeIntegration: false, //默认不开启node集成，为了安全😊
+      contextIsolation: true, //默认开启上下文隔离，为了安全😊
       webSecurity: true, // 关闭跨域限制，为了安全😊
       webviewTag: false, // 不知道是啥，关就完事了，为了安全😊
-      preload: join(__dirname, '../../preload/dist/index.cjs')
+      preload: join(__dirname, '../../preload/dist/index.cjs'),
     }
   });
   /**

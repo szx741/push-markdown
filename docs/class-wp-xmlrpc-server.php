@@ -186,7 +186,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	private function set_is_enabled() {
 		/*
 		 * Respect old get_option() filters left for back-compat when the 'enable_xmlrpc'
-		 * option was deprecated in 3.5.0. Use the 'xmlrpc_enabled' hook instead.
+		 * option was deprecated in 3.5.0. Use the {@see 'xmlrpc_enabled'} hook instead.
 		 */
 		$is_enabled = apply_filters( 'pre_option_enable_xmlrpc', false );
 		if ( false === $is_enabled ) {
@@ -2271,11 +2271,11 @@ class wp_xmlrpc_server extends IXR_Server {
 	 * @param array $args {
 	 *     Method arguments. Note: arguments must be ordered as documented.
 	 *
-	 *     @type int    $blog_id      Blog ID (unused).
-	 *     @type string $username     Username.
-	 *     @type string $password     Password.
-	 *     @type string $taxnomy_name Taxonomy name.
-	 *     @type int    $term_id      Term ID.
+	 *     @type int    $blog_id       Blog ID (unused).
+	 *     @type string $username      Username.
+	 *     @type string $password      Password.
+	 *     @type string $taxonomy_name Taxonomy name.
+	 *     @type int    $term_id       Term ID.
 	 * }
 	 * @return true|IXR_Error True on success, IXR_Error instance on failure.
 	 */
@@ -2344,7 +2344,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	 *     @type int    $blog_id  Blog ID (unused).
 	 *     @type string $username Username.
 	 *     @type string $password Password.
-	 *     @type string $taxnomy  Taxonomy name.
+	 *     @type string $taxonomy Taxonomy name.
 	 *     @type string $term_id  Term ID.
 	 * }
 	 * @return array|IXR_Error IXR_Error on failure, array on success, containing:
@@ -2417,7 +2417,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	 *     @type int    $blog_id  Blog ID (unused).
 	 *     @type string $username Username.
 	 *     @type string $password Password.
-	 *     @type string $taxnomy  Taxonomy name.
+	 *     @type string $taxonomy Taxonomy name.
 	 *     @type array  $filter   Optional. Modifies the query used to retrieve posts. Accepts 'number',
 	 *                            'offset', 'orderby', 'order', 'hide_empty', and 'search'. Default empty array.
 	 * }
@@ -2509,7 +2509,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	 *     @type int    $blog_id  Blog ID (unused).
 	 *     @type string $username Username.
 	 *     @type string $password Password.
-	 *     @type string $taxnomy  Taxonomy name.
+	 *     @type string $taxonomy Taxonomy name.
 	 *     @type array  $fields   Optional. Array of taxonomy fields to limit to in the return.
 	 *                            Accepts 'labels', 'cap', 'menu', and 'object_type'.
 	 *                            Default empty array.
@@ -6369,7 +6369,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		$name = sanitize_file_name( $data['name'] );
 		$type = $data['type'];
-		$bits = base64_decode($data['bits']);
+		$bits = $data['bits'];
 
 		$user = $this->login( $username, $password );
 		if ( ! $user ) {
@@ -6396,34 +6396,20 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		if ( !empty($data['overwrite']) && ($data['overwrite'] == true) ) {
-			// Get postmeta info on the object.
-			$old_file = $wpdb->get_row("
-				SELECT ID
-				FROM {$wpdb->posts}
-				WHERE post_title = '{$name}'
-				AND post_type = 'attachment'
-				");
-
-			// Delete previous file.
-			wp_delete_attachment($old_file->ID);
-
-			// Make sure the new name is different by pre-pending the
-			// previous post id.
-			//$filename = preg_replace('/^wpid\d+-/', '', $name);
-			//$name = "wpid{$old_file->ID}-{$filename}";
-		}
-
 		/**
 		 * Filters whether to preempt the XML-RPC media upload.
 		 *
-		 * Passing a truthy value will effectively short-circuit the media upload,
+		 * Returning a truthy value will effectively short-circuit the media upload,
 		 * returning that value as a 500 error instead.
 		 *
 		 * @since 2.1.0
 		 *
 		 * @param bool $error Whether to pre-empt the media upload. Default false.
 		 */
+		if ( !empty($data['overwrite']) && ($data['overwrite'] == true) ) {
+			$old_file = $wpdb->get_row("SELECT ID FROM {$wpdb->posts} WHERE post_title = '{$name}' AND post_type = 'attachment' "); 
+			wp_delete_attachment($old_file->ID);
+		}
 		$upload_err = apply_filters( 'pre_upload_error', false );
 		if ( $upload_err ) {
 			return new IXR_Error( 500, $upload_err );
@@ -6912,14 +6898,14 @@ class wp_xmlrpc_server extends IXR_Server {
 			}
 		} else {
 			// TODO: Attempt to extract a post ID from the given URL.
-			return $this->pingback_error( 33, __( 'The specified target URL cannot be used as a target. It either doesn&#8217;t exist, or it is not a pingback-enabled resource.' ) );
+			return $this->pingback_error( 33, __( 'The specified target URL cannot be used as a target. It either does not exist, or it is not a pingback-enabled resource.' ) );
 		}
 		$post_ID = (int) $post_ID;
 
 		$post = get_post( $post_ID );
 
 		if ( ! $post ) { // Post not found.
-			return $this->pingback_error( 33, __( 'The specified target URL cannot be used as a target. It either doesn&#8217;t exist, or it is not a pingback-enabled resource.' ) );
+			return $this->pingback_error( 33, __( 'The specified target URL cannot be used as a target. It either does not exist, or it is not a pingback-enabled resource.' ) );
 		}
 
 		if ( url_to_postid( $pagelinkedfrom ) == $post_ID ) {
@@ -6928,7 +6914,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		// Check if pings are on.
 		if ( ! pings_open( $post ) ) {
-			return $this->pingback_error( 33, __( 'The specified target URL cannot be used as a target. It either doesn&#8217;t exist, or it is not a pingback-enabled resource.' ) );
+			return $this->pingback_error( 33, __( 'The specified target URL cannot be used as a target. It either does not exist, or it is not a pingback-enabled resource.' ) );
 		}
 
 		// Let's check that the remote site didn't already pingback this entry.
@@ -6941,7 +6927,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		$remote_ip = preg_replace( '/[^0-9a-fA-F:., ]/', '', $_SERVER['REMOTE_ADDR'] );
 
-		/** This filter is documented in wp-includes/class-http.php */
+		/** This filter is documented in wp-includes/class-wp-http.php */
 		$user_agent = apply_filters( 'http_headers_useragent', 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ), $pagelinkedfrom );
 
 		// Let's check the remote site.
@@ -6981,7 +6967,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		preg_match( '|<title>([^<]*?)</title>|is', $remote_source, $matchtitle );
 		$title = isset( $matchtitle[1] ) ? $matchtitle[1] : '';
 		if ( empty( $title ) ) {
-			return $this->pingback_error( 32, __( 'We cannot find a title on that page.' ) );
+			return $this->pingback_error( 32, __( 'A title on that page cannot be found.' ) );
 		}
 
 		// Remove all script and style tags including their content.
@@ -7093,7 +7079,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		$post_ID = url_to_postid( $url );
 		if ( ! $post_ID ) {
 			// We aren't sure that the resource is available and/or pingback enabled.
-			return $this->pingback_error( 33, __( 'The specified target URL cannot be used as a target. It either doesn&#8217;t exist, or it is not a pingback-enabled resource.' ) );
+			return $this->pingback_error( 33, __( 'The specified target URL cannot be used as a target. It either does not exist, or it is not a pingback-enabled resource.' ) );
 		}
 
 		$actual_post = get_post( $post_ID, ARRAY_A );

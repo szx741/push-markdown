@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2022-08-03 16:12:14
+ * @LastEditTime: 2022-08-04 22:19:57
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
@@ -70,7 +70,7 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
   // 处理Post
   handlePost(post, html);
 
-  console.log(`渲染Post总共花费时间： ${getTime() - startTime} ms`);
+  console.log(`渲染 ${post.title} 耗费${(getTime() - startTime).toFixed(2)}ms`);
   return post;
 }
 

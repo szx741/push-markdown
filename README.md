@@ -1,10 +1,3 @@
-<!--
- * @Author: szx
- * @Date: 2022-04-18 21:36:49
- * @LastEditTime: 2022-04-18 21:36:50
- * @Description: 
- * @FilePath: \push-markdown\README.md
--->
 # Push Markdown
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://raw.githubusercontent.com/meituan/WMRouter/master/LICENSE)
@@ -80,7 +73,9 @@
 
 6. 尝试打开软件的开发者工具，在菜单栏的窗口里面，看看有没有明显错误。
 
-7. 都不行的话，发issue寻求作者帮忙解决吧（作者不一定能解决😁）
+7. 有多个博客站点的话可能会有问题，因为我没有多个博客，所以无法测试，建议就只使用一个博客。
+
+8. 都不行的话，发issue寻求作者帮忙解决吧（作者不一定能解决😁）
 
 ## 其他文档
 
@@ -90,7 +85,19 @@
 
 [push-markdown 示例文档 – 巷子深的生活 (szx.life)](https://szx.life/sample-docs-1/)
 
+特别感谢[vite-electron-builder](https://github.com/cawa-93/vite-electron-builder)模版，对我2.0.0升级有着举足轻重的作用
+
 ## 重要版本
+
+**v2.0.0**
+
+- 这个版本主要针对项目结构、代码结构等进行调整（不敢说是优化）
+- 包管理从yarn更换到pnpm，打包工具从vue/cli升级到vite3，AnyScript升级到TypeScript，Vue3写法更新到Vue3组件式API写法，electron更新到20
+- 稍微美化界面样式，带来了全新的暗黑模式（手机厂商营销术语）
+- 添加一键导入博客文章配置的方法，超实用！具体看使用教程
+- 可以打开设置文件，查看相关的信息，也可以手动更改一些配置
+- 发布逻辑微调，不需要发布的时候再次渲染，减少性能消耗，加快发布时间
+- 应用支持检查更新
 
 **v1.2.8**
 
@@ -140,7 +147,7 @@
 **v1.2.0**
 
 - 软件适配macos
-- 博客适配cnblogs博客园
+- ~~博客适配cnblogs博客园~~
 - 新增主题切换，多款主题任你挑选
 - 新增侧边文件资源管理栏，可以快速打开同级目录下的文件
 - 修复本地锚点中有中英文标点符号不能跳转的问题
@@ -237,8 +244,8 @@
 - [x] 记录文件打开历史
 - [x] 文件修改后有标记
 - [x] 能够有一键重载文件的按钮
-- [ ] 使用typescript（即不要全用any）
-- [ ] 改成vue3格式
+- [x] 使用typescript（即不要全用any）
+- [x] 改成vue3格式
 - [x] 左侧使用类似Typora的文件管理的效果
 - [x] 适配cnblogs~~，oschina（没文档，不行）~~
 - [x] 可选markdown的渲染样式

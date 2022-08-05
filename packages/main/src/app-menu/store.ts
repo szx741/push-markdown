@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 18:47:44
- * @LastEditTime: 2022-07-31 15:35:31
+ * @LastEditTime: 2022-08-05 00:04:54
  * @Description: electron-sotre存储语言值
  * @FilePath: \push-markdown\packages\main\src\app-menu\store.ts
  */
@@ -10,8 +10,16 @@
 
 import Store from 'electron-store';
 
+const options = {
+  name: 'settings',
+  cwd: 'setting',
+  defaults: {
+    theme: true,
+    language: 'zh'
+  }
+};
 // 存储的文件名为settings
-const store = new Store({ name: 'settings' });
+const store = new Store(options);
 
 export function getLang() {
   return store.get('language', 'zh');

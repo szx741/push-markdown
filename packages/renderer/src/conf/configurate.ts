@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 20:51:37
- * @LastEditTime: 2022-08-03 17:48:18
+ * @LastEditTime: 2022-08-04 21:50:43
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\conf\configurate.ts
  */
@@ -41,11 +41,11 @@ export function readClipboard(whichSite: number) {
     jsonMedia: any = {};
 
   jsons.forEach((json) => {
-    jsonPost[decodeURI(json.Slug)] = json.ID;
+    jsonPost[decodeURI(json.Slug).replaceAll('.', '!')] = json.ID;
     const imageUrlArr = json['Image URL'].split('||'),
       imageNameArr = json['Images Filename'].split('||');
     imageNameArr.forEach((name, index) => {
-      if (name !== '') jsonMedia[name] = imageUrlArr[index];
+      if (name !== '') jsonMedia[name.replaceAll('.', '!')] = imageUrlArr[index];
     });
   });
   let res = store.storeSettingsGet(key);

@@ -40,8 +40,9 @@
   function importConfig() {
     try {
       readClipboard(whichSite.value);
+      show(t('setting.importSuccess'));
     } catch (err) {
-      show('出错了！！格式不对！！');
+      show(t('setting.importFail'));
       console.log(err);
     }
   }

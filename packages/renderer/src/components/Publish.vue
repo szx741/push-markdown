@@ -69,8 +69,9 @@
     const site = sites.value[index],
       publisher = publishers[index],
       publishParams: PublishParams = {
-        post: post.value,
+        post: toRaw(post.value),
         postID: postID.value.toString(),
+        oldPostID: aritcleId.value,
         stateHandler,
         publishMode: publishMode.value,
         detail: detail.value,

@@ -37,7 +37,8 @@ const zh = {
     reset: '重置全部设置',
     resetConfirm: '确认重置全部设置为默认值？',
     confirmDelete: '确认删除',
-
+    importSuccess: '导入配置成功',
+    importFail: '导入配置失败，可能是格式不一致',
     renderSettings: '发布设置',
     abstract: {
       name: '摘要自动提取',
@@ -116,21 +117,20 @@ const zh = {
 
   introduction: `
     <h2>简介</h2>
-      <p>Push Markdown是一款将本地Markdown文件发布到博客的开源工具，基于Electron实现，支持中英文，目前已经支持windows和macOS。</p>
+      <p>Push Markdown是一款将本地Markdown文件发布到博客的开源工具，基于Electron实现，支持中英文，目前已经支持windows。</p>
       <ol>
         <li>支持主流Markdown语法、TOC、代码高亮、MathJax数学公式，支持本地预览和简易编辑功能（建议使用Typora等工具编写好后，再使用本工具发布）。</li>
-        <li>全自动博客发布。博客可设置标题、摘要、固定链接、作者、发布时间、标签、分类等属性，自动批量上传markdown文件中引用的本地图片。支持多站点同时发布。目前仅支持MetaWeblog接口，兼容WordPress、cnblogs这两个博客，后续可以继续开发其他接口。</li>
-        <li>已经通过本工具发布到远程的博客，可以使用本工具更新(博客使用固定链接即url区分)，且更新时相同图片无需重复上传(图片使用文件md5区分)。</li>
+        <li>全自动博客发布。博客可设置标题、摘要、固定链接、作者、发布时间、标签、分类等属性，自动批量上传markdown文件中引用的本地图片。支持多站点同时发布。目前仅支持WordPress。</li>
+        <li>已经通过本工具发布到远程的博客，可以使用本工具更新(博客使用固定链接即url区分)，且更新时相同图片无需重复上传(图片使用文件名区分)。</li>
       </ol>
     <h2>使用说明</h2>
     <h3>使用前一定要先参考<a href="https://gitee.com/xaotuman/push-markdown/blob/master/docs/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.md">使用教程</a>！！！！！</h3>
     <ol>
       <li>从菜单打开<a href="#" data-href="settings">设置</a>，配置需要发布的博客网址和账户信息。</li>
       <li>从菜单打开要发布的Markdown文件，查看渲染结果是否正确。注意Markdown源文件必须是UTF-8编码，扩展名为<code>.md</code>。</li>
-      <li>从菜单点击发布，弹窗勾选需要发布的博客，点击“发布”即可。本地预览默认使用的是GitHub风格的样式，也可以更换样式，发布到博客后，最终效果取决于博客的CSS样式配置。</li>
-      <li>对文章上传逻辑和图片上传逻辑进行了优化，不仅只依赖本地缓存，这样能适应多台设备和新装软件的情况，详情逻辑可以查看我的<a href="https://szx.life/push-markdown/push-markdown重构/">技术博客</a>。</li>
+      <li>从菜单点击发布，弹窗勾选需要发布的博客，点击“发布”即可。本地预览默认使用的是GitHub风格的样式，包含浅色和深色，发布到博客后，最终效果取决于博客的CSS样式配置。</li>
       <li>如果对文档编写格式存在疑问，可以随时打开<a href="#" data-href="sample">示例文档</a>查看。</li>
-      <li>更多内容请查看<a href="https://gitee.com/xaotuman/push-markdown">Gitee</a>，<a href="https://szx.life/push-markdown/push-markdown重构/">技术博客</a>。</li>
+      <li>如果喜欢本软件，欢迎去<a href="https://gitee.com/xaotuman/push-markdown">Gitee</a>或者<a href="https://github.com/szx741/push-markdown">GitHub</a>给我一个Star！</li>
       <li>原项目地址<a href="https://github.com/jzj1993/PublishMarkdown">GitHub</a>，<a href="http://paincker.com/publish-markdown">技术博客</a>。</li>
     </ol>
     `

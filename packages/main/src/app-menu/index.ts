@@ -1,26 +1,17 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 19:57:31
- * @LastEditTime: 2022-08-01 15:12:30
+ * @LastEditTime: 2022-08-05 00:13:51
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\app-menu\index.ts
  */
-/*
- * @Author: szx
- * @Date: 2021-07-04 18:42:15
- * @LastEditTime: 2022-07-23 19:56:32
- * @Description: 菜单栏设置
- * @FilePath: \push-markdown\packages\main\src\app-menu.ts
- */
-
 'use strict';
 
 //dialog模块提供了api来展示原生的系统对话框，例如打开文件框，alert框
 import { Menu, app, dialog, shell, BrowserWindow } from 'electron';
-
 import * as language from './menu-lang';
 import { setLang, setTheme, getLang, getTheme } from './store';
-
+import { checkForUpdates } from './updater';
 // 加载菜单栏
 export function menuInit(mainWindow: BrowserWindow) {
   // webContents它负责渲染并控制网页
@@ -279,7 +270,39 @@ export function menuInit(mainWindow: BrowserWindow) {
           label: l.learnMore,
           click: function () {
             app.getAppPath();
-            shell.openExternal('https://gitee.com/xaotuman/push-markdown');
+            shell.openExternal('https://szx.life/push-markdown%E9%87%8D%E6%9E%84/');
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: l.checkUpdate,
+          click: function () {
+            checkForUpdates();
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: l.about,
+          click: function () {
+            dialog.showMessageBox({
+              title: '关于软件',
+              icon: 'public/app.ico',
+              message: 'push-markdown v' + app.getVersion(),
+              detail: `Node.js: ${process.versions.node}
+Electron: ${process.versions.electron}
+Chromium: ${process.versions.chrome}
+Platform: ${process.platform}
+Install: ${app.getAppPath()}
+
+作者：szx
+作者博客：https://szx.life
+源码发布地址：https://gitee.com/xaotuman/push-markdown
+软件发布地址：http://download.szx.life`
+            });
           }
         }
       ]

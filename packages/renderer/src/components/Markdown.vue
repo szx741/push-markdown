@@ -200,7 +200,7 @@
 
   .right {
     width: 53%;
-    flex-grow: 1;
+    // flex-grow: 1;
     overflow-y: auto;
   }
 

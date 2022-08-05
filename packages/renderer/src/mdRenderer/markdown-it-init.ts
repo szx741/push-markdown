@@ -1,18 +1,18 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:22:43
- * @LastEditTime: 2022-08-03 14:04:20
+ * @LastEditTime: 2022-08-04 12:24:59
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-it-init.ts
  */
 import MarkdownIt from 'markdown-it';
 import markdownItTitle from 'markdown-it-title';
 import markdownItUnderline from 'markdown-it-underline';
-import * as markdownItAnchor from 'markdown-it-anchor';
-import * as markdownItTableOfContents from 'markdown-it-table-of-contents';
+import markdownItAnchor from 'markdown-it-anchor';
+import tableOfContents from 'markdown-it-table-of-contents';
 import mathjax3 from 'markdown-it-mathjax3';
-import * as markdownItTaskCheckbox from 'markdown-it-task-checkbox';
-import uslug from 'uslug';
+import taskCheckbox from 'markdown-it-task-checkbox';
+import slugify from '@sindresorhus/slugify';
 
 import { publishConf } from '../conf/publish-conf';
 
@@ -32,16 +32,16 @@ export function markdownItInit() {
   md.use(markdownItUnderline);
 
   // generate anchor for heading
-  md.use(markdownItAnchor.default, { slugify: (s: string) => uslug(s) });
+  md.use(markdownItAnchor, { slugify: (s: string) => slugify(s) });
   // 目录插件
   // md.use(markdownItTableOfContents);
-  md.use(markdownItTableOfContents, {
+  md.use(tableOfContents, {
     markerPattern: /^\[toc]/im,
     includeLevel: [1, 2, 3, 4, 5, 6]
   });
 
   // 任务列表的支持
-  md.use(markdownItTaskCheckbox, {
+  md.use(taskCheckbox, {
     disabled: true,
     divWrap: false
   });

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2022-08-03 17:26:19
+ * @LastEditTime: 2022-08-04 22:03:29
  * @Description:文章发布工具。根据type调用不同的实现。目前支持MetaWeblog。
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -42,6 +42,7 @@ interface OldPost {
 export interface PublishParams {
   post: Post;
   postID: string;
+  oldPostID: string;
   stateHandler: (state: PublishState) => void;
   publishMode: PublishMode;
   detail: Detail;
@@ -67,7 +68,7 @@ export class MetaPublisher {
     this.mediaCache = new Cache('media', this.siteUrl, this.username);
   }
 
-  async publish({ post, postID, stateHandler, publishMode, detail, editHandler }: PublishParams): Promise<boolean> {
+  async publish({ post, postID, oldPostID, stateHandler, publishMode, detail, editHandler }: PublishParams): Promise<boolean> {
     // 显示正在Render
     stateHandler(PublishState.STATE_RENDER);
     const mapImage = new Map<string, string>();
@@ -75,12 +76,12 @@ export class MetaPublisher {
     switch (publishMode) {
       // 自动模式
       case PublishMode.Auto:
-        oldPost = await this.getOldPost(post, '0');
+        oldPost = await this.getOldPost(post, '0', oldPostID);
         break;
 
       // 手动模式
       case PublishMode.Manual:
-        const _oldPost = await this.getOldPost(post, postID);
+        const _oldPost = await this.getOldPost(post, postID, oldPostID);
         // 如果旧文章有，并且获取网络图片选上了，那么图片链接就换到网络图片
         if (_oldPost && detail.getNetPic == true) {
           this.getNetworkImage(_oldPost, mapImage);
@@ -148,7 +149,7 @@ export class MetaPublisher {
     return true;
   }
 
-  async getOldPost(post: Post, postID: string) {
+  async getOldPost(post: Post, postID: string, oldPostId: string) {
     // 1、手动更新指定文章的ID，必须大于0
     if (parseInt(postID) > 0) {
       // console.log('手动更新指定文章ID');
@@ -158,10 +159,7 @@ export class MetaPublisher {
     }
     // 2、否则，从本地缓存查找之前的ID
     if (!post.url) return null;
-
-    const oldPostId = this.postCache.get(post.url);
-    console.log('getOldPost', oldPostId);
-    if (oldPostId) {
+    if (oldPostId !== '-1') {
       const oldPost = await this.metaWeblog.getPost(oldPostId, this.username, this.password).catch(() => null);
       if (oldPost && oldPost.postid == oldPostId) return toPost(oldPost);
       console.log('本地与网络不一致');
@@ -230,7 +228,6 @@ export class MetaPublisher {
         console.log(`${imgName} 无本地缓存记录，将更新图片（强制替换博客的同名图片）`);
       }
     }
-
     try {
       const result = await blogApi.newMediaObject(this.metaWeblog, this.username, this.password, imgName, filePath);
       const resUrl: string = result.url;

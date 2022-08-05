@@ -1,12 +1,11 @@
 /*
  * @Author: szx
  * @Date: 2022-07-28 21:32:05
- * @LastEditTime: 2022-08-02 12:32:57
+ * @LastEditTime: 2022-08-04 21:47:23
  * @Description:
- * @FilePath: \push-markdown\packages\renderer\src\configuration\sites.ts
+ * @FilePath: \push-markdown\packages\renderer\src\conf\sites.ts
  */
 import { store } from '#preload';
-import { Base64 } from 'js-base64';
 import { ref } from 'vue';
 import { MetaPublisher, initMetaPublisher } from '../mdPublish';
 
@@ -30,17 +29,15 @@ export function delSite(index: number) {
 
 export function saveSites(sites: Site[]) {
   publishers = [];
-  const res = sites.map((site) => {
+  sites.forEach((site) => {
     publishers.push(initMetaPublisher(site.url, site.username, site.password));
-    return { ...site, password: Base64.encode(site?.password || '') };
   });
-  store.storeSettingsSet('sites', res);
+  store.storeSettingsSet('sites', sites);
 }
 
 export function getSites(): Site[] {
   const sites: Site[] = store.storeSettingsGet('sites');
   sites.forEach((site) => {
-    site.password = site.password && Base64.decode(site.password);
     publishers.push(initMetaPublisher(site.url, site.username, site.password));
   });
   return sites;

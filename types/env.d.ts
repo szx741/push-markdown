@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:20:21
- * @LastEditTime: 2022-07-23 16:56:26
+ * @LastEditTime: 2022-08-05 10:56:10
  * @Description:
  * @FilePath: \push-markdown\types\env.d.ts
  */
@@ -20,8 +20,8 @@
  */
 interface ImportMetaEnv {
   /**
-   * URL where `renderer` web page located.
-   * Variable initialized in scripts/watch.ts
+   * URL where `renderer` web page is running.
+   * This variable is initialized in scripts/watch.ts
    */
   readonly VITE_DEV_SERVER_URL: undefined | string;
 }

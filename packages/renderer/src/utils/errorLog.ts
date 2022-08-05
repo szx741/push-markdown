@@ -1,14 +1,14 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 19:44:30
- * @LastEditTime: 2022-08-03 13:44:28
+ * @LastEditTime: 2022-08-04 23:56:53
  * @Description: errorLog.ts的封装，对Error类型的封装
- * @FilePath: \push-markdown\packages\renderer\src\logic\errorLog.ts
+ * @FilePath: \push-markdown\packages\renderer\src\utils\errorLog.ts
  */
 import { ComponentPublicInstance } from 'vue';
 import dayjs from 'dayjs';
 // import os from 'os';
-import useMessage from '/@/components/message';
+import useMessage from '../components/message';
 import { ipc, nodeFs, other } from '#preload';
 
 function getShortStack(stack?: string): string {

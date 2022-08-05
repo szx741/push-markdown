@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-08-02 17:42:16
- * @LastEditTime: 2022-08-02 20:05:15
+ * @LastEditTime: 2022-08-05 00:00:47
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\blog-api.ts
  */
@@ -37,10 +37,11 @@ export const blogApi = {
   },
   newMediaObject(metaWeblog: MetaWeblog, username: string, password: string, imgName: string, filePath: string): any {
     const bits = Buffer.from(fs.readFileSync(filePath));
-    const mediaObject: MetaWeblog.MediaObject = {
+    const mediaObject: any = {
       name: imgName,
       type: getMimeType(filePath),
-      bits
+      bits,
+      overwrite: true
     };
     return metaWeblog.newMediaObject('', username, password, mediaObject);
   }
@@ -53,3 +54,4 @@ function getMimeType(filePath: string) {
   if (!type) throw new Error(`${ext} 此媒体后缀不支持`);
   return type;
 }
+

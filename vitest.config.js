@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:24:12
- * @LastEditTime: 2022-07-23 13:24:12
+ * @LastEditTime: 2022-08-05 10:53:41
  * @Description:
  * @FilePath: \push-markdown\vitest.config.js
  */
@@ -11,20 +11,20 @@
  * @type {import('vite').UserConfig}
  * @see https://vitest.dev/config/
  */
-const config = {
+ const config = {
   test: {
     /**
-     * By default, vitest search test files in all packages.
-     * For e2e tests have sense search only is project root tests folder
+     * By default, vitest searches for the test files in all packages.
+     * For e2e tests, have vitest search only in the project root 'tests' folder.
      */
     include: ['./tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 
     /**
-     * A default timeout of 5000ms is sometimes not enough for playwright.
+     * The default timeout of 5000ms is sometimes not enough for playwright.
      */
-    testTimeout: 120000 * 5,
-    hookTimeout: 120000 * 5
-  }
+    testTimeout: 30_000,
+    hookTimeout: 30_000,
+  },
 };
 
 export default config;

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2022-08-03 13:49:33
+ * @LastEditTime: 2022-08-04 21:58:30
  * @Description: 文章、图片发布缓存，避免文章、图片重复发布
  * @FilePath: \push-markdown\packages\renderer\src\mdPublish\PublishCache.ts
  */
@@ -39,6 +39,6 @@ export class Cache {
   }
 
   key(object: string) {
-    return `${this.storeKey}.${object}`;
+    return `${this.storeKey}.${object.replaceAll('.', '!')}`;
   }
 }

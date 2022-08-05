@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-08-03 19:59:07
+ * @LastEditTime: 2022-08-04 22:20:33
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\MainComp.vue
 -->
@@ -84,7 +84,7 @@
 
   // 打开文件
   function openFile(filePath: string) {
-    console.log('文件的路径', filePath);
+    // console.log('文件的路径', filePath);
     const index = tabs.value.findIndex((tab) => tab.filePath === filePath);
     if (index === -1) {
       if (nodeFs.fsExistsSync(filePath)) {
@@ -120,9 +120,18 @@
   function fileDrop(e: DragEvent) {
     e.preventDefault();
     const file = e.dataTransfer?.files[0]; // 获取到第一个上传的文件对象
-    if (!file) return;
-    if (file.size > MAX_FILE_SIZE) {
-      return alert('文件大小不能超过10M');
+    if (!file || !file.path) {
+      show('不是可识别的文件！！');
+      return;
+    }
+    const extname = nodePath.pathExtname(file.path);
+    if (extname != '.md') {
+      show('不是md结尾的文件！！');
+      return;
+    }
+    if (file?.size > MAX_FILE_SIZE) {
+      show('文件大小不能超过10M');
+      return;
     }
     openFile(file.path);
   }
@@ -234,7 +243,7 @@
       </div>
 
       <div class="tab-contents">
-        <div v-for="(tab, i) in tabs" v-show="currIndex === i" :key="tab.type" class="tab-content">
+        <div v-for="(tab, i) in tabs" v-show="currIndex === i" :key="tab.type + i" class="tab-content">
           <template v-if="tab.type === 'welcome'">
             <Welcome></Welcome>
           </template>
@@ -265,7 +274,8 @@
 
   .root {
     height: 100%;
-    width: 85%;
+    width: 100%;
+    // flex-grow: 3;
     overflow: hidden;
     display: flex;
     flex-direction: column;

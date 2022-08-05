@@ -1,13 +1,14 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 20:09:35
- * @LastEditTime: 2022-08-03 15:18:56
+ * @LastEditTime: 2022-08-05 00:01:02
  * @Description:
  * @FilePath: \push-markdown\packages\preload\src\store.ts
  */
 import Store from 'electron-store';
 const options = {
   name: 'settings',
+  cwd: 'setting',
   defaults: {
     publish: {
       abstractMode: 'article',
@@ -21,7 +22,7 @@ const options = {
         url: 'https://www.example.com/xmlrpc.php',
         username: 'username',
         password: '',
-        selected: false
+        selected: true
       }
     ],
     detail: {
@@ -35,7 +36,19 @@ const options = {
   }
 };
 const storeSettings = new Store(options);
-const storeRecord = new Store({ name: 'use-record' });
+const storeRecord = new Store({
+  name: 'use-record',
+  defaults: {
+    tabs: [
+      {
+        type: 'welcome',
+        modified: false,
+        filePath: ''
+      }
+    ],
+    'tab-current': 0
+  }
+});
 export const store = {
   getLanguage() {
     return storeSettings.get('language', 'zh');
