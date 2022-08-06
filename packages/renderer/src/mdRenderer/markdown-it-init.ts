@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:22:43
- * @LastEditTime: 2022-08-04 12:24:59
+ * @LastEditTime: 2022-08-06 19:06:02
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-it-init.ts
  */
@@ -12,7 +12,7 @@ import markdownItAnchor from 'markdown-it-anchor';
 import tableOfContents from 'markdown-it-table-of-contents';
 import mathjax3 from 'markdown-it-mathjax3';
 import taskCheckbox from 'markdown-it-task-checkbox';
-import slugify from '@sindresorhus/slugify';
+import { slugify } from 'transliteration';
 
 import { publishConf } from '../conf/publish-conf';
 
@@ -60,13 +60,15 @@ export function markdownItInit() {
     const aIndex = tokens[idx].attrIndex('target');
     const hIndex = tokens[idx].attrIndex('href');
     if (hIndex == 0) {
-      // 将全角空格转换为-
-      const decodedUrl = decodeURI(tokens[idx].attrs[hIndex][1].replace(/%E3%80%80/g, '-'));
-      // 将锚点中所有的标点符号去除
-      if (decodedUrl.indexOf('#') == 0) {
-        tokens[idx].attrs[hIndex][1] = decodedUrl
-          .replace(/[ |~|`|!|@|$|%|^|&|*|(|)|-|_|+|=||||[|\]|{|}|;|:|"|'|,|<|.|>|/|?|、|，|。|！|？|—|【|】|｛|｝|（|）|；|：|‘|’|“|”|《|》|￥]/g, '')
-          .toLowerCase();
+      let href = decodeURI(tokens[idx].attrs[hIndex][1]);
+      //   // 将全角空格转换为-
+      //   const decodedUrl = decodeURI(tokens[idx].attrs[hIndex][1].replace(/%E3%80%80/g, '-'));
+      //   // 将锚点中所有的标点符号去除
+      if (href.indexOf('#') == 0) {
+        tokens[idx].attrs[hIndex][1] = '#' + slugify(href.substring(1));
+        //     tokens[idx].attrs[hIndex][1] = decodedUrl
+        //       .replace(/[ |~|`|!|@|$|%|^|&|*|(|)|-|_|+|=||||[|\]|{|}|;|:|"|'|,|<|.|>|/|?|、|，|。|！|？|—|【|】|｛|｝|（|）|；|：|‘|’|“|”|《|》|￥]/g, '')
+        //       .toLowerCase();
       }
     }
     if (aIndex < 0 && tokens[idx].attrs[hIndex][1].indexOf('#') != 0) {

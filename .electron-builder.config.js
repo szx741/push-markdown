@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:21:25
- * @LastEditTime: 2022-08-05 00:42:27
+ * @LastEditTime: 2022-08-06 20:26:13
  * @Description:
  * @FilePath: \push-markdown\.electron-builder.config.js
  */
@@ -24,6 +24,7 @@ const config = {
     output: 'dist'
   },
   files: ['packages/**/dist/**'],
+  extraResources: './public/**',
   extraMetadata: {
     version: process.env.VITE_APP_VERSION
   },

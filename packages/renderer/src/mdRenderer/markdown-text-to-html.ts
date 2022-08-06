@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2022-08-05 23:03:39
+ * @LastEditTime: 2022-08-06 19:08:55
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
@@ -10,9 +10,7 @@ import frontMatter from 'front-matter';
 import highlight from 'highlight.js';
 import { htmlToText } from 'html-to-text';
 import MarkdownIt from 'markdown-it';
-import { slugify as slug, transliterate } from 'transliteration';
-
-import slugify from '@sindresorhus/slugify';
+import { slugify } from 'transliteration';
 
 import { AbstractMode, publishConf } from '../conf/publish-conf';
 import { mdFileName } from '../utils/tools';
@@ -68,7 +66,6 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
     html,
     upload
   };
-
   // 处理Post
   handlePost(post, html);
 
@@ -89,10 +86,11 @@ function extractFrontMatter(contentAttr: any) {
   attr.title = toStr(contentAttr.title);
   attr.abstract = toStr(contentAttr.abstract);
   if (toStr(contentAttr.url)) attr.url = toStr(contentAttr.url);
-  attr.tags = toStrArr(contentAttr.tags || contentAttr.tag);
-  attr.categories = toStrArr(contentAttr.categories || contentAttr.category);
+  attr.tags = toStrArr(contentAttr.tags);
+  attr.categories = toStrArr(contentAttr.category);
   attr.authors = toStrArr(contentAttr.authors || contentAttr.author);
   attr.date = contentAttr.date && toSystemTimezone(contentAttr.date);
+
   return attr;
 }
 
@@ -116,7 +114,7 @@ function handleMarkdownHTML(htmlText: any, filePath: string, isPreview: any) {
 
 function handlePost(post: Post, html: string) {
   // 如果post的url为空，那么就就title转换成拼音
-  if (!post.url) post.url = slugify(transliterate(post.title));
+  if (!post.url) post.url = slugify(post.title.replace(/(\d+)/g, ' $1 ')).replace(/^-|-$/g, '');
   // 判断摘要从哪里提取
   if (!post.abstract) {
     switch (publishConf.value.abstractMode) {
@@ -158,7 +156,8 @@ function toStrArr(src: string | string[] | null | undefined): string[] | undefin
   if (typeof src === 'string') {
     return [src];
   } else if (src instanceof Array) {
-    return src.map((s) => toStr(s)).filter((s) => s);
+    const res = src.map((s) => toStr(s)).filter((s) => s);
+    return res.length == 0 ? undefined : res;
   }
   return undefined;
 }
@@ -167,7 +166,6 @@ function toSystemTimezone(date: Date) {
   const timezoneOffset = new Date().getTimezoneOffset();
   const time = date.getTime();
   date.setTime(time + timezoneOffset * 60 * 1000);
-  // console.log('old time, new time, offset =', time, date.getTime(), timezoneOffset)
   return date;
 }
 
@@ -243,14 +241,6 @@ function replaceLocalImages(div: HTMLElement, filePath: string) {
         ele.appendChild(img);
       }
     }
-  }
-}
-
-function shouldRenderFeature(isPreview: any, config: any) {
-  if (isPreview) {
-    return config === 'preview' || config === 'publish';
-  } else {
-    return config === 'publish';
   }
 }
 

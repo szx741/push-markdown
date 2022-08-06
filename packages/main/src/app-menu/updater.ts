@@ -1,12 +1,14 @@
 /*
  * @Author: szx
  * @Date: 2022-08-04 11:28:59
- * @LastEditTime: 2022-08-04 13:19:39
+ * @LastEditTime: 2022-08-06 20:37:51
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\app-menu\updater.ts
  */
-import { dialog } from 'electron';
+import { dialog, app } from 'electron';
 import { autoUpdater } from 'electron-updater';
+import { resolve } from 'path';
+const iconPath = resolve(app.getAppPath(), '../public/app.ico');
 
 autoUpdater.autoDownload = false;
 
@@ -17,6 +19,7 @@ autoUpdater.on('error', (error) => {
 autoUpdater.on('update-available', () => {
   dialog
     .showMessageBox({
+      icon: iconPath,
       type: 'info',
       title: '软件更新',
       message: '发现新版本，确定更新？',
@@ -31,6 +34,7 @@ autoUpdater.on('update-available', () => {
 
 autoUpdater.on('update-not-available', () => {
   dialog.showMessageBox({
+    icon: iconPath,
     title: '没有可更新版本',
     message: '当前版本已是最新'
   });
@@ -39,6 +43,7 @@ autoUpdater.on('update-not-available', () => {
 autoUpdater.on('update-downloaded', () => {
   dialog
     .showMessageBox({
+      icon: iconPath,
       title: '下载完成',
       message: '最新版本已下载完成, 退出程序进行安装'
     })

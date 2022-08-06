@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2022-08-04 22:03:29
+ * @LastEditTime: 2022-08-06 19:13:06
  * @Description:文章发布工具。根据type调用不同的实现。目前支持MetaWeblog。
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -26,27 +26,21 @@ export enum PublishMode {
   Create = 'create'
 }
 export enum PublishState {
-  STATE_RENDER = 'render',
   STATE_READ_POST = 'read',
   STATE_UPLOAD_MEDIA = 'upload',
   STATE_PUBLISH_POST = 'publish',
   STATE_EDIT_POST = 'edit',
   STATE_COMPLETE = 'complete'
 }
-interface OldPost {
-  id: string | undefined;
-  title: string;
-  html: string;
-}
 
 export interface PublishParams {
   post: Post;
-  postID: string;
+  inputID: string;
   oldPostID: string;
   stateHandler: (state: PublishState) => void;
   publishMode: PublishMode;
   detail: Detail;
-  editHandler: any;
+  editHandler: (post: MetaWeblog.Post) => false | Promise<unknown>;
 }
 
 /**
@@ -68,32 +62,18 @@ export class MetaPublisher {
     this.mediaCache = new Cache('media', this.siteUrl, this.username);
   }
 
-  async publish({ post, postID, oldPostID, stateHandler, publishMode, detail, editHandler }: PublishParams): Promise<boolean> {
+  async publish({ post, inputID, oldPostID, stateHandler, publishMode, detail, editHandler }: PublishParams): Promise<boolean> {
     // 显示正在Render
-    stateHandler(PublishState.STATE_RENDER);
     const mapImage = new Map<string, string>();
-    let oldPost = undefined;
-    switch (publishMode) {
-      // 自动模式
-      case PublishMode.Auto:
-        oldPost = await this.getOldPost(post, '0', oldPostID);
-        break;
-
-      // 手动模式
-      case PublishMode.Manual:
-        const _oldPost = await this.getOldPost(post, postID, oldPostID);
+    let postID = oldPostID;
+    if (publishMode === PublishMode.Manual) {
+      if (parseInt(inputID) > 0) postID = inputID;
+      stateHandler(PublishState.STATE_READ_POST);
+      const oldPost = await blogApi.getPost(this.metaWeblog, postID, this.username, this.password);
+      if (oldPost && (await editHandler(oldPost))) {
         // 如果旧文章有，并且获取网络图片选上了，那么图片链接就换到网络图片
-        if (_oldPost && detail.getNetPic == true) {
-          this.getNetworkImage(_oldPost, mapImage);
-          console.log('获取到的所有图片', mapImage);
-        }
-        if (editHandler(_oldPost)) {
-          oldPost = _oldPost;
-        }
-        break;
-
-      case PublishMode.Create:
-        break;
+        if (detail.getNetPic == true) this.getNetworkImage(oldPost, mapImage);
+      }
     }
 
     // 显示正在处理上传的图片
@@ -138,35 +118,15 @@ export class MetaPublisher {
     await promiseConcurrencyLimit(5, Array.from(div.getElementsByTagName('img')), handleImage);
     // 处理完图片，把文章里面的img都换成网络链接
     post.upload = div.innerHTML;
-    if (oldPost) {
+    if (postID !== '-1') {
       stateHandler(PublishState.STATE_EDIT_POST);
-      await this.editPost(oldPost, post);
+      await this.editPost(postID, post, oldPostID);
     } else {
       stateHandler(PublishState.STATE_PUBLISH_POST);
       await this.newPost(post);
     }
     stateHandler(PublishState.STATE_COMPLETE);
     return true;
-  }
-
-  async getOldPost(post: Post, postID: string, oldPostId: string) {
-    // 1、手动更新指定文章的ID，必须大于0
-    if (parseInt(postID) > 0) {
-      // console.log('手动更新指定文章ID');
-      const oldPost = await blogApi.getPost(this.metaWeblog, postID, this.username, this.password);
-      if (oldPost && oldPost.postid == postID) return toPost(oldPost);
-      return null;
-    }
-    // 2、否则，从本地缓存查找之前的ID
-    if (!post.url) return null;
-    if (oldPostId !== '-1') {
-      const oldPost = await this.metaWeblog.getPost(oldPostId, this.username, this.password).catch(() => null);
-      if (oldPost && oldPost.postid == oldPostId) return toPost(oldPost);
-      console.log('本地与网络不一致');
-      console.log('本地缓存的postID', oldPostId);
-      console.log('网络获取的文章', oldPost);
-    }
-    return null;
   }
 
   async newPost(post: Post) {
@@ -177,12 +137,10 @@ export class MetaPublisher {
     return id;
   }
 
-  async editPost(oldPost: any, post: Post) {
+  async editPost(postId: string, post: Post, oldPostID: string) {
     const _post = toMetaWeblogPost(post);
-    const id = oldPost.id;
-    await blogApi.editPost(this.metaWeblog, id.toString(), this.username, this.password, _post);
-    this.postCache.put(post.url, id.toString());
-    return id;
+    await blogApi.editPost(this.metaWeblog, postId, this.username, this.password, _post);
+    if (postId != oldPostID) this.postCache.put(post.url, postId);
   }
 
   // 获取远程图片
@@ -242,14 +200,6 @@ export class MetaPublisher {
       return;
     }
   }
-}
-
-function toPost(metaWeblog: MetaWeblog.Post): OldPost {
-  return {
-    id: metaWeblog.postid,
-    title: metaWeblog.title,
-    html: metaWeblog.description
-  };
 }
 
 function toMetaWeblogPost(post: Post) {

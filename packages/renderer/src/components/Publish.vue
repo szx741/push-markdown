@@ -13,7 +13,7 @@
 
   interface EditItem {
     site: Site;
-    post: Post;
+    post: any;
     callback: (edit: boolean) => void;
   }
 
@@ -29,7 +29,7 @@
     publishing = ref(false),
     confirm = ref(false),
     aritcleId: Ref<string> = ref('-1'),
-    postID = ref(0),
+    inputID = ref(0),
     { t } = useI18n();
 
   watch(detail, (value) => saveDetail(toRaw(value)), { deep: true });
@@ -70,7 +70,7 @@
       publisher = publishers[index],
       publishParams: PublishParams = {
         post: toRaw(post.value),
-        postID: postID.value.toString(),
+        inputID: inputID.value.toString(),
         oldPostID: aritcleId.value,
         stateHandler,
         publishMode: publishMode.value,
@@ -98,9 +98,6 @@
 
   function stateHandler(state: any) {
     switch (state) {
-      case PublishState.STATE_RENDER:
-        show(t('publish.status.render'));
-        break;
       case PublishState.STATE_READ_POST:
         show(t('publish.status.read'));
         break;
@@ -119,18 +116,20 @@
     }
   }
 
-  function editHandler(site: Site, post: Post) {
+  function editHandler(site: Site, post: any) {
     if (site && post) {
-      const item: EditItem = {
-        site,
-        post,
-        callback: (edit: boolean) => {
-          const index: number = editList.value.indexOf(item);
-          editList.value.splice(index, 1);
-          return edit;
-        }
-      };
-      editList.value.push(item);
+      return new Promise((resolve) => {
+        const item: EditItem = {
+          site,
+          post,
+          callback: (edit: boolean) => {
+            const index: number = editList.value.indexOf(item);
+            editList.value.splice(index, 1);
+            resolve(edit);
+          }
+        };
+        editList.value.push(item);
+      });
     } else {
       return false;
     }
@@ -209,7 +208,7 @@
             </select>
             <div v-if="publishMode == PublishMode.Manual">
               <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
-              <input v-model="postID" class="publish-article-id" type="number" placeholder="ID" />
+              <input v-model="inputID" class="publish-article-id" type="number" placeholder="ID" />
               <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
               <input v-model="detail.getNetPic" type="checkbox" :disabled="detail.forcedUpdate" />
               <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>
@@ -250,7 +249,7 @@
           <div>{{ $t('publish.publishModeOldPost') }}</div>
           <div v-if="edit.post" class="post-preview">
             <h1 class="post-preview-title">{{ edit.post.title }}</h1>
-            <div class="post-preview-content" v-html="edit.post.html"></div>
+            <div class="post-preview-content" v-html="edit.post.description"></div>
           </div>
           <div class="buttons">
             <button @click="() => edit.callback(true)">{{ $t('publish.publishModeEditPost') }}</button>

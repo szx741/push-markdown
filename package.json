@@ -1,6 +1,6 @@
 {
   "name": "push-markdown",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "description": "将本地markdown推送到WordPress",
   "engines": {
@@ -29,7 +29,6 @@
     "postinstall": "cross-env ELECTRON_RUN_AS_NODE=1 npx --no-install electron ./scripts/update-electron-vendors.mjs "
   },
   "dependencies": {
-    "@sindresorhus/slugify": "^2.1.0",
     "dayjs": "^1.11.4",
     "electron-store": "^8.1.0",
     "electron-updater": "^5.2.1",
@@ -51,7 +50,7 @@
     "transliteration": "^2.3.5",
     "vite": "^3.0.4",
     "vue": "^3.2.37",
-    "vue-i18n": "^9.1.10"
+    "vue-i18n": "^9.2.2"
   },
   "devDependencies": {
     "@types/he": "^1.1.2",
@@ -64,7 +63,7 @@
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "@typescript-eslint/parser": "^5.32.0",
     "@vitejs/plugin-vue": "3.0.1",
-    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
     "cross-env": "7.0.3",
     "electron": "^20.0.1",

@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 19:57:31
- * @LastEditTime: 2022-08-05 00:13:51
+ * @LastEditTime: 2022-08-06 20:36:42
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\app-menu\index.ts
  */
@@ -9,6 +9,7 @@
 
 //dialog模块提供了api来展示原生的系统对话框，例如打开文件框，alert框
 import { Menu, app, dialog, shell, BrowserWindow } from 'electron';
+import { resolve } from 'path';
 import * as language from './menu-lang';
 import { setLang, setTheme, getLang, getTheme } from './store';
 import { checkForUpdates } from './updater';
@@ -18,7 +19,9 @@ export function menuInit(mainWindow: BrowserWindow) {
   const webContents = mainWindow.webContents,
     lang = getLang(), // 当前的语言
     theme = getTheme(), //当前的主题
-    l = lang === 'zh' ? language.zh : language.en;
+    l = lang === 'zh' ? language.zh : language.en,
+    appPath = app.getAppPath();
+
   // 设置语言
   function setLanguage(lang: string) {
     setLang(lang);
@@ -290,13 +293,13 @@ export function menuInit(mainWindow: BrowserWindow) {
           click: function () {
             dialog.showMessageBox({
               title: '关于软件',
-              icon: 'public/app.ico',
+              icon: resolve(appPath, '../public/app.ico'),
               message: 'push-markdown v' + app.getVersion(),
               detail: `Node.js: ${process.versions.node}
 Electron: ${process.versions.electron}
 Chromium: ${process.versions.chrome}
 Platform: ${process.platform}
-Install: ${app.getAppPath()}
+Install: ${appPath}
 
 作者：szx
 作者博客：https://szx.life
