@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2022-08-06 19:08:55
+ * @LastEditTime: 2022-08-19 13:05:17
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
@@ -86,8 +86,8 @@ function extractFrontMatter(contentAttr: any) {
   attr.title = toStr(contentAttr.title);
   attr.abstract = toStr(contentAttr.abstract);
   if (toStr(contentAttr.url)) attr.url = toStr(contentAttr.url);
-  attr.tags = toStrArr(contentAttr.tags);
-  attr.categories = toStrArr(contentAttr.category);
+  attr.tags = toStrArr(contentAttr.tags || contentAttr.tag);
+  attr.categories = toStrArr(contentAttr.categories || contentAttr.category);
   attr.authors = toStrArr(contentAttr.authors || contentAttr.author);
   attr.date = contentAttr.date && toSystemTimezone(contentAttr.date);
 
