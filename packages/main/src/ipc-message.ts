@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2022-08-02 20:19:39
+ * @LastEditTime: 2022-09-03 21:24:01
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\ipc-message.ts
  */
@@ -32,7 +32,7 @@ ipcMain.on('exePath', function (event, arg) {
 
 ipcMain.on('addRecentDocument', function (event, arg) {
   // event.reply('exePath', path.dirname(app.getPath('exe')));
-  console.log(arg);
+  // console.log(arg);
   event.returnValue = app.addRecentDocument(arg);
 });
 

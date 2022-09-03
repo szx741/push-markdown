@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-11-14 19:41:30
- * @LastEditTime: 2022-08-04 18:59:35
+ * @LastEditTime: 2022-08-15 19:24:05
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\FilesViewer.vue
 -->
@@ -105,7 +105,8 @@
 <style lang="scss" scoped>
   .file-box {
     min-width: 150px;
-    width: 18%; /*左侧初始化宽度*/
+    // width: 18%; /*左侧初始化宽度*/
+    flex: 1;
     margin: 5px 0;
     padding: 0 8px 0 10px;
     border-right: 2px solid;

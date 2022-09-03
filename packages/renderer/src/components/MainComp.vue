@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-08-04 22:20:33
+ * @LastEditTime: 2022-08-15 19:24:42
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\MainComp.vue
 -->
@@ -274,8 +274,8 @@
 
   .root {
     height: 100%;
-    width: 100%;
-    // flex-grow: 3;
+    // width: 100%;
+    flex: 5;
     overflow: hidden;
     display: flex;
     flex-direction: column;
