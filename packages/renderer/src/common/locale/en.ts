@@ -72,6 +72,8 @@ const en = {
     time: 'Time',
     categories: 'Categories',
     tags: 'Tags',
+    thumbnail: 'thumbnail',
+    other_images: 'other images',
     empty: '(Not Specified)'
   },
 

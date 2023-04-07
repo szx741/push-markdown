@@ -27,8 +27,7 @@ const options = {
     ],
     detail: {
       notCheck: true,
-      forcedUpdate: false,
-      getNetPic: false
+      forcedUpdate: false
     },
     theme: true,
     language: 'zh',

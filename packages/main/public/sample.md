@@ -37,7 +37,13 @@ tags:
 - Tag4444444444
 - Tag5
 
+#文章特色图片的本地地址，可以是相对地址也可以是绝对地址，上传的时候会同时设置文章特色图片，不写则不设置
+thumbnail: sample_thumbnail.webp
 
+#其他不在文章页面显示的图片，也想要一块上传，比如想要设置页面页眉封面，通过本软件并不能设置，但是可以先上传图片，再在wordpress中直接设置，减少一步手动上传的步骤
+#other_images:
+#- images/xxx.webp 
+#- images/yyy.jpg
 ---
 
 

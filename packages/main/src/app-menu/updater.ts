@@ -1,12 +1,12 @@
 /*
  * @Author: szx
  * @Date: 2022-08-04 11:28:59
- * @LastEditTime: 2022-08-06 20:37:51
+ * @LastEditTime: 2023-04-07 15:06:21
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\app-menu\updater.ts
  */
 import { dialog, app } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import { UpdateInfo, autoUpdater } from 'electron-updater';
 import { resolve } from 'path';
 const iconPath = resolve(app.getAppPath(), '../public/app.ico');
 
@@ -16,13 +16,14 @@ autoUpdater.on('error', (error) => {
   dialog.showErrorBox('Error: ', error == null ? 'unknown' : (error.stack || error).toString());
 });
 
-autoUpdater.on('update-available', () => {
+autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
   dialog
     .showMessageBox({
       icon: iconPath,
       type: 'info',
       title: '软件更新',
-      message: '发现新版本，确定更新？',
+      message: `发现新版本 ${app.getVersion()}，更新日期为${updateInfo.releaseDate}，确定更新？`,
+      detail: updateInfo.releaseNotes?.toString(),
       buttons: ['确定', '取消']
     })
     .then((buttonIndex) => {

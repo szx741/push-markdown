@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2022-09-03 21:19:56
+ * @LastEditTime: 2023-04-06 19:55:59
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
@@ -10,7 +10,7 @@ import frontMatter from 'front-matter';
 import highlight from 'highlight.js';
 import { htmlToText } from 'html-to-text';
 import MarkdownIt from 'markdown-it';
-import { transliterate as tr, slugify } from 'transliteration';
+import { transliterate as tr } from 'transliteration';
 import slugi from '@sindresorhus/slugify';
 
 import { AbstractMode, publishConf } from '../conf/publish-conf';
@@ -23,6 +23,8 @@ interface Attr {
   categories: string[] | undefined;
   authors: string[] | undefined;
   date: Date | undefined;
+  thumbnail: string | undefined;
+  other_images: string[] | undefined;
 }
 
 export interface Post {
@@ -30,12 +32,14 @@ export interface Post {
   fileText: string | undefined;
   title: string;
   html: string;
+  abstract: string | undefined;
   url: string | undefined;
   tags: string[] | undefined;
   categories: string[] | undefined;
   authors: string[] | undefined;
   date: Date | undefined;
-  abstract: string | undefined;
+  thumbnail: string | undefined;
+  other_images: string[] | undefined;
   upload: string;
 }
 
@@ -63,6 +67,8 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
     ...attr,
     title: attr.title || mdFileName(filePath) || 'Unnamed',
     filePath: filePath,
+    thumbnail: transfromToLocalSrc(nodePath.pathDirname(filePath), attr.thumbnail),
+    other_images: otherImagesTrans(nodePath.pathDirname(filePath), attr.other_images),
     fileText: fileText,
     html,
     upload
@@ -74,6 +80,7 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
   return post;
 }
 
+// 解析前面yaml的文件格式
 function extractFrontMatter(contentAttr: any) {
   const attr: Attr = {
     title: undefined,
@@ -82,7 +89,9 @@ function extractFrontMatter(contentAttr: any) {
     tags: undefined,
     categories: undefined,
     authors: undefined,
-    date: undefined
+    date: undefined,
+    thumbnail: undefined,
+    other_images: undefined
   };
   attr.title = toStr(contentAttr.title);
   attr.abstract = toStr(contentAttr.abstract);
@@ -91,7 +100,8 @@ function extractFrontMatter(contentAttr: any) {
   attr.categories = toStrArr(contentAttr.categories || contentAttr.category);
   attr.authors = toStrArr(contentAttr.authors || contentAttr.author);
   attr.date = contentAttr.date && toSystemTimezone(contentAttr.date);
-
+  attr.thumbnail = toStr(contentAttr.thumbnail);
+  attr.other_images = toStrArr(contentAttr.other_images || contentAttr.other_image);
   return attr;
 }
 
@@ -210,16 +220,10 @@ function replaceLocalImages(div: HTMLElement, filePath: string) {
   const elements = div.getElementsByTagName('img');
 
   for (const img of elements) {
-    let src = img.getAttribute('src');
+    let src: any = img.getAttribute('src');
+    src = transfromToLocalSrc(filePath, src);
     if (!src) continue;
-    src = decodeURI(src);
-    if (!src || src.match(/^((https?|file):\/\/|data:)/)) {
-      continue;
-    }
-    if (!nodePath.pathIsAbsolute(src)) {
-      src = nodePath.pathJoin(filePath, src);
-    }
-    img.setAttribute('src', 'atom://' + src);
+    img.setAttribute('src', src);
 
     const pImg = img.parentElement;
     // console.log('tagName:', pImg?.tagName);
@@ -243,6 +247,26 @@ function replaceLocalImages(div: HTMLElement, filePath: string) {
       }
     }
   }
+}
+
+function otherImagesTrans(filePath: string, src: string[] | undefined) {
+  if (!src) return undefined;
+  let res = [];
+  for (let i of src) {
+    let src = transfromToLocalSrc(filePath, i);
+    if (src) res.push(src);
+  }
+  if (res.length === 0) return undefined;
+  else return res;
+}
+function transfromToLocalSrc(filePath: string, src: string | undefined) {
+  if (!src) return undefined;
+  src = decodeURI(src);
+  if (!src || src.match(/^((https?|file):\/\/|data:)/)) return undefined;
+  if (!nodePath.pathIsAbsolute(src)) {
+    src = nodePath.pathJoin(filePath, src);
+  }
+  return 'atom://' + src;
 }
 
 function highlightCode(div: any) {

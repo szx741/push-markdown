@@ -70,6 +70,8 @@ const zh = {
     time: '时间',
     categories: '分类',
     tags: '标签',
+    thumbnail: '特色图片',
+    other_images: '其他图片',
     empty: '(无)'
   },
 

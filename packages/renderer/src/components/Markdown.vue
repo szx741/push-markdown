@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { watch, ref, onUpdated, onMounted, toRef, Ref, onUnmounted } from 'vue';
+  import { watch, ref, onUpdated, onMounted, toRef, Ref, onUnmounted, computed } from 'vue';
   import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
 
@@ -32,6 +32,8 @@
       authors: undefined,
       date: undefined,
       abstract: undefined,
+      thumbnail: undefined,
+      other_images: undefined,
       upload: ''
     }),
     refMarkdown = ref(),
@@ -159,6 +161,22 @@
                 <td class="meta-name">{{ $t('meta.tags') }}</td>
                 <td v-if="post.tags" class="meta-value">
                   <span v-for="tag in post.tags" :key="tag" class="tag">{{ tag }} </span>
+                </td>
+                <td v-else class="meta-value empty">{{ $t('meta.empty') }} </td>
+              </tr>
+
+              <tr class="meta-item">
+                <td class="meta-name">{{ $t('meta.thumbnail') }}</td>
+                <td v-if="post.thumbnail" class="meta-value">
+                  <img :src="post.thumbnail" />
+                </td>
+                <td v-else class="meta-value empty">{{ $t('meta.empty') }} </td>
+              </tr>
+
+              <tr class="meta-item">
+                <td class="meta-name">{{ $t('meta.other_images') }}</td>
+                <td v-if="post.other_images" class="meta-value">
+                  <div v-for="other_image in post.other_images" :key="other_image"> <img :src="other_image" /> </div>
                 </td>
                 <td v-else class="meta-value empty">{{ $t('meta.empty') }} </td>
               </tr>

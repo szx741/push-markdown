@@ -1,9 +1,9 @@
 /*
  * @Author: szx
  * @Date: 2022-08-02 23:08:59
- * @LastEditTime: 2022-08-03 13:35:03
+ * @LastEditTime: 2023-04-06 18:45:55
  * @Description:
- * @FilePath: \push-markdown\packages\renderer\src\configuration\detail.ts
+ * @FilePath: \push-markdown\packages\renderer\src\conf\detail.ts
  */
 
 import { store } from '#preload';
@@ -12,7 +12,6 @@ import { ref } from 'vue';
 export interface Detail {
   notCheck: boolean;
   forcedUpdate: boolean;
-  getNetPic: boolean;
 }
 
 export const detail = ref(getDetail());

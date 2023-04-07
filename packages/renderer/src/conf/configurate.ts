@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-29 20:51:37
- * @LastEditTime: 2022-08-04 21:50:43
+ * @LastEditTime: 2023-04-07 13:32:14
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\conf\configurate.ts
  */
@@ -30,6 +30,8 @@ interface importJSON {
   Slug: string;
   'Images Filename': string;
   'Image URL': string;
+  'Images ID': string;
+  _thumbnail_id: string;
 }
 
 export function readClipboard(whichSite: number) {
@@ -41,11 +43,19 @@ export function readClipboard(whichSite: number) {
     jsonMedia: any = {};
 
   jsons.forEach((json) => {
-    jsonPost[decodeURI(json.Slug).replaceAll('.', '!')] = json.ID;
+    jsonPost[decodeURI(json.Slug).replaceAll('.', '!')] = {
+      post_id: json.ID,
+      thumbnail_id: json._thumbnail_id?.split('||')[0] || undefined
+    };
     const imageUrlArr = json['Image URL'].split('||'),
-      imageNameArr = json['Images Filename'].split('||');
+      imageNameArr = json['Images Filename'].split('||'),
+      imageIDArr = json['Images ID'].split('||');
     imageNameArr.forEach((name, index) => {
-      if (name !== '') jsonMedia[name.replaceAll('.', '!')] = imageUrlArr[index];
+      if (name !== '')
+        jsonMedia[name.replaceAll('.', '!')] = {
+          image_url: imageUrlArr[index],
+          image_id: imageIDArr[index]
+        };
     });
   });
   let res = store.storeSettingsGet(key);

@@ -35,7 +35,6 @@
   watch(detail, (value) => saveDetail(toRaw(value)), { deep: true });
   const siteToString = (site: any) => `${site.name} [${site.username}] [${site.url}]`;
   const selectedSites = computed(() => sites.value.map((site, index) => (site.selected ? index : undefined)).filter((v) => v !== undefined));
-
   const menuPublishListen = () => {
     // 如果是当前界面并且有文本数据
     if (active.value && post.value) {
@@ -48,7 +47,7 @@
         for (const publisher of publishers) {
           const res = publisher.postCache.get(post.value.url);
           if (res) {
-            aritcleId.value = res;
+            aritcleId.value = res.post_id;
             publishMode.value = PublishMode.Auto;
           }
         }
@@ -209,10 +208,8 @@
             <div v-if="publishMode == PublishMode.Manual">
               <label class="publish-mode-label">{{ $t('publish.enterArticleID') }}</label>
               <input v-model="inputID" class="publish-article-id" type="number" placeholder="ID" />
-              <label class="publish-mode-label">{{ $t('publish.getRemoteImages') }}</label>
-              <input v-model="detail.getNetPic" type="checkbox" :disabled="detail.forcedUpdate" />
               <label class="publish-mode-label">{{ $t('publish.forcedImageUpdate') }}</label>
-              <input v-model="detail.forcedUpdate" type="checkbox" :disabled="detail.getNetPic" />
+              <input v-model="detail.forcedUpdate" type="checkbox" />
             </div>
             <div v-else-if="publishMode == PublishMode.Auto">
               <label class="publish-mode-label">{{ $t('publish.notCheckingRemoteImages') }}</label>
