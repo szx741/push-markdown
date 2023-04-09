@@ -1,7 +1,7 @@
 <!--
  * @Author: szx
  * @Date: 2021-07-04 13:56:18
- * @LastEditTime: 2022-08-15 19:24:42
+ * @LastEditTime: 2023-04-09 18:52:26
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\components\MainComp.vue
 -->
@@ -12,6 +12,7 @@
   import FilesViewer from './FilesViewer.vue';
   import TabTitle from './TabTitle.vue';
   import Welcome from './Welcome.vue';
+  import Upload from './Upload.vue';
   import Markdown from './Markdown.vue';
   import Settings from './Settings.vue';
 
@@ -71,6 +72,11 @@
   ipc.receive('menu.welcome', () => {
     const index = tabs.value.findIndex((tab: any) => tab.type === 'welcome');
     if (index === -1) addTab({ type: 'welcome', filePath: '' });
+    else selectTab(index);
+  });
+  ipc.receive('menu.upload', () => {
+    const index = tabs.value.findIndex((tab: any) => tab.type === 'upload');
+    if (index === -1) addTab({ type: 'upload', filePath: '' });
     else selectTab(index);
   });
   // 打开示例文档
@@ -143,6 +149,8 @@
         return t('settings');
       case 'welcome':
         return t('welcome');
+      case 'upload':
+        return t('upload');
       case 'markdown':
         return tab.title;
     }
@@ -243,9 +251,13 @@
       </div>
 
       <div class="tab-contents">
-        <div v-for="(tab, i) in tabs" v-show="currIndex === i" :key="tab.type + i" class="tab-content">
+        <div v-for="(tab, i) in tabs" v-show="currIndex === i" :key="tab.type + tab.title" class="tab-content">
           <template v-if="tab.type === 'welcome'">
             <Welcome></Welcome>
+          </template>
+
+          <template v-else-if="tab.type === 'upload'">
+            <Upload :active="currIndex === i"></Upload>
           </template>
 
           <template v-else-if="tab.type === 'settings'">

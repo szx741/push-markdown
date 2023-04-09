@@ -34,6 +34,10 @@ export function openSettings() {
   ipc.send('menu.settings');
 }
 
+export function openDir() {
+  ipc.send('openDir');
+}
+
 //链接监听，如果带有data-href，那么就是打开应用内链接，否则就是用外部浏览器打开链接
 function linkListener(this: HTMLAnchorElement, e: MouseEvent) {
   const attribute = this.getAttribute('data-href');
@@ -100,4 +104,21 @@ export async function promiseConcurrencyLimit(limit: number, arr: any[], fn: any
 
 export function getFilenamify(siteUrl: string, username: string) {
   return filenamify(`${siteUrl}&&${username}`).replaceAll('.', '!');
+}
+
+export function transfromToLocalSrc(filePath: string, src: string | undefined) {
+  if (!src) return undefined;
+  src = decodeURI(src);
+  if (!src || src.match(/^((https?|file):\/\/|data:)/)) return undefined;
+  if (!nodePath.pathIsAbsolute(src)) {
+    src = nodePath.pathJoin(filePath, src);
+  }
+  return 'atom://' + src;
+}
+
+export function toSystemTimezone(date: Date) {
+  const timezoneOffset = new Date().getTimezoneOffset();
+  const time = date.getTime();
+  date.setTime(time + timezoneOffset * 60 * 1000);
+  return date;
 }

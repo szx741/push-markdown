@@ -66,7 +66,7 @@
   });
 
   function postRender() {
-    post.value = mdRender(fileText.value, filePath.value, true);
+    post.value = mdRender(fileText.value, filePath.value);
   }
 
   function onSave() {

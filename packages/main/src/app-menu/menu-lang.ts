@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-04 19:00:58
- * @LastEditTime: 2022-08-04 12:09:21
+ * @LastEditTime: 2023-04-08 12:17:36
  * @Description: 窗口的多语言支持
  * @FilePath: \push-markdown\packages\main\src\app-menu\menu-lang.ts
  */
@@ -17,6 +17,7 @@ export const en = {
   publish: 'Publish',
   language: 'Language',
   settings: 'Settings',
+  upload: 'Batch Upload',
   edit: 'Edit',
   undo: 'Undo',
   redo: 'Redo',
@@ -60,6 +61,7 @@ export const zh = {
   publish: '发布',
   language: '语言',
   settings: '设置',
+  upload: '批量上传',
   edit: '编辑',
   undo: '撤销',
   redo: '重做',

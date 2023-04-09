@@ -22,7 +22,7 @@
 
 ## 软件简介
 
-**Push Markdown** 是一款将本地Markdown文件发布到Wordpress和cnblogs的开源工具，基于Electron实现，支持中英文，目前支持windows和macos（个别版本）。
+**Push Markdown** 是一款将本地Markdown文件发布到Wordpress和cnblogs的开源工具，基于Electron实现，支持中英文，目前仅有windows安装包，无mac电脑来编译macos平台。
 
 1. 支持主流Markdown语法、TOC、代码高亮、MathJax数学公式，支持本地预览和简易编辑功能（建议使用Haroopad、Typora等工具编写好后，再使用本工具发布）。
 2. 全自动博客发布。博客可设置标题、摘要、固定链接、作者、发布时间、标签、分类等属性，自动批量上传markdown文件中引用的本地图片。
@@ -98,6 +98,10 @@
 特别感谢[vite-electron-builder](https://github.com/cawa-93/vite-electron-builder)模版，对我2.0.0升级有着举足轻重的作用
 
 ## 重要版本
+
+**v2.1.1**
+
+- 添加批量上传界面，在文件-批量上传中，使用前建议看看注意事项
 
 **v2.1.0**
 

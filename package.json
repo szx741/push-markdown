@@ -1,6 +1,6 @@
 {
   "name": "push-markdown",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "private": true,
   "description": "将本地markdown推送到WordPress",
   "engines": {

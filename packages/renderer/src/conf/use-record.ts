@@ -1,14 +1,14 @@
 /*
  * @Author: szx
  * @Date: 2021-07-07 16:45:28
- * @LastEditTime: 2022-08-04 19:54:38
+ * @LastEditTime: 2023-04-08 12:07:57
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\conf\use-record.ts
  */
 'use strict';
 import { store, nodeFs } from '#preload';
 export interface Tab {
-  type: 'welcome' | 'settings' | 'markdown'; //就这三种情况，welcome就是欢迎界面，settings就是设置界面，markdown就是markdown界面
+  type: 'welcome' | 'settings' | 'markdown' | 'upload'; //四种情况，welcome就是欢迎界面，settings就是设置界面，markdown就是markdown界面，upload是多文件批量上传界面
   title?: string;
   modified?: boolean; // 文件是否修改
   filePath: string;

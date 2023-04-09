@@ -1,6 +1,7 @@
 const zh = {
   welcome: '欢迎',
   settings: '设置',
+  upload: '批量上传',
 
   reloadNeedSaveFirst: '文件已经修改，请先保存',
   closeModifiedFile: '文件已修改，确认关闭？',

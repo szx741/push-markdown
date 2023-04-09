@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 19:57:31
- * @LastEditTime: 2022-08-06 20:36:42
+ * @LastEditTime: 2023-04-08 12:18:01
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\app-menu\index.ts
  */
@@ -82,6 +82,12 @@ export function menuInit(mainWindow: BrowserWindow) {
           label: l.settings,
           click: function () {
             webContents.send('menu.settings');
+          }
+        },
+        {
+          label: l.upload,
+          click: function () {
+            webContents.send('menu.upload');
           }
         },
         {

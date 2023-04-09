@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-08-04 11:28:59
- * @LastEditTime: 2023-04-07 15:06:21
+ * @LastEditTime: 2023-04-09 19:07:37
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\app-menu\updater.ts
  */
@@ -22,7 +22,7 @@ autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
       icon: iconPath,
       type: 'info',
       title: '软件更新',
-      message: `发现新版本 ${app.getVersion()}，更新日期为${updateInfo.releaseDate}，确定更新？`,
+      message: `发现新版本 ${updateInfo.version}，更新日期为${updateInfo.releaseDate}，确定更新？`,
       detail: updateInfo.releaseNotes?.toString(),
       buttons: ['确定', '取消']
     })

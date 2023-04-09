@@ -1,13 +1,14 @@
 /*
  * @Author: szx
  * @Date: 2021-07-05 20:57:10
- * @LastEditTime: 2022-09-03 21:24:01
+ * @LastEditTime: 2023-04-08 13:17:10
  * @Description:
  * @FilePath: \push-markdown\packages\main\src\ipc-message.ts
  */
 
-import { app, ipcMain } from 'electron';
+import { app, ipcMain, dialog } from 'electron';
 import path from 'path';
+import fs from 'fs';
 
 /*
   // 实验性质
@@ -36,6 +37,30 @@ ipcMain.on('addRecentDocument', function (event, arg) {
   event.returnValue = app.addRecentDocument(arg);
 });
 
+ipcMain.on('openDir', function (event, arg) {
+  dialog
+    .showOpenDialog({
+      properties: ['openDirectory']
+    })
+    .then((result) => {
+      if (!result.canceled) {
+        const folderPath = result.filePaths[0];
+        const allFile = fs.readdirSync(folderPath);
+        let allMd = allFile.filter((file: string) => {
+          const stats = fs.lstatSync(path.join(folderPath, file));
+          if (stats.isFile() && path.extname(file) === '.md') return true;
+          else return false;
+        });
+        event.reply('openDir', {
+          folderPath,
+          allMd
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 // 获得当前版本号
 ipcMain.on('version', function (event, arg) {
   //   event.reply('version', app.getVersion());

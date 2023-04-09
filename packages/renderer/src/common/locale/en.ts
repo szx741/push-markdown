@@ -1,6 +1,7 @@
 const en = {
   welcome: 'Welcome',
   settings: 'Settings',
+  upload: 'Batch Upload',
 
   reloadNeedSaveFirst: 'File has been modified, please save it first',
   closeModifiedFile: 'File has been modified, confirm to close?',

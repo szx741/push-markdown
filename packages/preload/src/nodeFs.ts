@@ -31,6 +31,17 @@ export const nodeFs = {
   fsReaddirSync: fs.readdirSync,
   fsStatSync: fs.statSync,
   fsLstatSync: fs.lstatSync,
+  async readFilePromise(path: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fs.readFile(path, (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(data.toString());
+      });
+    });
+  },
   isFileOrDir(_path: string, file: string) {
     try {
       const stat = fs.lstatSync(path.join(_path, file));

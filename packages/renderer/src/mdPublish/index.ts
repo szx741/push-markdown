@@ -40,7 +40,7 @@ export interface PublishParams {
   stateHandler: (state: PublishState) => void;
   publishMode: PublishMode;
   detail: Detail;
-  editHandler: (post: MetaWeblog.Post) => false | Promise<unknown>;
+  editHandler: ((post: MetaWeblog.Post) => false | Promise<unknown>) | undefined;
 }
 
 interface ImageCache {
@@ -72,14 +72,14 @@ export class MetaPublisher {
     this.mediaCache = new Cache<ImageCache>('media', this.siteUrl, this.username);
   }
 
-  async publish({ post, inputID, oldPostID, stateHandler, publishMode, detail, editHandler }: PublishParams): Promise<boolean> {
+  async publish({ post, inputID, oldPostID, stateHandler, publishMode, detail, editHandler }: PublishParams): Promise<string | undefined> {
     // 显示正在Render
     let postID = oldPostID;
     if (publishMode === PublishMode.Manual) {
       if (parseInt(inputID) > 0) postID = inputID;
       stateHandler(PublishState.STATE_READ_POST);
       const oldPost = await blogApi.getPost(this.metaWeblog, postID, this.username, this.password);
-      oldPost && (await editHandler(oldPost));
+      oldPost && editHandler && (await editHandler(oldPost));
     }
 
     // 显示正在处理上传的图片
@@ -117,15 +117,16 @@ export class MetaPublisher {
     await promiseConcurrencyLimit(5, Array.from(div.getElementsByTagName('img')), handleImage);
     // 处理完图片，把文章里面的img都换成网络链接
     post.upload = div.innerHTML;
+    let resId;
     if (postID !== '-1') {
       stateHandler(PublishState.STATE_EDIT_POST);
-      await this.editPost(postID, post, oldPostID, newThumbnail?.image_id);
+      resId = await this.editPost(postID, post, oldPostID, newThumbnail?.image_id);
     } else {
       stateHandler(PublishState.STATE_PUBLISH_POST);
-      await this.newPost(post, newThumbnail?.image_id);
+      resId = await this.newPost(post, newThumbnail?.image_id);
     }
     stateHandler(PublishState.STATE_COMPLETE);
-    return true;
+    return resId;
   }
 
   async newPost(post: Post, newThumbnailID: string | undefined) {
@@ -136,7 +137,7 @@ export class MetaPublisher {
       post_id: id.toString(),
       thumbnail_id: newThumbnailID
     });
-    return id;
+    return id.toString();
   }
 
   async editPost(postId: string, post: Post, oldPostID: string, newThumbnailID: string | undefined) {
@@ -152,6 +153,7 @@ export class MetaPublisher {
         post_id: postId,
         thumbnail_id: newThumbnailID
       });
+    return postId;
   }
 
   async uploadImageFromSrc(src: string, forcedUpdate = false, notCheck = true, publishMode = PublishMode.Auto) {

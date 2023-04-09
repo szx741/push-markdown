@@ -1,35 +1,28 @@
 /*
  * @Author: szx
+ * @Date: 2022-10-22 18:58:09
+ * @LastEditTime: 2023-04-08 16:25:57
+ * @Description:
+ * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
+ */
+/*
+ * @Author: szx
  * @Date: 2022-07-29 19:27:08
- * @LastEditTime: 2023-04-06 19:55:59
+ * @LastEditTime: 2023-04-08 15:41:32
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\mdRenderer\markdown-text-to-html.ts
  */
 import { nodePath } from '#preload';
-import frontMatter from 'front-matter';
+import frontMatter, { FrontMatterResult } from 'front-matter';
 import highlight from 'highlight.js';
 import { htmlToText } from 'html-to-text';
 import MarkdownIt from 'markdown-it';
-import { transliterate as tr } from 'transliteration';
-import slugi from '@sindresorhus/slugify';
-
+import { Attr } from './markdown-front-matter';
 import { AbstractMode, publishConf } from '../conf/publish-conf';
-import { mdFileName } from '../utils/tools';
-interface Attr {
-  title: string | undefined;
-  abstract: string | undefined;
-  url: string | undefined;
-  tags: string[] | undefined;
-  categories: string[] | undefined;
-  authors: string[] | undefined;
-  date: Date | undefined;
-  thumbnail: string | undefined;
-  other_images: string[] | undefined;
-}
-
+import { transfromToLocalSrc } from '../utils/tools';
+import { StringDecoder } from 'string_decoder';
 export interface Post {
   filePath: string | undefined;
-  fileText: string | undefined;
   title: string;
   html: string;
   abstract: string | undefined;
@@ -45,14 +38,8 @@ export interface Post {
 
 const blank = decodeURI('%E3%80%80');
 
-export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, isPreview: any) {
+export function mdText2Html(md: MarkdownIt, content: FrontMatterResult<unknown>, attr: Attr, filePath: string) {
   const startTime = getTime();
-  fileText = (fileText && fileText.trim()) || '';
-  // 解析markdown，content包含yaml和markdown正文两部分
-  const content = frontMatter(fileText);
-
-  // 提取front matter，就是yaml配置的博客信息
-  const attr = extractFrontMatter(content.attributes);
 
   // 提取markdown转换成html的纯文本
   const markdown = content.body;
@@ -60,16 +47,13 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
   const htmlText = md.render(markdown, env);
 
   // 处理markdown的html纯文本
-  const { upload, html } = handleMarkdownHTML(htmlText, filePath, isPreview);
+  const { upload, html } = handleMarkdownHTML(htmlText, filePath);
 
   // 变成一个完整的Post
   const post: Post = {
     ...attr,
-    title: attr.title || mdFileName(filePath) || 'Unnamed',
-    filePath: filePath,
-    thumbnail: transfromToLocalSrc(nodePath.pathDirname(filePath), attr.thumbnail),
-    other_images: otherImagesTrans(nodePath.pathDirname(filePath), attr.other_images),
-    fileText: fileText,
+    title: attr.title || 'Unnamed',
+    filePath,
     html,
     upload
   };
@@ -80,32 +64,7 @@ export function mdText2Html(md: MarkdownIt, fileText: string, filePath: string, 
   return post;
 }
 
-// 解析前面yaml的文件格式
-function extractFrontMatter(contentAttr: any) {
-  const attr: Attr = {
-    title: undefined,
-    abstract: undefined,
-    url: undefined,
-    tags: undefined,
-    categories: undefined,
-    authors: undefined,
-    date: undefined,
-    thumbnail: undefined,
-    other_images: undefined
-  };
-  attr.title = toStr(contentAttr.title);
-  attr.abstract = toStr(contentAttr.abstract);
-  if (toStr(contentAttr.url)) attr.url = toStr(contentAttr.url);
-  attr.tags = toStrArr(contentAttr.tags || contentAttr.tag);
-  attr.categories = toStrArr(contentAttr.categories || contentAttr.category);
-  attr.authors = toStrArr(contentAttr.authors || contentAttr.author);
-  attr.date = contentAttr.date && toSystemTimezone(contentAttr.date);
-  attr.thumbnail = toStr(contentAttr.thumbnail);
-  attr.other_images = toStrArr(contentAttr.other_images || contentAttr.other_image);
-  return attr;
-}
-
-function handleMarkdownHTML(htmlText: any, filePath: string, isPreview: any) {
+function handleMarkdownHTML(htmlText: any, filePath: string) {
   // 创建HTML样式（非文本格式）
   const div = createInvisibleDiv(document, htmlText);
   // 把tab键转换成Emsp，（因为tab在网页里面只是一个半角空格，这里转换成全角空格）
@@ -124,8 +83,6 @@ function handleMarkdownHTML(htmlText: any, filePath: string, isPreview: any) {
 }
 
 function handlePost(post: Post, html: string) {
-  // 如果post的url为空，那么就就title转换成拼音
-  if (!post.url) post.url = slugi(tr(post.title.replace(/(\d+)/g, ' $1 '))).replace(/^-|-$/g, '');
   // 判断摘要从哪里提取
   if (!post.abstract) {
     switch (publishConf.value.abstractMode) {
@@ -157,27 +114,6 @@ function extractAbstract(title: string, html: string) {
   if (text.startsWith(title)) startIndex = title.length;
   if (text.length > abstractNum + startIndex) text = text.substring(startIndex, abstractNum + startIndex).trim() + '...';
   return text;
-}
-
-function toStr(src: any) {
-  return (src && typeof src === 'string' && src) || undefined;
-}
-
-function toStrArr(src: string | string[] | null | undefined): string[] | undefined {
-  if (typeof src === 'string') {
-    return [src];
-  } else if (src instanceof Array) {
-    const res = src.map((s) => toStr(s)).filter((s) => s);
-    return res.length == 0 ? undefined : res;
-  }
-  return undefined;
-}
-
-function toSystemTimezone(date: Date) {
-  const timezoneOffset = new Date().getTimezoneOffset();
-  const time = date.getTime();
-  date.setTime(time + timezoneOffset * 60 * 1000);
-  return date;
 }
 
 function createInvisibleDiv(document: Document, htmlText: string) {
@@ -247,26 +183,6 @@ function replaceLocalImages(div: HTMLElement, filePath: string) {
       }
     }
   }
-}
-
-function otherImagesTrans(filePath: string, src: string[] | undefined) {
-  if (!src) return undefined;
-  let res = [];
-  for (let i of src) {
-    let src = transfromToLocalSrc(filePath, i);
-    if (src) res.push(src);
-  }
-  if (res.length === 0) return undefined;
-  else return res;
-}
-function transfromToLocalSrc(filePath: string, src: string | undefined) {
-  if (!src) return undefined;
-  src = decodeURI(src);
-  if (!src || src.match(/^((https?|file):\/\/|data:)/)) return undefined;
-  if (!nodePath.pathIsAbsolute(src)) {
-    src = nodePath.pathJoin(filePath, src);
-  }
-  return 'atom://' + src;
 }
 
 function highlightCode(div: any) {
