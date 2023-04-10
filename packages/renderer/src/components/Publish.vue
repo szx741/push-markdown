@@ -28,7 +28,7 @@
     editList: Ref<EditItem[]> = ref([]),
     publishing = ref(false),
     confirm = ref(false),
-    aritcleId: Ref<string> = ref('-1'),
+    articleIDs: Ref<string[]> = ref([]),
     inputID = ref(0),
     { t } = useI18n();
 
@@ -44,11 +44,13 @@
       if (!post.value.url) confirm.value = true;
       else {
         // 根据 markdown发布的url和id来判断发布的模式是自动还是创建新的文章模式
-        for (const publisher of publishers) {
-          const res = publisher.postCache.get(post.value.url);
+        for (let i = 0; i < publishers.length; i++) {
+          const res = publishers[i].postCache.get(post.value.url);
           if (res) {
-            aritcleId.value = res.post_id;
+            articleIDs.value[i] = res.post_id;
             publishMode.value = PublishMode.Auto;
+          } else {
+            articleIDs.value[i] = '-1';
           }
         }
       }
@@ -70,7 +72,7 @@
       publishParams: PublishParams = {
         post: toRaw(post.value),
         inputID: inputID.value.toString(),
-        oldPostID: aritcleId.value,
+        oldPostID: articleIDs.value[index],
         stateHandler,
         publishMode: publishMode.value,
         detail: detail.value,
@@ -173,7 +175,7 @@
             <a class="publish-site-edit" href="#" @click="showSettings()">{{ $t('publish.settings') }}</a>
           </div>
           <div class="sites">
-            <div v-for="site in sites" :key="site.url" class="site" @click="select(site)">
+            <div v-for="(site, index) in sites" :key="site.url" class="site" @click="select(site)">
               <!-- <div v-for="(site, index) in sites" :key="index" class="site"> -->
               <input v-model="site.selected" title="select" type="checkbox" />
               <div class="site-info">
@@ -191,7 +193,7 @@
               </div>
               <div>
                 <span> {{ $t('publish.articleID') }}: </span>
-                {{ aritcleId }}
+                {{ articleIDs[index] }}
               </div>
             </div>
           </div>

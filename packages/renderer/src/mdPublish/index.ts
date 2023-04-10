@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-07-11 18:03:08
- * @LastEditTime: 2023-04-07 14:08:26
+ * @LastEditTime: 2023-04-10 16:29:18
  * @Description:文章发布工具。根据type调用不同的实现。目前支持MetaWeblog。
  * https://codex.wordpress.org/XML-RPC_MetaWeblog_API#metaWeblog.newPost
  * http://xmlrpc.scripting.com/metaWeblogApi.html
@@ -131,6 +131,7 @@ export class MetaPublisher {
 
   async newPost(post: Post, newThumbnailID: string | undefined) {
     const _post = toMetaWeblogPost(post, newThumbnailID);
+    console.log(_post);
     const id = await blogApi.newPost(this.metaWeblog, this.username, this.password, _post);
     console.log('newpost this.postId:', id);
     this.postCache.put(post.url, {

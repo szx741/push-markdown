@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, onUnmounted, Ref, watch, toRaw } from 'vue';
+  import { ref, computed, onUnmounted, Ref, watch } from 'vue';
   import { openDir } from '../utils/tools';
   import { ipc, nodeFs, nodePath } from '#preload';
   import { mdRenderFrontMatter, mdContentToHtml, Attr } from '../mdRenderer';
@@ -76,7 +76,6 @@
 
   // 下面写方法
   const destory = ipc.receive('openDir', (args: any) => {
-    console.log('打开文件夹');
     folderPath.value = args.folderPath;
     allPostCache = publishers[siteIndex.value - 1].postCache.getAll();
     mdFiles.value = args.allMd.map((md: string) => ({
@@ -137,7 +136,7 @@
       }
       const post = mdContentToHtml(selected.content, selected.attr, selected.filePath);
       const publishParams: PublishParams = {
-        post: toRaw(post),
+        post: JSON.parse(JSON.stringify(post)),
         inputID: '0',
         oldPostID: selected.cache,
         stateHandler: () => {},
@@ -146,6 +145,7 @@
         editHandler: undefined
       };
       try {
+        // console.log(publishParams);
         const res = await publisher.publish(publishParams);
         if (res && Number.parseInt(res) > 0) {
           selected.msg = '上传成功';
