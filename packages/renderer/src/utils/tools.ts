@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2021-08-27 17:11:08
- * @LastEditTime: 2022-08-03 17:15:58
+ * @LastEditTime: 2023-04-10 14:00:50
  * @Description:
  * @FilePath: \push-markdown\packages\renderer\src\utils\tools.ts
  */
@@ -109,7 +109,8 @@ export function getFilenamify(siteUrl: string, username: string) {
 export function transfromToLocalSrc(filePath: string, src: string | undefined) {
   if (!src) return undefined;
   src = decodeURI(src);
-  if (!src || src.match(/^((https?|file):\/\/|data:)/)) return undefined;
+  if (!src) return undefined;
+  if (src.match(/^((https?|file):\/\/|data:)/)) return src;
   if (!nodePath.pathIsAbsolute(src)) {
     src = nodePath.pathJoin(filePath, src);
   }
