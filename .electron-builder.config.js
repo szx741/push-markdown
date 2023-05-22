@@ -1,7 +1,7 @@
 /*
  * @Author: szx
  * @Date: 2022-07-23 13:21:25
- * @LastEditTime: 2023-04-10 14:14:25
+ * @LastEditTime: 2023-05-22 17:44:34
  * @Description:
  * @FilePath: \push-markdown\.electron-builder.config.js
  */
@@ -20,8 +20,8 @@ if (process.env.VITE_APP_VERSION === undefined) {
 const config = {
   appId: 'com.szx.life.push_markdown',
   releaseInfo: {
-    releaseNotes: "添加批量上传界面，在文件-批量上传中，使用前建议看看注意事项\n修复关闭当前页面左侧的页面，导致后续页面重新读取渲染的问题（vue的v-for索引key值的问题，经典问题）\n修复外链图片没有加上fancybox的问题（仅支持argon主题）",
-    releaseDate: '2023-4-10'
+    releaseNotes: "修复批量上传有日期字段无法上传成功的问题",
+    releaseDate: '2023-5-22'
   },
   productName: 'push-markdown',
   directories: {

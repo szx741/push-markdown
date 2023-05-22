@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { ref, computed, onUnmounted, Ref, watch } from 'vue';
-  import { openDir } from '../utils/tools';
+  import { cloneDeep } from 'lodash-es';
+  import { openDir, toSystemTimezone } from '../utils/tools';
   import { ipc, nodeFs, nodePath } from '#preload';
   import { mdRenderFrontMatter, mdContentToHtml, Attr } from '../mdRenderer';
   import { publishers } from '../conf/sites';
@@ -135,8 +136,9 @@
         return;
       }
       const post = mdContentToHtml(selected.content, selected.attr, selected.filePath);
+      const _post = cloneDeep(post);
       const publishParams: PublishParams = {
-        post: JSON.parse(JSON.stringify(post)),
+        post: _post,
         inputID: '0',
         oldPostID: selected.cache,
         stateHandler: () => {},
